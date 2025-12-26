@@ -4,7 +4,7 @@ from datetime import datetime
 
 # Updated Sources
 BLOCKLIST_URLS = [
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.mini-onlydomains.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/ultimate-onlydomains.txt",
     "https://badmojr.github.io/1Hosts/Lite/domains.txt",
 ]
