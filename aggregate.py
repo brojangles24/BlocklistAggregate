@@ -1,61 +1,57 @@
 import requests
-import re
+import tldextract
 
-# Sources: Replace with your actual blocklist URLs
+# Sources
 BLOCKLIST_URLS = [
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/hoster-onlydomains.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif-onlydomains.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/ultimate-onlydomains.txt",
+    "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
+    "https://raw.githubusercontent.com/bigdargon/hostsVN/master/hosts"
 ]
-# HaGeZi's Most Abused TLDs (Raw)
+# Your new raw TLD source
 TLD_LIST_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/spam-tlds-onlydomains.txt"
 
 def get_list(url):
-    response = requests.get(url)
-    return response.text.splitlines()
-
-def extract_tlds(tld_raw):
-    # Extracts TLDs from HaGeZi's adblock format (e.g., ||*.zip^)
-    tlds = set()
-    for line in tld_raw:
-        match = re.search(r'\|\|\*\.([a-z0-9-]+)\^', line)
-        if match:
-            tlds.add(match.group(1))
-    return tlds
+    try:
+        response = requests.get(url, timeout=30)
+        response.raise_for_status()
+        return response.text.splitlines()
+    except Exception as e:
+        print(f"Error fetching {url}: {e}")
+        return []
 
 def main():
-    print("Fetching TLD blocklist...")
-    spam_tlds = extract_tlds(get_list(TLD_LIST_URL))
-    
+    print("Fetching HaGeZi Raw Spam TLDs...")
+    # This list is raw domains/TLDs, so we just strip whitespace
+    spam_tlds = {line.strip().lower() for line in get_list(TLD_LIST_URL) if line.strip()}
+    print(f"Loaded {len(spam_tlds)} spam TLDs.")
+
     unique_domains = set()
-    
-    print("Fetching and filtering blocklists...")
+
     for url in BLOCKLIST_URLS:
+        print(f"Processing source: {url}")
         lines = get_list(url)
         for line in lines:
-            # Clean comments and ignore empty lines/headers
-            clean_line = line.strip()
-            if not clean_line or clean_line.startswith(('#', '!', '[', '127.0.0.1', '0.0.0.0')):
-                # Simple regex to grab the domain if it's a hosts file format
-                match = re.search(r'(?:0\.0\.0\.0|127\.0\.0\.1)\s+(\S+)', clean_line)
-                if match:
-                    domain = match.group(1).lower()
-                else:
-                    continue
-            else:
-                domain = clean_line.lower()
+            clean_line = line.strip().lower()
+            if not clean_line or clean_line.startswith(('#', '!', '[')):
+                continue
 
-            # Filter by TLD
-            tld = domain.split('.')[-1]
-            if tld not in spam_tlds:
+            # Extract domain from hosts format or plain list
+            parts = clean_line.split()
+            domain = parts[-1] if len(parts) > 1 else parts[0]
+            
+            # Use tldextract to isolate the suffix
+            ext = tldextract.extract(domain)
+            
+            # Check if the TLD/suffix matches the spam list
+            if ext.suffix not in spam_tlds:
                 unique_domains.add(domain)
 
-    # Output results
+    # Sort for consistency and output
     sorted_domains = sorted(list(unique_domains))
     with open("output.txt", "w") as f:
+        # Exporting in standard domain format
         f.write("\n".join(sorted_domains))
     
-    print(f"--- Process Complete ---")
+    print(f"\n--- Process Complete ---")
     print(f"Total Unique Domains: {len(sorted_domains)}")
 
 if __name__ == "__main__":
