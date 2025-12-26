@@ -8,24 +8,21 @@ permissions:
   contents: write
 
 jobs:
-  run-aggregator:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
-      
       - name: Install dependencies
-        run: pip install requests tldextract
-
-      - name: Aggregate
+        run: pip install -r requirements.txt
+      - name: Run Script
         run: python aggregate.py
-
-      - name: Commit changes
+      - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add output.txt excluded.txt
-          git commit -m "Auto-update: $(date +'%Y-%m-%d')" || exit 0
+          git commit -m "Update blocklist: $(date)" || echo "No changes"
           git push
