@@ -3,11 +3,12 @@ import re
 
 # Sources: Replace with your actual blocklist URLs
 BLOCKLIST_URLS = [
-    "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
-    "https://raw.githubusercontent.com/bigdargon/hostsVN/master/hosts"
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/hoster-onlydomains.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif-onlydomains.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/ultimate-onlydomains.txt",
 ]
 # HaGeZi's Most Abused TLDs (Raw)
-TLD_LIST_URL = "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/spam-tlds.txt"
+TLD_LIST_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/spam-tlds-onlydomains.txt"
 
 def get_list(url):
     response = requests.get(url)
