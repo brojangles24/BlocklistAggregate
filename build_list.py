@@ -6,8 +6,6 @@ import math
 import re
 from collections import Counter, defaultdict
 import pandas as pd
-import numpy as np
-from scipy import stats
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -24,13 +22,22 @@ SOURCES = [
     ("https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/domains.wildcards", 2, "Gap Filler")
 ]
 
+# TLDs to exclude (Spam/Junk)
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/spam-tlds-onlydomains.txt"
+
+# Fallback list 
+FALLBACK_TLDS = {
+    ".zip", ".mov", ".loan", ".win", ".date", ".review", ".party", ".accountant", ".trade", 
+    ".download", ".gdn", ".racing", ".jetzt", ".stream", ".bid", ".men", ".bom", ".click", 
+    ".cricket", ".faith", ".link", ".science", ".webcam", ".top", ".xyz", ".online", 
+    ".site", ".pro", ".work", ".info", ".best", ".cam", ".cfd", ".cyou", ".icu", ".mw", ".rest",
+    ".wiki", ".monster", ".quest", ".bond", ".bussiness", ".center", ".club", ".cool"
+}
+
 DOMAIN_LIMIT = 300000
 HISTORY_FILE = "history.json"
 PREVIOUS_LIST_FILE = "blocklist.txt"
 HVT_LIST = ['google', 'apple', 'microsoft', 'amazon', 'facebook', 'netflix', 'paypal', 'chase', 'wellsfargo', 'coinbase']
-
-# --- COLORS ---
 APPLE_COLORS = ['#0A84FF', '#30D158', '#BF5AF2', '#FF9F0A', '#FF453A', '#64D2FF', '#FF375F', '#5E5CE6']
 BG_COLOR = "#000000"
 CARD_COLOR = "#1C1C1E"
@@ -41,8 +48,7 @@ def calculate_entropy(text):
     entropy = 0
     for x in range(256):
         p_x = float(text.count(chr(x))) / len(text)
-        if p_x > 0: 
-            entropy += - p_x * math.log(p_x, 2)
+        if p_x > 0: entropy += - p_x * math.log(p_x, 2)
     return entropy
 
 def get_ngrams(text, n=2):
@@ -52,16 +58,20 @@ def get_ngrams(text, n=2):
 
 def fetch_spam_tlds():
     tlds = set()
+    print(f"Fetching Spam TLDs from: {SPAM_TLD_URL}")
     try:
         r = requests.get(SPAM_TLD_URL, timeout=30)
-        for line in r.text.splitlines():
-            line = line.strip().lower()
-            if line and not line.startswith('#'):
-                clean = line.replace('*.', '').replace('.', '')
-                if clean: 
-                    tlds.add("." + clean)
-    except: 
-        pass
+        if r.status_code == 200:
+            for line in r.text.splitlines():
+                line = line.strip().lower()
+                if line and not line.startswith('#'):
+                    if not line.startswith('.'): line = "." + line
+                    tlds.add(line)
+        else:
+            tlds = FALLBACK_TLDS
+    except:
+        tlds = FALLBACK_TLDS
+    if not tlds: tlds = FALLBACK_TLDS
     return tuple(tlds) 
 
 def fetch_domains(url):
@@ -74,29 +84,23 @@ def fetch_domains(url):
             if '#' in line: line = line.split('#')[0].strip()
             if not line or line.startswith('!'): continue
             parts = line.split()
-            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]: 
-                domains.add(parts[1])
-            elif len(parts) == 1: 
-                domains.add(parts[0])
-    except: 
-        pass
+            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]: domains.add(parts[1])
+            elif len(parts) == 1: domains.add(parts[0])
+    except: pass
     return domains
 
 def save_history(stats_data):
     history = []
     if os.path.exists(HISTORY_FILE):
-        try: 
-            with open(HISTORY_FILE, "r") as f: 
-                history = json.load(f)
-        except: 
-            pass
+        try: with open(HISTORY_FILE, "r") as f: history = json.load(f)
+        except: pass
     history.append(stats_data)
     return history[-365:] 
 
 def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_overlap_matrix, top_bigrams, final_list):
     print("Generating Interactive Dashboard...")
     
-    # [Charts logic identical to God Mode]
+    # [Charts logic same as before]
     df_tld = df_main['tld'].value_counts().head(10).reset_index()
     df_tld.columns = ['TLD', 'Count']
     df_hist = pd.DataFrame(history)
@@ -140,9 +144,8 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
     fig.update_yaxes(autorange="reversed", row=2, col=1)
     fig.update_yaxes(autorange="reversed", row=2, col=2)
 
-    # --- HTML WITH SEARCH BAR ---
-    # We pass the top 15,000 domains to the JS variables
-    search_preview = final_list[:15000] 
+    # --- HTML WITH FULL DATASET ---
+    # We embed the FULL list, but we rely on a smart loop in JS to prevent lag.
     
     html = f"""
     <!DOCTYPE html>
@@ -156,8 +159,6 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .container {{ max-width: 1400px; margin: 0 auto; }}
             h1 {{ text-align: center; margin-bottom: 5px; }}
             .sub {{ text-align: center; color: #888; margin-bottom: 30px; }}
-            
-            /* SEARCH BAR CSS */
             .search-box {{ width: 100%; max-width: 600px; margin: 0 auto 30px auto; display: block; }}
             input {{ width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; background: #1C1C1E; color: white; font-size: 16px; outline: none; }}
             input:focus {{ border-color: #0A84FF; }}
@@ -170,15 +171,12 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
         <div class="container">
             <h1>🛡️ SOC Dashboard: GOD MODE</h1>
             <div class="sub">Deep Forensics & Correlation Analysis • {datetime.date.today()}</div>
-            
             <div class="search-box">
-                <input type="text" id="domainSearch" placeholder="🔍 Search Top 15k Risk Domains..." onkeyup="searchDomains()">
-                <div class="limit-note">Searching top 15,000 highest risk domains only.</div>
+                <input type="text" id="domainSearch" placeholder="🔍 Search Database (300k Records)..." onkeyup="searchDomains()">
+                <div class="limit-note">Searching entire database. Showing top 10 matches.</div>
                 <div id="search-results"></div>
             </div>
-
             {fig.to_html(full_html=False, include_plotlyjs=False)}
-            
              <div style="background:{CARD_COLOR}; padding:20px; border-radius:12px; margin-top:20px;">
                 <h3>🚨 Top 10 Detected Typosquats</h3>
                 <table style="width:100%; text-align:left; color:#ddd;">
@@ -186,10 +184,10 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                 </table>
             </div>
         </div>
-
         <script>
-            // Client-side Search Engine
-            const domains = {json.dumps(search_preview)};
+            // Embedding full list (Heavy, but allows full search)
+            const domains = {json.dumps(final_list)};
+            
             function searchDomains() {{
                 const input = document.getElementById('domainSearch');
                 const filter = input.value.toLowerCase();
@@ -197,11 +195,21 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                 
                 if (filter.length < 3) {{ resultDiv.innerHTML = ""; return; }}
                 
-                const matches = domains.filter(d => d.includes(filter)).slice(0, 8);
+                // Optimized Loop: Stops after 10 matches to prevent freezing
+                let matches = [];
+                let count = 0;
+                for (let i = 0; i < domains.length; i++) {{
+                    if (domains[i].includes(filter)) {{
+                        matches.push(domains[i]);
+                        count++;
+                        if (count >= 10) break; // Optimization break
+                    }}
+                }}
+
                 if (matches.length > 0) {{
                     resultDiv.innerHTML = matches.map(m => "<span class='match'>• " + m + "</span>").join("");
                 }} else {{
-                    resultDiv.innerHTML = "Not found in top 15k risk tier.";
+                    resultDiv.innerHTML = "Not found in database.";
                 }}
             }}
         </script>
@@ -216,8 +224,7 @@ def main():
         try: 
             with open(PREVIOUS_LIST_FILE) as f: 
                 prev_domains = {line.split()[1] for line in f if line.startswith("0.0.0.0")}
-        except: 
-            pass
+        except: pass
 
     domain_data = {} 
     source_sets = defaultdict(set)
@@ -279,10 +286,8 @@ def main():
         for s2 in source_names:
             set1 = source_sets[s1].intersection(final_set)
             set2 = source_sets[s2].intersection(final_set)
-            if len(set1) == 0 or len(set2) == 0: 
-                overlap_matrix[(s1, s2)] = 0
-            else: 
-                overlap_matrix[(s1, s2)] = round(len(set1.intersection(set2)) / len(set1.union(set2)), 2)
+            if len(set1) == 0 or len(set2) == 0: overlap_matrix[(s1, s2)] = 0
+            else: overlap_matrix[(s1, s2)] = round(len(set1.intersection(set2)) / len(set1.union(set2)), 2)
 
     # 5. Output
     churn = {"added": len(final_set - prev_domains), "removed": len(prev_domains - final_set)}
