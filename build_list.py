@@ -13,13 +13,12 @@ import tldextract
 SOURCES = [
     ("https://urlhaus.abuse.ch/downloads/hostfile/", 15, "Malware"), 
     ("https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Lite/domains.wildcards", 10, "Tracking"),
-    ("https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/ultimate-onlydomains.txt", 8, "Aggressive"),
+    ("https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/ultimate.txt", 8, "Aggressive"),
     ("https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Hosts/GoodbyeAds.txt", 6, "Mobile Ads"),
     ("https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/domainswild2_big.txt", 5, "General Ads"),
     ("https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/domains.wildcards", 2, "Gap Filler")
 ]
 
-# Hagezi Spam TLDs (Extensions to purge from list because you should block them globally)
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/spam-tlds-onlydomains.txt"
 
 DOMAIN_LIMIT = 300000
@@ -43,18 +42,19 @@ def calculate_entropy(text):
     return entropy
 
 def fetch_spam_tlds():
-    print("Fetching Spam TLDs...")
+    print(f"Fetching Spam TLDs from: {SPAM_TLD_URL}")
     tlds = set()
     try:
         r = requests.get(SPAM_TLD_URL, timeout=30)
         for line in r.text.splitlines():
             line = line.strip().lower()
             if line and not line.startswith('#'):
-                # Store as ".tld" for easy suffix checking
-                tlds.add("." + line)
+                clean_tld = line.replace('*.', '').replace('.', '')
+                if clean_tld:
+                    tlds.add("." + clean_tld)
     except Exception as e:
         print(f"Error fetching Spam TLDs: {e}")
-    return tuple(tlds) # Return as tuple for .endswith()
+    return tuple(tlds) 
 
 def fetch_domains(url):
     print(f"Fetching: {url}")
@@ -100,8 +100,6 @@ def generate_dashboard(final_domains, domain_scores, history, churn_stats, targe
     tlds = [d.split('.')[-1] for d in final_domains]
     df_tld = pd.DataFrame(Counter(tlds).most_common(8), columns=['TLD', 'Count']) 
     entropies = [calculate_entropy(d) for d in final_domains]
-    depths = [d.count('.') for d in final_domains]
-    df_depth = pd.DataFrame(Counter(depths).items(), columns=['Depth', 'Count']).sort_values('Depth')
     df_targets = pd.DataFrame(target_stats.items(), columns=['Target', 'Count']).sort_values('Count', ascending=True).tail(10)
     df_hist = pd.DataFrame(history)
 
@@ -115,9 +113,6 @@ def generate_dashboard(final_domains, domain_scores, history, churn_stats, targe
     fig_targets = px.bar(df_targets, x='Count', y='Target', orientation='h', color_discrete_sequence=[APPLE_COLORS[6]])
     fig_targets.update_layout(**common_layout, xaxis_title="", yaxis_title="")
 
-    fig_depth = px.bar(df_depth, x='Depth', y='Count', color_discrete_sequence=[APPLE_COLORS[5]])
-    fig_depth.update_layout(**common_layout, xaxis_title="Depth Level", yaxis_title="")
-
     fig_entropy = go.Figure(data=[go.Histogram(x=entropies, nbinsx=40, marker_color=APPLE_COLORS[1])])
     fig_entropy.update_layout(**common_layout, title_text="", showlegend=False)
 
@@ -126,7 +121,7 @@ def generate_dashboard(final_domains, domain_scores, history, churn_stats, targe
     fig_tld.update_traces(textposition='inside', textinfo='percent+label')
 
     fig_hist = px.line(df_hist, x='date', y='total_count', markers=True, color_discrete_sequence=[APPLE_COLORS[0]])
-    fig_hist.update_layout(**common_layout)
+    fig_hist.update_layout(**common_layout, xaxis_title="", yaxis_title="")
     fig_hist.update_xaxes(showgrid=False)
     fig_hist.update_yaxes(gridcolor='#333')
 
@@ -139,25 +134,32 @@ def generate_dashboard(final_domains, domain_scores, history, churn_stats, targe
         <title>DNS Intel</title>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <style>
-            :root {{ --bg: {BG_COLOR}; --card: {CARD_COLOR}; --text: {TEXT_COLOR}; --danger: #FF453A; --success: #30D158; }}
+            :root {{ --bg: {BG_COLOR}; --card: {CARD_COLOR}; --text: {TEXT_COLOR}; --danger: #FF453A; --success: #30D158; --subtext: #8E8E93; }}
             body {{ background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, sans-serif; margin: 0; padding: 40px 20px; }}
             .container {{ max-width: 1200px; margin: 0 auto; }}
             header {{ margin-bottom: 40px; }}
             h1 {{ font-size: 40px; font-weight: 700; margin: 0; }}
-            .subtitle {{ color: #8E8E93; font-size: 17px; margin-top: 8px; }}
+            .subtitle {{ color: var(--subtext); font-size: 17px; margin-top: 8px; }}
             .kpi-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }}
-            .kpi-card {{ background: var(--card); border-radius: 18px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }}
-            .kpi-label {{ color: #8E8E93; font-size: 13px; font-weight: 600; text-transform: uppercase; }}
+            .kpi-card {{ background: var(--card); border-radius: 18px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: space-between; }}
+            .kpi-label {{ color: var(--subtext); font-size: 13px; font-weight: 600; text-transform: uppercase; }}
             .kpi-value {{ font-size: 34px; font-weight: 600; margin-top: 8px; }}
             .charts-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 24px; }}
             .chart-card {{ background: var(--card); border-radius: 18px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); overflow: hidden; }}
             h2 {{ font-size: 22px; margin: 0 0 20px 0; font-weight: 600; }}
             .table-container {{ margin-top: 40px; background: var(--card); border-radius: 18px; padding: 24px; }}
             table {{ width: 100%; border-collapse: collapse; }}
-            th {{ text-align: left; color: #8E8E93; font-size: 13px; padding: 12px; border-bottom: 1px solid #38383A; }}
+            th {{ text-align: left; color: var(--subtext); font-size: 13px; padding: 12px; border-bottom: 1px solid #38383A; }}
             td {{ padding: 16px 12px; border-bottom: 1px solid #2C2C2E; font-size: 15px; }}
             tr:last-child td {{ border-bottom: none; }}
             .badge {{ background: rgba(10, 132, 255, 0.15); color: #0A84FF; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }}
+            
+            /* INFO SECTIONS */
+            details {{ margin-top: 15px; border-top: 1px solid #333; padding-top: 10px; }}
+            summary {{ color: #0A84FF; cursor: pointer; font-size: 13px; font-weight: 500; list-style: none; }}
+            summary::-webkit-details-marker {{ display: none; }}
+            .info-text {{ font-size: 13px; color: var(--subtext); line-height: 1.5; margin-top: 8px; }}
+            
             @media (max-width: 700px) {{ .charts-grid {{ grid-template-columns: 1fr; }} h1 {{ font-size: 32px; }} }}
         </style>
     </head>
@@ -170,28 +172,73 @@ def generate_dashboard(final_domains, domain_scores, history, churn_stats, targe
             
             <div class="kpi-grid">
                 <div class="kpi-card">
-                    <div class="kpi-label">Active Threats</div>
-                    <div class="kpi-value">{len(final_domains):,}</div>
+                    <div>
+                        <div class="kpi-label">Active Threats</div>
+                        <div class="kpi-value">{len(final_domains):,}</div>
+                    </div>
+                    <details>
+                        <summary>About this metric</summary>
+                        <div class="info-text">The total count of unique domains currently blocked by your system. This list is optimized to remain under 300,000 entries for maximum router performance.</div>
+                    </details>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">TLD Optimization</div>
-                    <div class="kpi-value" style="color: #FF9F0A">-{removed_tld_count}</div>
+                    <div>
+                        <div class="kpi-label">TLD Optimization</div>
+                        <div class="kpi-value" style="color: #FF9F0A">-{removed_tld_count}</div>
+                    </div>
+                    <details>
+                        <summary>Why is this negative?</summary>
+                        <div class="info-text">Domains removed from your list because they belong to a Spam TLD (e.g. .zip, .loan). Blocking the entire TLD in Control D is more efficient than listing these individually.</div>
+                    </details>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">New Today</div>
-                    <div class="kpi-value" style="color: var(--danger)">+{churn_stats['added']}</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Removed</div>
-                    <div class="kpi-value" style="color: var(--success)">-{churn_stats['removed']}</div>
+                    <div>
+                        <div class="kpi-label">New Today</div>
+                        <div class="kpi-value" style="color: var(--danger)">+{churn_stats['added']}</div>
+                    </div>
+                    <details>
+                        <summary>What does this mean?</summary>
+                        <div class="info-text">New threats identified since yesterday's update. A high number typically indicates a new botnet campaign or a fresh wave of phishing sites.</div>
+                    </details>
                 </div>
             </div>
 
             <div class="charts-grid">
-                <div class="chart-card"><h2>Impersonation Targets</h2>{fig_targets.to_html(full_html=False, include_plotlyjs=False)}</div>
-                <div class="chart-card"><h2>Threat Landscape (TLDs)</h2>{fig_tld.to_html(full_html=False, include_plotlyjs=False)}</div>
-                <div class="chart-card"><h2>Network Churn History</h2>{fig_hist.to_html(full_html=False, include_plotlyjs=False)}</div>
-                <div class="chart-card"><h2>Botnet Detection (Entropy)</h2>{fig_entropy.to_html(full_html=False, include_plotlyjs=False)}</div>
+                <div class="chart-card">
+                    <h2>Impersonation Targets</h2>
+                    {fig_targets.to_html(full_html=False, include_plotlyjs=False)}
+                    <details>
+                        <summary>Analysis</summary>
+                        <div class="info-text">These are domains pretending to be major brands (e.g., "secure-login-apple.com"). The chart shows which brands are currently being targeted the most by attackers.</div>
+                    </details>
+                </div>
+                
+                <div class="chart-card">
+                    <h2>Threat Landscape (TLDs)</h2>
+                    {fig_tld.to_html(full_html=False, include_plotlyjs=False)}
+                    <details>
+                        <summary>Analysis</summary>
+                        <div class="info-text">Shows the Top-Level Domains (extensions) where threats are hosted. Legitimate TLDs like .com are often abused, but obscure ones often signal cheap, disposable infrastructure.</div>
+                    </details>
+                </div>
+                
+                <div class="chart-card">
+                    <h2>Network Churn History</h2>
+                    {fig_hist.to_html(full_html=False, include_plotlyjs=False)}
+                    <details>
+                        <summary>Analysis</summary>
+                        <div class="info-text">Tracks the size of your blocklist over time. Sudden spikes indicate aggressive new protection rules; drops may indicate old "dead" domains being cleaned up.</div>
+                    </details>
+                </div>
+                
+                <div class="chart-card">
+                    <h2>Botnet Detection (Entropy)</h2>
+                    {fig_entropy.to_html(full_html=False, include_plotlyjs=False)}
+                    <details>
+                        <summary>How to read this</summary>
+                        <div class="info-text">Entropy measures randomness. Left side = Human readable names (e.g., "google"). Right side = Random gibberish (e.g., "x84k92l"). A spike on the right confirms botnet activity.</div>
+                    </details>
+                </div>
             </div>
             
             <div class="table-container">
