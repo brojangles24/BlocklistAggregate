@@ -2,8 +2,11 @@ name: Update Blocklist
 
 on:
   schedule:
-    - cron: '0 * * * *'  # Runs daily at 4:00 AM UTC
-  workflow_dispatch:      # Allows manual run
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
