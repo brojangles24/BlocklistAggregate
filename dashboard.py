@@ -77,7 +77,14 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
 
     # --- HTML GENERATION ---
     search_list = final_list[:25000] # Top 25k for search
-    test_list = final_list[:50]      # Top 50 for Live Fire Test
+    
+    # Pen Test Dataset: Prefer SAFE targets (Ads/Tracking)
+    safe_targets = df_main[df_main['category'].isin(['Ads', 'Tracking'])]
+    if len(safe_targets) > 50:
+        pen_test_list = safe_targets.sample(50)['domain'].tolist()
+    else:
+        # Fallback if list is weirdly empty, select random
+        pen_test_list = df_main.sample(50)['domain'].tolist()
 
     html = f"""
     <!DOCTYPE html>
@@ -108,7 +115,7 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .pos {{ color: var(--danger); }} .neg {{ color: var(--success); }}
             .terminal {{ background: #050505; border: 1px solid #333; padding: 15px; font-family: 'JetBrains Mono'; height: 100%; display: flex; flex-direction: column; }}
             .term-input {{ background: transparent; border: none; border-bottom: 1px solid #333; color: var(--accent); font-family: inherit; font-size: 16px; padding: 10px; width: 100%; outline: none; }}
-            .term-output {{ flex-grow: 1; overflow-y: auto; margin-top: 10px; font-size: 13px; color: #aaa; }}
+            .term-output {{ flex-grow: 1; overflow-y: auto; margin-top: 10px; font-size: 13px; color: #aaa; scroll-behavior: smooth; }}
             .term-match {{ color: var(--danger); display: block; margin: 4px 0; }}
             .btn-group {{ display: flex; gap: 10px; }}
             .cyber-btn {{ background: rgba(0, 243, 255, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; text-decoration: none; font-family: 'JetBrains Mono'; font-size: 12px; font-weight: 700; text-transform: uppercase; transition: 0.3s; cursor: pointer; }}
@@ -121,12 +128,19 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .section {{ display: none; }}
             .section.active {{ display: block; }}
 
-            /* LIVE FIRE TEST GRID */
-            .test-grid {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 20px; }}
-            .test-item {{ background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 10px; font-size: 11px; font-family: 'JetBrains Mono'; display: flex; justify-content: space-between; align-items: center; }}
-            .status-dot {{ width: 8px; height: 8px; border-radius: 50%; background: #555; }}
-            .blocked .status-dot {{ background: var(--success); box-shadow: 0 0 5px var(--success); }}
-            .leaking .status-dot {{ background: var(--danger); box-shadow: 0 0 5px var(--danger); }}
+            /* PEN TEST CONSOLE */
+            .pen-console {{ background: #0a0a0a; border: 1px solid #333; height: 300px; overflow-y: auto; padding: 15px; font-family: 'JetBrains Mono', monospace; font-size: 12px; margin-top: 15px; box-shadow: inset 0 0 20px rgba(0,0,0,0.8); }}
+            .log-line {{ margin: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }}
+            .log-time {{ color: #555; margin-right: 10px; }}
+            .log-success {{ color: var(--success); }}
+            .log-fail {{ color: var(--danger); font-weight: bold; background: rgba(255,0,0,0.1); padding: 2px; }}
+            .log-info {{ color: var(--accent); }}
+            
+            /* SCORECARD */
+            .score-panel {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }}
+            .score-box {{ background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 15px; text-align: center; border-radius: 8px; }}
+            .score-val {{ font-size: 40px; font-weight: 800; font-family: 'JetBrains Mono'; color: #fff; }}
+            .score-lbl {{ font-size: 11px; text-transform: uppercase; color: #888; }}
             
             /* DIAGNOSTICS LINKS */
             .diag-row {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }}
@@ -181,7 +195,8 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             <div style="display: flex; flex-direction: column;">
                 <div class="tabs">
                     <button class="tab-btn active" onclick="openTab('intel')">INTEL</button>
-                    <button class="tab-btn" onclick="openTab('syscheck')">SYSTEMS CHECK</button>
+                    <button class="tab-btn" onclick="openTab('pentest')">PEN-TESTER</button>
+                    <button class="tab-btn" onclick="openTab('syscheck')">DIAGNOSTICS</button>
                 </div>
 
                 <div id="intel" class="section active" style="display: flex; flex-direction: column; gap: 20px;">
@@ -205,34 +220,52 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                     </div>
                 </div>
 
-                <div id="syscheck" class="section">
+                <div id="pentest" class="section">
                     <div class="card">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h3>LIVE BLOCK TEST (TOP 50 RISK DOMAINS)</h3>
-                            <button class="cyber-btn" onclick="runFireTest()">INITIATE TEST</button>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+                            <h3>SHIELD INTEGRITY SIMULATION</h3>
+                            <button class="cyber-btn" id="startPenTest" onclick="startPenetrationTest()">INITIALIZE ATTACK</button>
                         </div>
-                        <div id="test-results" class="test-grid">
-                            <div style="grid-column: 1/-1; color: #666; padding: 20px; text-align: center;">Waiting for initialization...</div>
+                        
+                        <div class="score-panel">
+                            <div class="score-box">
+                                <div class="score-val" id="scoreIntegrity">100%</div>
+                                <div class="score-lbl">Shield Integrity</div>
+                            </div>
+                            <div class="score-box">
+                                <div class="score-val" id="scoreBreaches" style="color:var(--danger)">0</div>
+                                <div class="score-lbl">Breaches Detected</div>
+                            </div>
+                        </div>
+
+                        <div class="pen-console" id="penConsole">
+                            <div class="log-line"><span class="log-time">SYSTEM</span> Ready for simulation...</div>
+                            <div class="log-line"><span class="log-time">SYSTEM</span> Awaiting authorization...</div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="diag-row">
-                        <a href="https://dnsleaktest.com" target="_blank" class="diag-card">
-                            <span class="diag-title">DNS LEAK TEST ↗</span>
-                            <span class="diag-desc">Verify your queries aren't bypassing the blocklist.</span>
-                        </a>
-                        <a href="https://rebind.network" target="_blank" class="diag-card">
-                            <span class="diag-title">REBINDING CHECK ↗</span>
-                            <span class="diag-desc">Test router vulnerability to DNS rebinding attacks.</span>
-                        </a>
-                        <a href="https://d3ward.github.io/toolz/adblock.html" target="_blank" class="diag-card">
-                            <span class="diag-title">ADBLOCK BENCHMARK ↗</span>
-                            <span class="diag-desc">Comprehensive 3rd party adblock stress test.</span>
-                        </a>
-                        <a href="https://dnscheck.tools" target="_blank" class="diag-card">
-                            <span class="diag-title">DNSSEC & SPEED ↗</span>
-                            <span class="diag-desc">Detailed resolver diagnostics and record validation.</span>
-                        </a>
+                <div id="syscheck" class="section">
+                    <div class="card">
+                        <h3>EXTERNAL UPLINKS</h3>
+                        <div class="diag-row">
+                            <a href="https://dnsleaktest.com" target="_blank" class="diag-card">
+                                <span class="diag-title">DNS LEAK TEST ↗</span>
+                                <span class="diag-desc">Verify your queries aren't bypassing the blocklist.</span>
+                            </a>
+                            <a href="https://rebind.network" target="_blank" class="diag-card">
+                                <span class="diag-title">REBINDING CHECK ↗</span>
+                                <span class="diag-desc">Test router vulnerability to DNS rebinding attacks.</span>
+                            </a>
+                            <a href="https://d3ward.github.io/toolz/adblock.html" target="_blank" class="diag-card">
+                                <span class="diag-title">ADBLOCK BENCHMARK ↗</span>
+                                <span class="diag-desc">Comprehensive 3rd party adblock stress test.</span>
+                            </a>
+                            <a href="https://dnscheck.tools" target="_blank" class="diag-card">
+                                <span class="diag-title">DNSSEC & SPEED ↗</span>
+                                <span class="diag-desc">Detailed resolver diagnostics and record validation.</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -280,33 +313,69 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             // TABS LOGIC
             function openTab(id) {{
                 document.querySelectorAll('.section').forEach(el => el.style.display = 'none');
-                document.getElementById(id).style.display = 'flex';
-                if(id === 'syscheck') document.getElementById(id).style.display = 'block'; // Block for this specific tab layout
+                document.getElementById(id).style.display = 'block';
                 document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
                 event.target.classList.add('active');
             }}
-            document.getElementById('syscheck').style.display = 'none'; // Init state
+            document.getElementById('pentest').style.display = 'none';
+            document.getElementById('syscheck').style.display = 'none';
 
-            // LIVE FIRE TEST LOGIC
-            const testDomains = {json.dumps(test_list)};
-            async function runFireTest() {{
-                const container = document.getElementById('test-results');
-                container.innerHTML = '';
+            // PENETRATION TEST LOGIC
+            const testTargets = {json.dumps(pen_test_list)};
+            
+            async function startPenetrationTest() {{
+                const consoleDiv = document.getElementById('penConsole');
+                const btn = document.getElementById('startPenTest');
+                let breaches = 0;
+                let tested = 0;
                 
-                testDomains.forEach(domain => {{
-                    const el = document.createElement('div');
-                    el.className = 'test-item';
-                    el.innerHTML = `<span>${{domain}}</span><span class="status-dot"></span>`;
-                    container.appendChild(el);
+                btn.disabled = true;
+                btn.innerText = "RUNNING...";
+                consoleDiv.innerHTML = '<div class="log-line"><span class="log-time">SYSTEM</span> <span class="log-info">INITIALIZING NETWORK STRESS TEST...</span></div>';
+                
+                for (const domain of testTargets) {{
+                    tested++;
+                    const time = new Date().toLocaleTimeString().split(' ')[0];
                     
-                    // The test: Try to fetch. 
-                    // If it FAILS (Network Error), it means the blocklist works (Success).
-                    // If it SUCCEEDS (or returns 404/200), the domain is reachable (Failure).
-                    const img = new Image();
-                    img.onerror = () => {{ el.classList.add('blocked'); }}; // Blocked = Good
-                    img.onload = () => {{ el.classList.add('leaking'); }};  // Loaded = Bad
-                    img.src = 'https://' + domain + '/favicon.ico?t=' + new Date().getTime();
-                }});
+                    try {{
+                        // Attempt to load image. 
+                        // ERROR = BLOCKED (Success). LOAD = CONNECTION (Fail).
+                        await new Promise((resolve, reject) => {{
+                            const img = new Image();
+                            img.src = 'https://' + domain + '/favicon.ico?t=' + Date.now();
+                            img.style.display = 'none';
+                            
+                            // Timeout to prevent hanging
+                            const timer = setTimeout(() => reject('timeout'), 1500);
+                            
+                            img.onload = () => {{ clearTimeout(timer); resolve('breach'); }};
+                            img.onerror = () => {{ clearTimeout(timer); reject('blocked'); }};
+                        }});
+                        
+                        // If we get here, it loaded (Breach)
+                        breaches++;
+                        consoleDiv.innerHTML += `<div class="log-line"><span class="log-time">${{time}}</span> <span class="log-fail">[ALERT] CONNECTION ESTABLISHED: ${{domain}}</span></div>`;
+                        
+                    }} catch (e) {{
+                        // Blocked (Good)
+                        consoleDiv.innerHTML += `<div class="log-line"><span class="log-time">${{time}}</span> <span class="log-success">[SECURE] PACKET DROPPED: ${{domain}}</span></div>`;
+                    }}
+                    
+                    // Update stats live
+                    document.getElementById('scoreBreaches').innerText = breaches;
+                    const integrity = Math.round(((tested - breaches) / tested) * 100);
+                    document.getElementById('scoreIntegrity').innerText = integrity + "%";
+                    
+                    // Auto-scroll
+                    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+                    
+                    // Small delay for effect
+                    await new Promise(r => setTimeout(r, 50));
+                }}
+                
+                consoleDiv.innerHTML += '<div class="log-line"><span class="log-time">SYSTEM</span> <span class="log-info">DIAGNOSTIC COMPLETE.</span></div>';
+                btn.disabled = false;
+                btn.innerText = "RE-INITIALIZE";
             }}
         </script>
     </body>
