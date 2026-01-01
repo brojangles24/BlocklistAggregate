@@ -11,6 +11,7 @@ import Levenshtein
 from dashboard import generate_dashboard
 
 # --- CONFIGURATION ---
+# Format: (URL, Weight, Tag)
 SOURCES = [
     ("https://urlhaus.abuse.ch/downloads/hostfile/", 15, "Malware"), 
     ("https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Lite/domains.wildcards", 10, "Tracking"),
@@ -32,8 +33,7 @@ def calculate_entropy(text):
     entropy = 0
     for x in range(256):
         p_x = float(text.count(chr(x))) / len(text)
-        if p_x > 0: 
-            entropy += - p_x * math.log(p_x, 2)
+        if p_x > 0: entropy += - p_x * math.log(p_x, 2)
     return entropy
 
 def get_ngrams(text, n=2):
@@ -51,14 +51,12 @@ def fetch_spam_tlds():
                 line = line.strip().lower()
                 if line and not line.startswith('#'):
                     clean = line.replace('*.', '').replace('.', '')
-                    if clean: 
-                        tlds.add("." + clean)
+                    if clean: tlds.add("." + clean)
             print(f"  -> Successfully loaded {len(tlds)} TLDs.")
         else:
-            print(f"  -> Failed to download TLDs (Status {r.status_code}). Skipping TLD optimization.")
-    except Exception as e:
-        print(f"  -> Download error ({e}). Skipping TLD optimization.")
-    
+            print("  -> Download failed. Skipping TLD optimization.")
+    except:
+        print("  -> Download error. Skipping TLD optimization.")
     return tuple(tlds) 
 
 def fetch_domains(url):
@@ -68,27 +66,19 @@ def fetch_domains(url):
         r = requests.get(url, timeout=60)
         for line in r.text.splitlines():
             line = line.strip().lower()
-            if '#' in line: 
-                line = line.split('#')[0].strip()
-            if not line or line.startswith('!'): 
-                continue
+            if '#' in line: line = line.split('#')[0].strip()
+            if not line or line.startswith('!'): continue
             parts = line.split()
-            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]: 
-                domains.add(parts[1])
-            elif len(parts) == 1: 
-                domains.add(parts[0])
-    except: 
-        pass
+            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]: domains.add(parts[1])
+            elif len(parts) == 1: domains.add(parts[0])
+    except: pass
     return domains
 
 def save_history(stats_data):
     history = []
     if os.path.exists(HISTORY_FILE):
-        try:
-            with open(HISTORY_FILE, "r") as f:
-                history = json.load(f)
-        except:
-            pass
+        try: with open(HISTORY_FILE, "r") as f: history = json.load(f)
+        except: pass
     history.append(stats_data)
     return history[-365:] 
 
@@ -98,8 +88,7 @@ def main():
         try: 
             with open(PREVIOUS_LIST_FILE) as f: 
                 prev_domains = {line.split()[1] for line in f if line.startswith("0.0.0.0")}
-        except: 
-            pass
+        except: pass
 
     domain_data = {} 
     source_sets = defaultdict(set)
@@ -116,8 +105,7 @@ def main():
                 removed_tld_count += 1
                 continue 
 
-            if d.startswith("www."): 
-                d = d[4:] 
+            if d.startswith("www."): d = d[4:] 
             
             if d not in domain_data:
                 domain_data[d] = {'score': 0, 'sources': []}
@@ -142,6 +130,14 @@ def main():
         entropy = calculate_entropy(d)
         vowel_ratio = len(vowel_pattern.findall(d)) / length if length > 0 else 0
         
+        # Categorize for Dashboard Safety
+        category = "Unclassified"
+        if d in source_sets['Mobile Ads']: category = "Ads"
+        elif d in source_sets['Tracking']: category = "Tracking"
+        elif d in source_sets['General Ads']: category = "Ads"
+        elif d in source_sets['Malware']: category = "Malware"
+        elif d in source_sets['Aggressive']: category = "Aggressive"
+        
         typo = None
         for hvt in HVT_LIST:
             if hvt in d and hvt != d.split('.')[0]:
@@ -153,7 +149,8 @@ def main():
         
         rows.append({
             'domain': d, 'length': length, 'depth': depth, 'tld': tld,
-            'entropy': entropy, 'vowel_ratio': vowel_ratio, 'typosquat': typo
+            'entropy': entropy, 'vowel_ratio': vowel_ratio, 'typosquat': typo,
+            'category': category
         })
 
     df_main = pd.DataFrame(rows)
@@ -165,10 +162,8 @@ def main():
         for s2 in source_names:
             set1 = source_sets[s1].intersection(final_set)
             set2 = source_sets[s2].intersection(final_set)
-            if len(set1) == 0 or len(set2) == 0: 
-                overlap_matrix[(s1, s2)] = 0
-            else: 
-                overlap_matrix[(s1, s2)] = round(len(set1.intersection(set2)) / len(set1.union(set2)), 2)
+            if len(set1) == 0 or len(set2) == 0: overlap_matrix[(s1, s2)] = 0
+            else: overlap_matrix[(s1, s2)] = round(len(set1.intersection(set2)) / len(set1.union(set2)), 2)
 
     # 5. Output
     churn = {"added": len(final_set - prev_domains), "removed": len(prev_domains - final_set)}
