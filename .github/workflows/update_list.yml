@@ -1,0 +1,35 @@
+name: Update List & Stats
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # 3 AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Builder
+        run: python build_list.py
+
+      - name: Commit Results
+        run: |
+          git config --global user.name "Auto-Bot"
+          git config --global user.email "bot@github.com"
+          git add blocklist.txt history.json stats.html
+          git commit -m "Update list & stats: $(date -u)" || exit 0
+          git push
