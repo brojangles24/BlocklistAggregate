@@ -17,18 +17,47 @@ COLORS = {
     'grid': 'rgba(0, 243, 255, 0.05)'
 }
 
-# FIXED: ISO-3 Codes for Plotly Compatibility
-GENERIC_TLD_MAP = {
-    # Generics -> USA
-    'com': 'USA', 'net': 'USA', 'org': 'USA', 'edu': 'USA', 'gov': 'USA', 'mil': 'USA', 'xyz': 'USA', 'info': 'USA',
-    # Country Codes
-    'cn': 'CHN', 'ru': 'RUS', 'ir': 'IRN', 'kp': 'PRK', 'in': 'IND', 'br': 'BRA',
-    'uk': 'GBR', 'de': 'DEU', 'fr': 'FRA', 'jp': 'JPN', 'au': 'AUS', 'ca': 'CAN',
-    'it': 'ITA', 'nl': 'NLD', 'es': 'ESP', 'se': 'SWE', 'no': 'NOR', 'dk': 'DNK',
-    'ch': 'CHE', 'kr': 'KOR', 'vn': 'VNM', 'id': 'IDN', 'th': 'THA', 'tw': 'TWN',
-    'ua': 'UKR', 'pl': 'POL', 'ro': 'ROU', 'tr': 'TUR', 'gr': 'GRC', 'za': 'ZAF',
-    'mx': 'MEX', 'ar': 'ARG', 'cl': 'CHL', 'co': 'COL', 'pe': 'PER', 've': 'VEN',
-    'io': 'IOT', 'ai': 'AIA', 'tv': 'TUV', 'me': 'MNE', 'cc': 'CCK', 'to': 'TON'
+# --- MASSIVE TLD MAP (ISO-2/Generic -> ISO-3) ---
+# This ensures almost every domain gets placed on the globe.
+TLD_TO_ISO3 = {
+    # GENERICS / SPAM (Mapped to US/Global Hubs for visual density)
+    'com': 'USA', 'net': 'USA', 'org': 'USA', 'edu': 'USA', 'gov': 'USA', 'mil': 'USA', 'int': 'USA',
+    'xyz': 'USA', 'top': 'USA', 'site': 'USA', 'online': 'USA', 'club': 'USA', 'vip': 'USA',
+    'win': 'USA', 'bid': 'USA', 'loan': 'USA', 'stream': 'USA', 'review': 'USA', 'party': 'USA',
+    'pro': 'USA', 'info': 'USA', 'mobi': 'USA', 'biz': 'USA', 'cat': 'ESP', 'jobs': 'USA',
+    'tel': 'USA', 'name': 'USA', 'aero': 'USA', 'asia': 'CHN', 'shop': 'USA', 'tech': 'USA',
+    'cloud': 'USA', 'art': 'USA', 'dev': 'USA', 'me': 'MNE', 'tv': 'TUV', 'cc': 'CCK', 
+    'io': 'IOT', 'ai': 'AIA', 'co': 'COL', 'ws': 'WSM', 'fm': 'FSM', 'to': 'TON',
+    
+    # NORTH AMERICA
+    'us': 'USA', 'ca': 'CAN', 'mx': 'MEX', 'gl': 'GRL', 'bm': 'BMU', 'bz': 'BLZ',
+    
+    # SOUTH AMERICA
+    'br': 'BRA', 'ar': 'ARG', 'cl': 'CHL', 'pe': 'PER', 'co': 'COL', 've': 'VEN', 
+    'ec': 'ECU', 'uy': 'URY', 'py': 'PRY', 'bo': 'BOL',
+    
+    # EUROPE
+    'uk': 'GBR', 'de': 'DEU', 'fr': 'FRA', 'it': 'ITA', 'es': 'ESP', 'nl': 'NLD', 'ru': 'RUS',
+    'pl': 'POL', 'tr': 'TUR', 'ua': 'UKR', 'ro': 'ROU', 'be': 'BEL', 'se': 'SWE', 'cz': 'CZE',
+    'gr': 'GRC', 'pt': 'PRT', 'hu': 'HUN', 'at': 'AUT', 'ch': 'CHE', 'bg': 'BGR', 'dk': 'DNK',
+    'fi': 'FIN', 'sk': 'SVK', 'no': 'NOR', 'ie': 'IRL', 'hr': 'HRV', 'md': 'MDA', 'ba': 'BIH',
+    'lt': 'LTU', 'mk': 'MKD', 'si': 'SVN', 'lv': 'LVA', 'ee': 'EST', 'cy': 'CYP', 'lu': 'LUX',
+    'mt': 'MLT', 'is': 'ISL', 'je': 'JEY', 'gg': 'GGY', 'im': 'IMN', 'rs': 'SRB', 'me': 'MNE',
+    
+    # ASIA
+    'cn': 'CHN', 'in': 'IND', 'jp': 'JPN', 'id': 'IDN', 'ir': 'IRN', 'tr': 'TUR', 'th': 'THA',
+    'kr': 'KOR', 'vn': 'VNM', 'ph': 'PHL', 'pk': 'PAK', 'bd': 'BGD', 'my': 'MYS', 'tw': 'TWN',
+    'sa': 'SAU', 'ae': 'ARE', 'il': 'ISR', 'hk': 'HKG', 'sg': 'SGP', 'qa': 'QAT', 'kz': 'KAZ',
+    'jo': 'JOR', 'az': 'AZE', 'ge': 'GEO', 'lk': 'LKA', 'np': 'NPL', 'uz': 'UZB', 'mm': 'MMR',
+    'kh': 'KHM', 'af': 'AFG', 'kp': 'PRK', 'la': 'LAO', 'mn': 'MNG', 'bt': 'BTN',
+    
+    # OCEANIA
+    'au': 'AUS', 'nz': 'NZL', 'fj': 'FJI', 'pg': 'PNG', 'sb': 'SLB', 'vu': 'VUT', 'ws': 'WSM',
+    
+    # AFRICA
+    'za': 'ZAF', 'eg': 'EGY', 'ng': 'NGA', 'ke': 'KEN', 'ma': 'MAR', 'dz': 'DZA', 'tn': 'TUN',
+    'gh': 'GHA', 'ug': 'UGA', 'tz': 'TZA', 'et': 'ETH', 'sn': 'SEN', 'zw': 'ZWE', 'cm': 'CMR',
+    'ao': 'AGO', 'ci': 'CIV', 'mg': 'MDG', 'mz': 'MOZ', 'zm': 'ZMB', 'ml': 'MLI', 'bf': 'BFA'
 }
 
 def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_overlap_matrix, top_bigrams, final_list, collateral_hits):
@@ -41,18 +70,27 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
     typos.columns = ['Target', 'Count']
     df_bigrams = pd.DataFrame(top_bigrams, columns=['Phrase', 'Count']).head(8)
     
-    # --- GEO LOGIC (FIXED ISO-3) ---
+    # --- GEO LOGIC (ROBUST MAP) ---
     geo_df = df_main.copy()
-    geo_df['iso_alpha'] = geo_df['tld'].map(GENERIC_TLD_MAP)
-    geo_df = geo_df.dropna(subset=['iso_alpha']) # Remove unmappable TLDs
     
+    # 1. Lowercase TLDs for matching
+    geo_df['tld_clean'] = geo_df['tld'].str.lower()
+    
+    # 2. Map TLD to ISO-3 Code
+    geo_df['iso_alpha'] = geo_df['tld_clean'].map(TLD_TO_ISO3)
+    
+    # 3. Drop rows that didn't match (prevents empty bubbles/errors)
+    geo_df = geo_df.dropna(subset=['iso_alpha'])
+    
+    # 4. Aggregate counts per country
     map_data = geo_df['iso_alpha'].value_counts().reset_index()
     map_data.columns = ['iso_alpha', 'count']
     
-    # Region Details for Click Handler
+    # 5. Build Click Details (Top TLDs per region)
     region_details = {}
     for iso in map_data['iso_alpha']:
         mask = geo_df['iso_alpha'] == iso
+        # Get top 3 TLDs for this country (e.g. for US: .com, .net, .org)
         top_tlds = geo_df[mask]['tld'].value_counts().head(3).index.tolist()
         region_details[iso] = {
             "count": int(map_data[map_data['iso_alpha'] == iso]['count'].values[0]),
@@ -67,34 +105,33 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
         yaxis=dict(showgrid=True, gridcolor=COLORS['grid'], zeroline=False)
     )
 
-    # 1. 3D Globe (Fixed)
+    # 1. 3D Globe
     fig_globe = px.scatter_geo(map_data, locations="iso_alpha", size="count", 
-                               hover_name="iso_alpha", size_max=50, # Bigger bubbles
+                               hover_name="iso_alpha", size_max=50,
                                projection="orthographic", color="count",
-                               color_continuous_scale='Redor')
+                               color_continuous_scale='Redor') # Red scale looks more "Threat" like
     
     fig_globe.update_layout(
         geo=dict(
             bgcolor='rgba(0,0,0,0)', 
-            showland=True, landcolor='#1a1a1a', 
+            showland=True, landcolor='#151515', 
             showocean=True, oceancolor='#050505', 
             showcountries=True, countrycolor='#333',
             showlakes=False,
-            projection_type="orthographic"
+            projection_type="orthographic",
+            projection_rotation=dict(lon=-100, lat=40, roll=0) # Focus on US initially
         ),
         height=350, margin=dict(l=0,r=0,t=0,b=0), 
         paper_bgcolor='rgba(0,0,0,0)', showlegend=False
     )
-    # Enable click events
-    fig_globe.update_traces(marker=dict(line=dict(width=0, color=COLORS['accent'])))
+    fig_globe.update_traces(marker=dict(line=dict(width=0, color=COLORS['accent']), opacity=0.8))
 
     # 2. Radar
     avg_entropy = df_main['entropy'].mean()
     avg_len = df_main['length'].mean()
-    avg_depth = df_main['depth'].mean()
     typo_ratio = len(df_main[df_main['typosquat'].notnull()]) / len(df_main) * 1000 
-    radar_vals = [min(avg_entropy / 4.5, 1), min(avg_len / 20, 1), min(avg_depth / 3, 1), min(typo_ratio / 5, 1), min(removed_tld_count / 500, 1)]
-    radar_cats = ['Entropy', 'Length', 'Depth', 'Impersonation', 'Optimization']
+    radar_vals = [min(avg_entropy / 4.5, 1), min(avg_len / 20, 1), min(typo_ratio / 5, 1), min(removed_tld_count / 500, 1)]
+    radar_cats = ['Entropy', 'Length', 'Impersonation', 'Optimization']
     
     fig_radar = go.Figure(data=go.Scatterpolar(r=radar_vals, theta=radar_cats, fill='toself', line=dict(color=COLORS['danger'], width=2), fillcolor='rgba(255, 0, 60, 0.2)'))
     fig_radar.update_layout(polar=dict(bgcolor='rgba(0,0,0,0)', radialaxis=dict(visible=True, range=[0, 1], gridcolor=COLORS['grid']), angularaxis=dict(gridcolor=COLORS['grid'])), showlegend=False, height=300, **layout_style)
