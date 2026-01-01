@@ -8,13 +8,12 @@ from plotly.subplots import make_subplots
 # --- CYBER COMMAND THEME ---
 COLORS = {
     'bg': '#000000',
-    'card': 'rgba(20, 20, 25, 0.8)',
+    'card': 'rgba(20, 20, 25, 0.85)',
     'border': 'rgba(0, 243, 255, 0.2)',
     'text': '#E0E0E0',
     'accent': '#00F3FF',   # Cyan
     'danger': '#FF003C',   # Red
     'success': '#00FF9D',  # Green
-    'warning': '#FCEE09',  # Yellow
     'grid': 'rgba(0, 243, 255, 0.05)'
 }
 
@@ -28,22 +27,12 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
     typos.columns = ['Target', 'Count']
     df_bigrams = pd.DataFrame(top_bigrams, columns=['Phrase', 'Count']).head(8)
     
-    # --- GEO-POLITICAL MAPPING ---
-    # Extract ccTLDs (2 letter TLDs like .cn, .ru)
-    # We use a simple map for demo purposes. Real iso-alpha3 conversion is better but requires pycountry.
-    # We will let Plotly handle the ISO-2 (2 letter) codes natively.
-    df_geo = df_main[df_main['tld'].str.len() == 2]['tld'].value_counts().reset_index()
-    df_geo.columns = ['iso_alpha', 'count']
-    df_geo['iso_alpha'] = df_geo['iso_alpha'].str.upper() # Plotly needs uppercase ISO codes (CN, RU, US)
-
-    # --- THREAT RADAR ---
+    # Radar Data
     avg_entropy = df_main['entropy'].mean()
     avg_len = df_main['length'].mean()
-    avg_depth = df_main['depth'].mean()
     typo_ratio = len(df_main[df_main['typosquat'].notnull()]) / len(df_main) * 1000 
-    
-    radar_vals = [min(avg_entropy / 4.5, 1), min(avg_len / 20, 1), min(avg_depth / 3, 1), min(typo_ratio / 5, 1), min(removed_tld_count / 500, 1)]
-    radar_cats = ['Entropy', 'Length', 'Depth', 'Impersonation', 'Optimization']
+    radar_vals = [min(avg_entropy / 4.5, 1), min(avg_len / 20, 1), min(typo_ratio / 5, 1), min(removed_tld_count / 500, 1)]
+    radar_cats = ['Entropy', 'Length', 'Impersonation', 'Optimization']
 
     # --- PLOTLY CONFIG ---
     layout_style = dict(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
@@ -53,16 +42,12 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
         yaxis=dict(showgrid=True, gridcolor=COLORS['grid'], zeroline=False)
     )
 
-    # 1. 3D THREAT GLOBE
-    fig_globe = px.scatter_geo(df_geo, locations="iso_alpha", size="count", 
-                               hover_name="iso_alpha", size_max=30,
-                               projection="orthographic", color="count",
-                               color_continuous_scale='Redor')
-    fig_globe.update_layout(
-        geo=dict(bgcolor='rgba(0,0,0,0)', showland=True, landcolor='#111', showocean=True, oceancolor='#000', showlakes=False, showcountries=True, countrycolor='#333'),
-        height=400, margin=dict(l=0,r=0,t=0,b=0), paper_bgcolor='rgba(0,0,0,0)', showlegend=False
-    )
-    fig_globe.update_traces(marker=dict(line=dict(width=0))) # Remove borders for glow effect
+    # 1. Globe
+    df_geo = df_main[df_main['tld'].str.len() == 2]['tld'].value_counts().reset_index()
+    df_geo.columns = ['iso_alpha', 'count']
+    df_geo['iso_alpha'] = df_geo['iso_alpha'].str.upper()
+    fig_globe = px.scatter_geo(df_geo, locations="iso_alpha", size="count", projection="orthographic", color="count", color_continuous_scale='Redor')
+    fig_globe.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)', showland=True, landcolor='#111', showocean=True, oceancolor='#000', showcountries=True, countrycolor='#333'), height=350, margin=dict(l=0,r=0,t=0,b=0), paper_bgcolor='rgba(0,0,0,0)', showlegend=False)
 
     # 2. Radar
     fig_radar = go.Figure(data=go.Scatterpolar(r=radar_vals, theta=radar_cats, fill='toself', line=dict(color=COLORS['danger'], width=2), fillcolor='rgba(255, 0, 60, 0.2)'))
@@ -75,14 +60,10 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             'steps': [{'range': [0, 33], 'color': 'rgba(0, 255, 157, 0.1)'}, {'range': [33, 66], 'color': 'rgba(252, 238, 9, 0.1)'}, {'range': [66, 100], 'color': 'rgba(255, 0, 60, 0.1)'}]}))
     fig_gauge.update_layout(height=250, **layout_style)
 
-    # 4. Standard Charts
+    # Charts
     fig_tld = px.pie(df_tld, values='Count', names='TLD', hole=0.7, color_discrete_sequence=px.colors.sequential.Plasma)
     fig_tld.update_layout(**layout_style, height=300, showlegend=False)
     fig_tld.update_traces(textposition='outside', textinfo='label+percent')
-
-    fig_words = px.bar(df_bigrams, x='Count', y='Phrase', orientation='h', color='Count', color_continuous_scale='Viridis')
-    fig_words.update_layout(**layout_style, height=300, coloraxis_showscale=False)
-    fig_words.update_yaxes(autorange="reversed")
 
     fig_hist = px.area(pd.DataFrame(history), x='date', y='total_count', line_shape='spline', markers=True)
     fig_hist.update_layout(**layout_style, height=250)
@@ -94,25 +75,11 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
     fig_matrix.update_layout(**layout_style, height=350)
 
     # --- HTML GENERATION ---
-    search_list = final_list[:25000] # Top 25k for search
-    
-    # Pen Test Dataset (Safety First)
-    safe_targets = df_main[df_main['category'].isin(['Ads', 'Tracking'])]
-    if len(safe_targets) > 50:
-        pen_test_list = safe_targets.sample(50)['domain'].tolist()
-    else:
-        pen_test_list = df_main.sample(50)['domain'].tolist()
-
-    # Collateral Damage HTML Builder
+    search_list = final_list[:25000]
     collateral_html = ""
     if collateral_hits:
         for domain, rank in collateral_hits:
-            collateral_html += f"""
-            <div class="collateral-row">
-                <span class="col-rank">#{rank}</span>
-                <span class="col-domain">{domain}</span>
-                <span class="col-warn">BLOCKED</span>
-            </div>"""
+            collateral_html += f'<div class="collateral-row"><span class="col-rank">#{rank}</span><span class="col-domain">{domain}</span><span class="col-warn">BLOCKED</span></div>'
     else:
         collateral_html = '<div style="color:var(--success); padding:10px;">No Top 5,000 Sites Detected. Network Safe.</div>'
 
@@ -136,14 +103,26 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .grid-container {{ display: grid; grid-template-columns: 280px 1fr 350px; gap: 20px; padding: 20px; max-width: 1900px; margin: 0 auto; }}
             .card {{ background: var(--card); border: 1px solid var(--border); border-radius: 4px; padding: 20px; position: relative; backdrop-filter: blur(5px); transition: 0.3s; }}
             .card:hover {{ border-color: var(--accent); }}
-            h3 {{ margin: 0 0 15px 0; font-family: 'JetBrains Mono'; font-size: 14px; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }}
+            .card::before {{ content: ''; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }}
+            .card::after {{ content: ''; position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }}
+            
+            /* HEADERS & INFO */
+            .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
+            h3 {{ margin: 0; font-family: 'JetBrains Mono'; font-size: 14px; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }}
+            .info-toggle {{ color: #555; cursor: pointer; font-size: 14px; padding: 2px 8px; border: 1px solid #333; border-radius: 4px; transition: 0.2s; }}
+            .info-toggle:hover {{ color: var(--accent); border-color: var(--accent); background: rgba(0, 243, 255, 0.1); }}
+            .info-panel {{ display: none; background: rgba(0,0,0,0.8); border-left: 3px solid var(--accent); padding: 15px; margin-bottom: 15px; font-size: 13px; color: #ccc; line-height: 1.5; }}
+            
             .stat-box {{ margin-bottom: 25px; }}
             .stat-label {{ color: #888; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }}
             .stat-value {{ font-family: 'JetBrains Mono'; font-size: 32px; font-weight: 700; }}
             .pos {{ color: var(--danger); }} .neg {{ color: var(--success); }}
+            
+            /* TERMINAL */
             .terminal {{ background: #050505; border: 1px solid #333; padding: 15px; font-family: 'JetBrains Mono'; height: 100%; display: flex; flex-direction: column; }}
             .term-input {{ background: transparent; border: none; border-bottom: 1px solid #333; color: var(--accent); font-family: inherit; font-size: 16px; padding: 10px; width: 100%; outline: none; }}
             .term-output {{ flex-grow: 1; overflow-y: auto; margin-top: 10px; font-size: 13px; color: #aaa; scroll-behavior: smooth; }}
+            .term-match {{ color: var(--danger); display: block; margin: 4px 0; }}
             .btn-group {{ display: flex; gap: 10px; }}
             .cyber-btn {{ background: rgba(0, 243, 255, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; text-decoration: none; font-family: 'JetBrains Mono'; font-size: 12px; font-weight: 700; text-transform: uppercase; transition: 0.3s; cursor: pointer; }}
             .cyber-btn:hover {{ background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }}
@@ -154,27 +133,22 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .tab-btn.active {{ background: var(--accent); color: #000; font-weight: bold; }}
             .section {{ display: none; }}
             .section.active {{ display: block; }}
-            
             .collateral-box {{ background: rgba(255, 0, 60, 0.1); border: 1px solid var(--danger); padding: 10px; border-radius: 4px; margin-bottom: 20px; }}
             .collateral-row {{ display: flex; justify-content: space-between; font-family: 'JetBrains Mono'; font-size: 12px; padding: 5px 0; border-bottom: 1px solid rgba(255,0,0,0.2); }}
-            .col-rank {{ color: #888; width: 50px; }}
-            .col-domain {{ color: #fff; flex-grow: 1; }}
             .col-warn {{ color: var(--danger); font-weight: bold; }}
 
-            /* BENCHMARK */
+            /* BENCHMARK & NETWORK CHECK */
             .bench-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }}
             .bench-col {{ background: rgba(0,0,0,0.3); padding: 15px; border: 1px solid #333; }}
+            .bench-title {{ font-family: 'JetBrains Mono'; font-size: 12px; color: #888; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px; }}
             .bench-item {{ font-size: 11px; display: flex; justify-content: space-between; margin: 4px 0; font-family: 'JetBrains Mono'; }}
             .status-ok {{ color: var(--success); }} .status-bad {{ color: var(--danger); }}
+            
+            .net-identity {{ display: flex; gap: 20px; margin-top: 20px; }}
+            .net-card {{ flex: 1; background: rgba(0, 243, 255, 0.05); border: 1px solid var(--accent); padding: 20px; text-align: center; }}
+            .net-val {{ font-size: 20px; font-weight: 700; color: #fff; display: block; margin-top: 10px; font-family: 'JetBrains Mono'; }}
+            .net-lbl {{ font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }}
 
-            /* DIAGNOSTICS */
-            .diag-row {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }}
-            .diag-card {{ border: 1px solid #333; padding: 20px; text-decoration: none; color: #fff; transition: 0.3s; display: block; background: rgba(255,255,255,0.02); }}
-            .diag-card:hover {{ border-color: var(--accent); background: rgba(0, 243, 255, 0.05); }}
-            .diag-title {{ font-family: 'JetBrains Mono'; color: var(--accent); font-size: 16px; margin-bottom: 5px; display: block; }}
-            .diag-desc {{ font-size: 13px; color: #888; }}
-
-            @keyframes pulse {{ 0% {{ opacity: 1; }} 50% {{ opacity: 0.3; }} 100% {{ opacity: 1; }} }}
             @media (max-width: 1400px) {{ .grid-container {{ grid-template-columns: 1fr 1fr; }} }}
             @media (max-width: 900px) {{ .grid-container {{ grid-template-columns: 1fr; }} }}
         </style>
@@ -194,18 +168,18 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             
             <div style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="card">
-                    <h3>Global Threat Map</h3>
+                    <div class="card-header"><h3>Global Threat Map</h3><span class="info-toggle" onclick="toggleInfo('info-globe')">?</span></div>
+                    <div id="info-globe" class="info-panel">Real-time origin analysis of blocked domains based on Country Code TLDs. Visualizes the geopolitical source of threats.</div>
                     {fig_globe.to_html(full_html=False, include_plotlyjs=False)}
                 </div>
                 <div class="card">
-                    <h3>Collateral Damage Risk</h3>
-                    <div style="font-size:12px; color:#888; margin-bottom:10px;">Checking against Top 5k Global Sites</div>
-                    <div class="collateral-box">
-                        {collateral_html}
-                    </div>
+                    <div class="card-header"><h3>Collateral Damage</h3><span class="info-toggle" onclick="toggleInfo('info-col')">?</span></div>
+                    <div id="info-col" class="info-panel">Cross-references your blocklist against the Tranco Top 5,000 popular sites. If a domain appears here, you are breaking a major website.</div>
+                    <div class="collateral-box">{collateral_html}</div>
                 </div>
                 <div class="card">
-                    <h3>Threat Level</h3>
+                    <div class="card-header"><h3>Threat Level</h3><span class="info-toggle" onclick="toggleInfo('info-gauge')">?</span></div>
+                    <div id="info-gauge" class="info-panel">Volatility score based on list churn (added/removed domains). High flux indicates active botnet campaigns.</div>
                     {fig_gauge.to_html(full_html=False, include_plotlyjs=False)}
                 </div>
             </div>
@@ -219,21 +193,18 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
 
                 <div id="intel" class="section active" style="display: flex; flex-direction: column; gap: 20px;">
                     <div class="card">
-                        <div class="card-header"><h3>Network Growth History</h3></div>
+                        <div class="card-header"><h3>Network Growth</h3><span class="info-toggle" onclick="toggleInfo('info-hist')">?</span></div>
+                        <div id="info-hist" class="info-panel">Historical size of your blocklist. Sudden drops indicate cleanup of dead domains; spikes indicate new threat feeds.</div>
                         {fig_hist.to_html(full_html=False, include_plotlyjs=False)}
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div class="card">
-                            <h3>TLD Distribution</h3>
-                            {fig_tld.to_html(full_html=False, include_plotlyjs=False)}
-                        </div>
-                        <div class="card">
-                            <h3>Attack Phrases</h3>
-                            {fig_words.to_html(full_html=False, include_plotlyjs=False)}
-                        </div>
+                    <div class="card">
+                        <div class="card-header"><h3>Source Matrix</h3><span class="info-toggle" onclick="toggleInfo('info-matrix')">?</span></div>
+                        <div id="info-matrix" class="info-panel">Redundancy Heatmap. Shows how much your blocklists overlap. If two lists are 95% similar, you might only need one.</div>
+                        {fig_matrix.to_html(full_html=False, include_plotlyjs=False)}
                     </div>
                     <div class="card">
-                        <div class="card-header"><h3>Threat Fingerprint (Radar)</h3></div>
+                        <div class="card-header"><h3>Threat Fingerprint</h3><span class="info-toggle" onclick="toggleInfo('info-radar')">?</span></div>
+                        <div id="info-radar" class="info-panel">Multi-vector analysis of the list's composition.<br><b>Entropy:</b> Randomness (Botnets).<br><b>Length:</b> Phishing attempts often use long URLs.<br><b>Optimization:</b> Efficiency of TLD blocks.</div>
                         {fig_radar.to_html(full_html=False, include_plotlyjs=False)}
                     </div>
                 </div>
@@ -241,7 +212,7 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                 <div id="benchmark" class="section">
                     <div class="card">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-                            <h3>BLOCKLIST STRESS TEST</h3>
+                            <h3>ADBLOCK STRESS TEST</h3>
                             <button class="cyber-btn" id="runBench" onclick="runBenchmark()">INITIATE SEQUENCE</button>
                         </div>
                         <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 4px; margin-bottom: 15px; font-size: 13px; border-left: 2px solid var(--accent);">
@@ -257,12 +228,33 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
 
                 <div id="syscheck" class="section">
                     <div class="card">
-                        <h3>EXTERNAL UPLINKS</h3>
+                        <div class="card-header">
+                            <h3>NETWORK IDENTITY</h3>
+                            <span class="info-toggle" onclick="toggleInfo('info-net')">?</span>
+                        </div>
+                        <div id="info-net" class="info-panel">Checks your public IP. If this matches your ISP (Comcast/Verizon) instead of Control D, you are unprotected.</div>
+                        <div class="net-identity">
+                            <div class="net-card"><span class="net-lbl">VISIBLE IP ADDRESS</span><span class="net-val" id="net-ip">SCANNING...</span></div>
+                            <div class="net-card"><span class="net-lbl">DETECTED ISP / ORG</span><span class="net-val" id="net-isp">SCANNING...</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top:20px;">
+                        <div class="card-header">
+                            <h3>UPLINKS LATENCY (SPEED)</h3>
+                            <button class="cyber-btn" onclick="runLatency()">PING</button>
+                        </div>
+                        <div class="net-identity">
+                            <div class="net-card"><span class="net-lbl">CLOUDFLARE (1.1.1.1)</span><span class="net-val" id="ping-cf">-- ms</span></div>
+                            <div class="net-card"><span class="net-lbl">GOOGLE (8.8.8.8)</span><span class="net-val" id="ping-goo">-- ms</span></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin-top:20px;">
+                        <h3>EXTERNAL DIAGNOSTICS</h3>
                         <div class="diag-row">
                             <a href="https://dnsleaktest.com" target="_blank" class="diag-card"><span class="diag-title">DNS LEAK TEST ↗</span><span class="diag-desc">Verify DNS path.</span></a>
                             <a href="https://rebind.network" target="_blank" class="diag-card"><span class="diag-title">REBINDING CHECK ↗</span><span class="diag-desc">Test router vulnerability.</span></a>
-                            <a href="https://d3ward.github.io/toolz/adblock.html" target="_blank" class="diag-card"><span class="diag-title">ADBLOCK BENCHMARK ↗</span><span class="diag-desc">3rd party stress test.</span></a>
-                            <a href="https://dnscheck.tools" target="_blank" class="diag-card"><span class="diag-title">DNSSEC & SPEED ↗</span><span class="diag-desc">Detailed diagnostics.</span></a>
                         </div>
                     </div>
                 </div>
@@ -291,6 +283,12 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
         </div>
 
         <script>
+            // --- INFO TOGGLE ---
+            function toggleInfo(id) {{
+                const el = document.getElementById(id);
+                el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+            }}
+
             // --- SEARCH LOGIC ---
             const db = {json.dumps(search_list)};
             function runSearch() {{
@@ -299,7 +297,7 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                 if (q.length < 3) {{ out.innerHTML = '<div style="color: #666;">// Awaiting input...</div>'; return; }}
                 let matches = [];
                 for (let i = 0; i < db.length; i++) {{ if (db[i].includes(q)) {{ matches.push(db[i]); if (matches.length > 15) break; }} }}
-                if (matches.length > 0) {{ out.innerHTML = matches.map(m => `<span style="color:var(--danger); display:block;">>> BLOCKED: ${{m}}</span>`).join(''); }} 
+                if (matches.length > 0) {{ out.innerHTML = matches.map(m => `<span class="term-match">>> BLOCKED: ${{m}}</span>`).join(''); }} 
                 else {{ out.innerHTML = '<span style="color: #666;">>> NO MATCH FOUND IN RISK TIER</span>'; }}
             }}
 
@@ -309,6 +307,8 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                 document.getElementById(id).style.display = 'block';
                 document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
                 event.target.classList.add('active');
+                
+                if(id === 'syscheck') {{ checkIdentity(); }}
             }}
             document.getElementById('benchmark').style.display = 'none';
             document.getElementById('syscheck').style.display = 'none';
@@ -341,6 +341,35 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                 for (const d of benchTargets.Analytics) await checkDomain(d, 'col-ana');
                 for (const d of benchTargets.Trackers) await checkDomain(d, 'col-trk');
                 btn.disabled = false; btn.innerText = "RE-TEST";
+            }}
+
+            // --- NETWORK CHECKS ---
+            async function checkIdentity() {{
+                try {{
+                    const req = await fetch('https://ipapi.co/json/');
+                    const data = await req.json();
+                    document.getElementById('net-ip').innerText = data.ip || 'UNKNOWN';
+                    document.getElementById('net-isp').innerText = (data.org || data.asn).toUpperCase();
+                }} catch(e) {{
+                    document.getElementById('net-isp').innerText = "BLOCK DETECTED";
+                }}
+            }}
+
+            async function runLatency() {{
+                const ping = async (url) => {{
+                    const start = Date.now();
+                    try {{ await fetch(url, {{ mode: 'no-cors' }}); }} catch(e) {{}}
+                    return Date.now() - start;
+                }};
+                
+                document.getElementById('ping-cf').innerText = "PINGING...";
+                document.getElementById('ping-goo').innerText = "PINGING...";
+                
+                const cf = await ping('https://1.1.1.1/cdn-cgi/trace?t=' + Date.now());
+                document.getElementById('ping-cf').innerText = cf + " ms";
+                
+                const goo = await ping('https://www.google.com/generate_204?t=' + Date.now());
+                document.getElementById('ping-goo').innerText = goo + " ms";
             }}
         </script>
     </body>
