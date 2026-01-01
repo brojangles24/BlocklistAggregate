@@ -11,7 +11,7 @@ import tldextract
 # Format: (URL, Weight, Tag/Category)
 SOURCES = [
     ("https://urlhaus.abuse.ch/downloads/hostfile/", 15, "Malware"), 
-    ("https://o0.pages.dev/Lite/domains.txt", 10, "Tracking"),
+    ("https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Lite/domains.wildcards", 10, "Tracking"),
     ("https://raw.githubusercontent.com/hagezi/dns-blocklists/main/domains/ultimate.txt", 8, "Aggressive"),
     ("https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Hosts/GoodbyeAds.txt", 6, "Mobile Ads"),
     ("https://big.oisd.nl/domainswild", 5, "General Ads"),
