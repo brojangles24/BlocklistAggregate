@@ -45,7 +45,6 @@ def calculate_entropy(text):
     return entropy
 
 def get_ngrams(text, n=2):
-    # Extract bi-grams (e.g. "secure-login")
     words = re.split(r'[^a-z0-9]', text)
     words = [w for w in words if len(w) > 2]
     return ['-'.join(words[i:i+n]) for i in range(len(words)-n+1)]
@@ -80,12 +79,13 @@ def fetch_domains(url):
 def save_history(stats_data):
     history = []
     if os.path.exists(HISTORY_FILE):
-        try: with open(HISTORY_FILE, "r") as f: history = json.load(f)
+        try: 
+            with open(HISTORY_FILE, "r") as f: history = json.load(f)
         except: pass
     history.append(stats_data)
     return history[-365:] 
 
-def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_overlap_matrix, top_bigrams):
+def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_overlap_matrix, top_bigrams, final_list):
     print("Generating God Mode Dashboard...")
     
     # 1. Prepare Data
@@ -102,11 +102,9 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
     df_bigrams = pd.DataFrame(top_bigrams, columns=['Phrase', 'Count']).head(10)
 
     # Length vs Entropy (The "Botnet Curve")
-    # Sample 2000 points for performance
     df_sample = df_main.sample(min(2000, len(df_main)))
 
-    # Correlation Matrix (Source Overlap)
-    # Convert dict matrix to DF for heatmap
+    # Correlation Matrix
     sources = sorted(list(set([k[0] for k in source_overlap_matrix.keys()])))
     matrix_data = [[source_overlap_matrix.get((r, c), 0) for c in sources] for r in sources]
 
@@ -126,49 +124,37 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
 
     common_layout = dict(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color=TEXT_COLOR))
 
-    # ROW 1: KPI Indicators
+    # ROW 1: KPI
     fig.add_trace(go.Indicator(mode="number", value=len(df_main), title={"text": "Total Threats"}), row=1, col=1)
     fig.add_trace(go.Indicator(mode="number+delta", value=churn_stats['added'], delta={'reference': 0, 'relative': False}, title={"text": "New Today"}), row=1, col=2)
     fig.add_trace(go.Indicator(mode="number", value=removed_tld_count, title={"text": "TLD Opt. Savings"}), row=1, col=3)
 
-    # ROW 2: Threat Nature
-    # Typosquats
+    # ROW 2: Charts
     fig.add_trace(go.Bar(x=typos['Count'], y=typos['Target'], orientation='h', marker_color=APPLE_COLORS[4]), row=2, col=1)
-    # Bigrams
     fig.add_trace(go.Bar(x=df_bigrams['Count'], y=df_bigrams['Phrase'], orientation='h', marker_color=APPLE_COLORS[3]), row=2, col=2)
-    # TLDs
     fig.add_trace(go.Pie(labels=df_tld['TLD'], values=df_tld['Count'], hole=0.6, marker=dict(colors=APPLE_COLORS)), row=2, col=3)
 
     # ROW 3: Forensics
-    # Entropy vs Length Scatter (Botnet Detection)
     fig.add_trace(go.Scatter(x=df_sample['length'], y=df_sample['entropy'], mode='markers', 
-                             marker=dict(size=4, color=df_sample['entropy'], colorscale='Viridis', showscale=False),
-                             name='Domain'), row=3, col=1)
-    
-    # Correlation Heatmap
+                             marker=dict(size=4, color=df_sample['entropy'], colorscale='Viridis', showscale=False)), row=3, col=1)
     fig.add_trace(go.Heatmap(z=matrix_data, x=sources, y=sources, colorscale='RdBu', showscale=False), row=3, col=2)
-    
-    # Length Histogram
     fig.add_trace(go.Histogram(x=df_main['length'], nbinsx=30, marker_color=APPLE_COLORS[5]), row=3, col=3)
 
-    # ROW 4: Trends & Geometry
-    # History
+    # ROW 4: Trends
     if not df_hist.empty and 'date' in df_hist.columns:
         fig.add_trace(go.Scatter(x=df_hist['date'], y=df_hist['total_count'], mode='lines', line=dict(color=APPLE_COLORS[0], width=3)), row=4, col=1)
     
-    # Subdomain Depth
     depth_counts = df_main['depth'].value_counts().sort_index().head(8)
     fig.add_trace(go.Bar(x=depth_counts.index, y=depth_counts.values, marker_color=APPLE_COLORS[2]), row=4, col=2)
-
-    # Vowel Ratio (DGA check)
     fig.add_trace(go.Histogram(x=df_sample['vowel_ratio'], nbinsx=30, marker_color=APPLE_COLORS[6]), row=4, col=3)
 
-    # Final Layout Polish
     fig.update_layout(height=1600, width=1400, showlegend=False, template="plotly_dark", **common_layout)
-    fig.update_yaxes(autorange="reversed", row=2, col=1) # Top targets at top
-    fig.update_yaxes(autorange="reversed", row=2, col=2) # Top phrases at top
+    fig.update_yaxes(autorange="reversed", row=2, col=1)
+    fig.update_yaxes(autorange="reversed", row=2, col=2)
 
-    # HTML Output
+    # --- HTML Output with Search ---
+    search_preview = final_list[:15000] # Pass top 15k to JS for search
+    
     html = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -181,15 +167,28 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .container {{ max-width: 1400px; margin: 0 auto; }}
             h1 {{ text-align: center; margin-bottom: 5px; }}
             .sub {{ text-align: center; color: #888; margin-bottom: 30px; }}
+            .search-box {{ width: 100%; max-width: 600px; margin: 0 auto 30px auto; display: block; }}
+            input {{ width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #333; background: #1C1C1E; color: white; font-size: 16px; outline: none; }}
+            input:focus {{ border-color: #0A84FF; }}
+            #search-results {{ max-width: 600px; margin: 10px auto; text-align: left; color: #aaa; background: #111; padding: 10px; border-radius: 8px; min-height: 20px; }}
+            .match {{ color: #FF453A; font-weight: bold; display: block; padding: 4px 0; }}
+            .limit-note {{ font-size: 11px; color: #666; text-align: center; margin-top: 5px; }}
         </style>
     </head>
     <body>
         <div class="container">
             <h1>🛡️ SOC Dashboard: GOD MODE</h1>
             <div class="sub">Deep Forensics & Correlation Analysis • {datetime.date.today()}</div>
+            
+            <div class="search-box">
+                <input type="text" id="domainSearch" placeholder="🔍 Search Top 15k Risk Domains..." onkeyup="searchDomains()">
+                <div class="limit-note">Searching top 15,000 highest risk domains only.</div>
+                <div id="search-results"></div>
+            </div>
+
             {fig.to_html(full_html=False, include_plotlyjs=False)}
             
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+             <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
                 <div style="background:{CARD_COLOR}; padding:20px; border-radius:12px;">
                     <h3>🧠 Analyst Notes</h3>
                     <ul style="line-height:1.6; color:#ccc;">
@@ -207,6 +206,24 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                 </div>
             </div>
         </div>
+
+        <script>
+            const domains = {json.dumps(search_preview)};
+            function searchDomains() {{
+                const input = document.getElementById('domainSearch');
+                const filter = input.value.toLowerCase();
+                const resultDiv = document.getElementById('search-results');
+                
+                if (filter.length < 3) {{ resultDiv.innerHTML = ""; return; }}
+                
+                const matches = domains.filter(d => d.includes(filter)).slice(0, 5);
+                if (matches.length > 0) {{
+                    resultDiv.innerHTML = matches.map(m => "<span class='match'>• " + m + "</span>").join("");
+                }} else {{
+                    resultDiv.innerHTML = "Not found in top risk tier.";
+                }}
+            }}
+        </script>
     </body>
     </html>
     """
@@ -220,7 +237,7 @@ def main():
                 prev_domains = {line.split()[1] for line in f if line.startswith("0.0.0.0")}
         except: pass
 
-    domain_data = {} # Key: Domain, Value: {attributes}
+    domain_data = {} 
     source_sets = defaultdict(set)
     spam_tlds = fetch_spam_tlds()
     
@@ -246,35 +263,26 @@ def main():
     final_set = set(final_domains)
     
     # 3. Deep Analysis (DataFrame Construction)
-    print("Running Forensics on 300k domains (this takes a moment)...")
+    print("Running Forensics on 300k domains...")
     
-    # Pre-calculate costly metrics to build DF faster
     rows = []
     bigram_counter = Counter()
-    
-    # Regex for vowels
     vowel_pattern = re.compile(r'[aeiou]')
     
     for d in final_domains:
-        # Basic geometry
         length = len(d)
         depth = d.count('.') + 1
         tld = d.split('.')[-1]
-        
-        # Heuristics
         entropy = calculate_entropy(d)
-        vowel_count = len(vowel_pattern.findall(d))
-        vowel_ratio = vowel_count / length if length > 0 else 0
+        vowel_ratio = len(vowel_pattern.findall(d)) / length if length > 0 else 0
         
-        # Typosquatting (Fast check)
         typo = None
         for hvt in HVT_LIST:
-            if hvt in d and hvt != d.split('.')[0]: # Simple substring check first
+            if hvt in d and hvt != d.split('.')[0]:
                  if Levenshtein.distance(d.split('.')[0], hvt) == 1:
                      typo = f"{d} ({hvt})"
                      break
         
-        # N-Grams
         bg = get_ngrams(d, 2)
         bigram_counter.update(bg)
         
@@ -287,7 +295,6 @@ def main():
 
     # 4. Source Correlation (Overlap)
     print("Calculating Source Correlation Matrix...")
-    # Jaccard Index: Intersection / Union
     source_names = list(source_sets.keys())
     overlap_matrix = {}
     for s1 in source_names:
@@ -308,7 +315,7 @@ def main():
     history = save_history(stats)
     with open(HISTORY_FILE, "w") as f: json.dump(history, f)
 
-    generate_dashboard(df_main, history, churn, removed_tld_count, overlap_matrix, bigram_counter.most_common(15))
+    generate_dashboard(df_main, history, churn, removed_tld_count, overlap_matrix, bigram_counter.most_common(15), final_domains)
 
     with open("blocklist.txt", "w") as f:
         f.write(f"# Isaac's God Mode Blocklist\n")
