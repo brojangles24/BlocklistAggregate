@@ -20,7 +20,7 @@ SOURCES = [
 ]
 
 # Hagezi Spam TLDs (Extensions to purge from list because you should block them globally)
-SPAM_TLD_URL = "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/tlds/spam.txt"
+SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/spam-tlds-onlydomains.txt"
 
 DOMAIN_LIMIT = 300000
 HISTORY_FILE = "history.json"
