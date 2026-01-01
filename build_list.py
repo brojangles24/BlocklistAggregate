@@ -22,10 +22,10 @@ SOURCES = [
     ("https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/domains.wildcards", 2, "Gap Filler")
 ]
 
-# The Specific Wildcard List requested
+# The Specific Hagezi Wildcard List
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/spam-tlds-onlydomains.txt"
 
-# Fallback in case of download failure
+# Fallback
 FALLBACK_TLDS = {
     ".zip", ".mov", ".loan", ".win", ".date", ".review", ".party", ".accountant", ".trade", 
     ".download", ".gdn", ".racing", ".jetzt", ".stream", ".bid", ".men", ".bom", ".click", 
@@ -66,7 +66,7 @@ def fetch_spam_tlds():
             for line in r.text.splitlines():
                 line = line.strip().lower()
                 if line and not line.startswith('#'):
-                    # Handle "*.zip" format by stripping "*. " and dots
+                    # Handle "*.zip" or "zip" formats
                     clean = line.replace('*.', '').replace('.', '')
                     if clean: 
                         tlds.add("." + clean)
@@ -241,6 +241,7 @@ def main():
     domain_data = {} 
     source_sets = defaultdict(set)
     spam_tlds = fetch_spam_tlds()
+    removed_tld_count = 0  # <--- Initialize counter here
     
     # 1. Ingest
     for url, weight, tag in SOURCES:
@@ -248,8 +249,11 @@ def main():
         source_sets[tag] = domains
         print(f"[{tag}] {len(domains)}")
         for d in domains:
+            # TLD FILTER with Immediate Counting
             if d.endswith(spam_tlds): 
+                removed_tld_count += 1  # <--- Count the kill
                 continue 
+
             if d.startswith("www."): 
                 d = d[4:] 
             
@@ -307,8 +311,8 @@ def main():
 
     # 5. Output
     churn = {"added": len(final_set - prev_domains), "removed": len(prev_domains - final_set)}
-    removed_tld_count = sum([1 for x in domain_data if x.endswith(spam_tlds)])
-
+    
+    # Passing the CORRECT removed_tld_count to the dashboard
     stats = {"date": datetime.date.today().isoformat(), "total_count": len(final_domains)}
     history = save_history(stats)
     with open(HISTORY_FILE, "w") as f: json.dump(history, f)
