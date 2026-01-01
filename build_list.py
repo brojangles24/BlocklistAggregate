@@ -6,6 +6,8 @@ import math
 import re
 from collections import Counter, defaultdict
 import pandas as pd
+import numpy as np
+from scipy import stats
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -39,7 +41,8 @@ def calculate_entropy(text):
     entropy = 0
     for x in range(256):
         p_x = float(text.count(chr(x))) / len(text)
-        if p_x > 0: entropy += - p_x * math.log(p_x, 2)
+        if p_x > 0: 
+            entropy += - p_x * math.log(p_x, 2)
     return entropy
 
 def get_ngrams(text, n=2):
@@ -55,8 +58,10 @@ def fetch_spam_tlds():
             line = line.strip().lower()
             if line and not line.startswith('#'):
                 clean = line.replace('*.', '').replace('.', '')
-                if clean: tlds.add("." + clean)
-    except: pass
+                if clean: 
+                    tlds.add("." + clean)
+    except: 
+        pass
     return tuple(tlds) 
 
 def fetch_domains(url):
@@ -69,16 +74,22 @@ def fetch_domains(url):
             if '#' in line: line = line.split('#')[0].strip()
             if not line or line.startswith('!'): continue
             parts = line.split()
-            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]: domains.add(parts[1])
-            elif len(parts) == 1: domains.add(parts[0])
-    except: pass
+            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]: 
+                domains.add(parts[1])
+            elif len(parts) == 1: 
+                domains.add(parts[0])
+    except: 
+        pass
     return domains
 
 def save_history(stats_data):
     history = []
     if os.path.exists(HISTORY_FILE):
-        try: with open(HISTORY_FILE, "r") as f: history = json.load(f)
-        except: pass
+        try: 
+            with open(HISTORY_FILE, "r") as f: 
+                history = json.load(f)
+        except: 
+            pass
     history.append(stats_data)
     return history[-365:] 
 
@@ -130,7 +141,7 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
     fig.update_yaxes(autorange="reversed", row=2, col=2)
 
     # --- HTML WITH SEARCH BAR ---
-    # We pass the top 15,000 domains to the JS variables to avoid browser crashes (300k is too big for a var)
+    # We pass the top 15,000 domains to the JS variables
     search_preview = final_list[:15000] 
     
     html = f"""
@@ -205,7 +216,8 @@ def main():
         try: 
             with open(PREVIOUS_LIST_FILE) as f: 
                 prev_domains = {line.split()[1] for line in f if line.startswith("0.0.0.0")}
-        except: pass
+        except: 
+            pass
 
     domain_data = {} 
     source_sets = defaultdict(set)
@@ -267,8 +279,10 @@ def main():
         for s2 in source_names:
             set1 = source_sets[s1].intersection(final_set)
             set2 = source_sets[s2].intersection(final_set)
-            if len(set1) == 0 or len(set2) == 0: overlap_matrix[(s1, s2)] = 0
-            else: overlap_matrix[(s1, s2)] = round(len(set1.intersection(set2)) / len(set1.union(set2)), 2)
+            if len(set1) == 0 or len(set2) == 0: 
+                overlap_matrix[(s1, s2)] = 0
+            else: 
+                overlap_matrix[(s1, s2)] = round(len(set1.intersection(set2)) / len(set1.union(set2)), 2)
 
     # 5. Output
     churn = {"added": len(final_set - prev_domains), "removed": len(prev_domains - final_set)}
