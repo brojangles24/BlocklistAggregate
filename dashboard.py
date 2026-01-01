@@ -17,6 +17,13 @@ COLORS = {
     'grid': 'rgba(0, 243, 255, 0.05)'
 }
 
+# Mapping generic TLDs to US for visualization purposes
+GENERIC_TLD_MAP = {
+    'com': 'US', 'net': 'US', 'org': 'US', 'edu': 'US', 'gov': 'US', 'mil': 'US',
+    'io': 'IO', 'ai': 'AI', 'co': 'CO', 'uk': 'GB', 'ru': 'RU', 'cn': 'CN', 'de': 'DE', 
+    'jp': 'JP', 'fr': 'FR', 'au': 'AU', 'ca': 'CA', 'br': 'BR', 'in': 'IN'
+}
+
 def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_overlap_matrix, top_bigrams, final_list, collateral_hits):
     print("Generating Command Center Dashboard...")
 
@@ -27,29 +34,69 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
     typos.columns = ['Target', 'Count']
     df_bigrams = pd.DataFrame(top_bigrams, columns=['Phrase', 'Count']).head(8)
     
-    # Radar Data
-    avg_entropy = df_main['entropy'].mean()
-    avg_len = df_main['length'].mean()
-    typo_ratio = len(df_main[df_main['typosquat'].notnull()]) / len(df_main) * 1000 
-    radar_vals = [min(avg_entropy / 4.5, 1), min(avg_len / 20, 1), min(typo_ratio / 5, 1), min(removed_tld_count / 500, 1)]
-    radar_cats = ['Entropy', 'Length', 'Impersonation', 'Optimization']
+    # --- GEO LOGIC (FORCE COM -> US) ---
+    # Create a copy to avoid warnings
+    geo_df = df_main.copy()
+    
+    # Apply mapping: If it's in our map, use it. Otherwise assume it's a 2-letter country code.
+    geo_df['iso_alpha'] = geo_df['tld'].apply(lambda x: GENERIC_TLD_MAP.get(x, x.upper() if len(x) == 2 else None))
+    
+    # Drop unknowns
+    geo_df = geo_df.dropna(subset=['iso_alpha'])
+    
+    # Aggregate
+    map_data = geo_df['iso_alpha'].value_counts().reset_index()
+    map_data.columns = ['iso_alpha', 'count']
+    
+    # Create a lookup for the JS click handler (Region -> Top TLDs)
+    # We want to know: "If I click US, what TLDs made it up?"
+    region_details = {}
+    for iso in map_data['iso_alpha']:
+        # Get top 3 TLDs for this ISO
+        mask = geo_df['iso_alpha'] == iso
+        top_tlds = geo_df[mask]['tld'].value_counts().head(3).index.tolist()
+        region_details[iso] = {
+            "count": int(map_data[map_data['iso_alpha'] == iso]['count'].values[0]),
+            "top_tlds": [f".{t}" for t in top_tlds]
+        }
 
     # --- PLOTLY CONFIG ---
     layout_style = dict(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
         font=dict(family='JetBrains Mono, monospace', color=COLORS['text']),
-        margin=dict(l=20, r=20, t=40, b=20),
+        margin=dict(l=10, r=10, t=30, b=10),
         xaxis=dict(showgrid=True, gridcolor=COLORS['grid'], zeroline=False),
         yaxis=dict(showgrid=True, gridcolor=COLORS['grid'], zeroline=False)
     )
 
-    # 1. Globe
-    df_geo = df_main[df_main['tld'].str.len() == 2]['tld'].value_counts().reset_index()
-    df_geo.columns = ['iso_alpha', 'count']
-    df_geo['iso_alpha'] = df_geo['iso_alpha'].str.upper()
-    fig_globe = px.scatter_geo(df_geo, locations="iso_alpha", size="count", projection="orthographic", color="count", color_continuous_scale='Redor')
-    fig_globe.update_layout(geo=dict(bgcolor='rgba(0,0,0,0)', showland=True, landcolor='#111', showocean=True, oceancolor='#000', showcountries=True, countrycolor='#333'), height=350, margin=dict(l=0,r=0,t=0,b=0), paper_bgcolor='rgba(0,0,0,0)', showlegend=False)
+    # 1. 3D Globe
+    fig_globe = px.scatter_geo(map_data, locations="iso_alpha", size="count", 
+                               hover_name="iso_alpha", size_max=40,
+                               projection="orthographic", color="count",
+                               color_continuous_scale='Redor')
+    
+    fig_globe.update_layout(
+        geo=dict(
+            bgcolor='rgba(0,0,0,0)', 
+            showland=True, landcolor='#1a1a1a', 
+            showocean=True, oceancolor='#050505', 
+            showcountries=True, countrycolor='#333',
+            showlakes=False,
+            projection_type="orthographic"
+        ),
+        height=400, margin=dict(l=0,r=0,t=0,b=0), 
+        paper_bgcolor='rgba(0,0,0,0)', showlegend=False
+    )
+    # Make markers clickable/hoverable with custom data
+    fig_globe.update_traces(marker=dict(line=dict(width=0, color=COLORS['accent'])))
 
-    # 2. Radar
+    # 2. Threat Radar
+    avg_entropy = df_main['entropy'].mean()
+    avg_len = df_main['length'].mean()
+    avg_depth = df_main['depth'].mean()
+    typo_ratio = len(df_main[df_main['typosquat'].notnull()]) / len(df_main) * 1000 
+    radar_vals = [min(avg_entropy / 4.5, 1), min(avg_len / 20, 1), min(avg_depth / 3, 1), min(typo_ratio / 5, 1), min(removed_tld_count / 500, 1)]
+    radar_cats = ['Entropy', 'Length', 'Depth', 'Impersonation', 'Optimization']
+    
     fig_radar = go.Figure(data=go.Scatterpolar(r=radar_vals, theta=radar_cats, fill='toself', line=dict(color=COLORS['danger'], width=2), fillcolor='rgba(255, 0, 60, 0.2)'))
     fig_radar.update_layout(polar=dict(bgcolor='rgba(0,0,0,0)', radialaxis=dict(visible=True, range=[0, 1], gridcolor=COLORS['grid']), angularaxis=dict(gridcolor=COLORS['grid'])), showlegend=False, height=300, **layout_style)
 
@@ -106,6 +153,14 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .card::before {{ content: ''; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; border-top: 2px solid var(--accent); border-left: 2px solid var(--accent); }}
             .card::after {{ content: ''; position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-bottom: 2px solid var(--accent); border-right: 2px solid var(--accent); }}
             
+            /* GLOBE LAYOUT */
+            .globe-container {{ display: flex; gap: 15px; align-items: stretch; }}
+            .globe-main {{ flex-grow: 1; }}
+            .globe-intel {{ width: 180px; background: rgba(0,0,0,0.5); border-left: 1px solid var(--border); padding: 10px; display: flex; flex-direction: column; justify-content: center; font-family: 'JetBrains Mono'; }}
+            .intel-label {{ font-size: 10px; color: #888; text-transform: uppercase; }}
+            .intel-val {{ font-size: 18px; color: var(--accent); font-weight: bold; margin-bottom: 10px; }}
+            .intel-list {{ font-size: 12px; color: #fff; }}
+
             /* HEADERS & INFO */
             .card-header {{ display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }}
             h3 {{ margin: 0; font-family: 'JetBrains Mono'; font-size: 14px; text-transform: uppercase; color: var(--accent); letter-spacing: 1px; }}
@@ -118,16 +173,13 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .stat-value {{ font-family: 'JetBrains Mono'; font-size: 32px; font-weight: 700; }}
             .pos {{ color: var(--danger); }} .neg {{ color: var(--success); }}
             
-            /* TERMINAL */
             .terminal {{ background: #050505; border: 1px solid #333; padding: 15px; font-family: 'JetBrains Mono'; height: 100%; display: flex; flex-direction: column; }}
             .term-input {{ background: transparent; border: none; border-bottom: 1px solid #333; color: var(--accent); font-family: inherit; font-size: 16px; padding: 10px; width: 100%; outline: none; }}
             .term-output {{ flex-grow: 1; overflow-y: auto; margin-top: 10px; font-size: 13px; color: #aaa; scroll-behavior: smooth; }}
-            .term-match {{ color: var(--danger); display: block; margin: 4px 0; }}
             .btn-group {{ display: flex; gap: 10px; }}
             .cyber-btn {{ background: rgba(0, 243, 255, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; text-decoration: none; font-family: 'JetBrains Mono'; font-size: 12px; font-weight: 700; text-transform: uppercase; transition: 0.3s; cursor: pointer; }}
             .cyber-btn:hover {{ background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }}
             
-            /* TABS & COLLATERAL */
             .tabs {{ display: flex; gap: 2px; margin-bottom: 20px; }}
             .tab-btn {{ background: #111; border: 1px solid var(--border); color: #888; padding: 10px 20px; cursor: pointer; font-family: 'JetBrains Mono'; flex-grow: 1; transition: 0.3s; }}
             .tab-btn.active {{ background: var(--accent); color: #000; font-weight: bold; }}
@@ -137,7 +189,6 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .collateral-row {{ display: flex; justify-content: space-between; font-family: 'JetBrains Mono'; font-size: 12px; padding: 5px 0; border-bottom: 1px solid rgba(255,0,0,0.2); }}
             .col-warn {{ color: var(--danger); font-weight: bold; }}
 
-            /* BENCHMARK & NETWORK CHECK */
             .bench-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }}
             .bench-col {{ background: rgba(0,0,0,0.3); padding: 15px; border: 1px solid #333; }}
             .bench-title {{ font-family: 'JetBrains Mono'; font-size: 12px; color: #888; border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px; }}
@@ -148,6 +199,11 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .net-card {{ flex: 1; background: rgba(0, 243, 255, 0.05); border: 1px solid var(--accent); padding: 20px; text-align: center; }}
             .net-val {{ font-size: 20px; font-weight: 700; color: #fff; display: block; margin-top: 10px; font-family: 'JetBrains Mono'; }}
             .net-lbl {{ font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }}
+            .diag-row {{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }}
+            .diag-card {{ border: 1px solid #333; padding: 20px; text-decoration: none; color: #fff; transition: 0.3s; display: block; background: rgba(255,255,255,0.02); }}
+            .diag-card:hover {{ border-color: var(--accent); background: rgba(0, 243, 255, 0.05); }}
+            .diag-title {{ font-family: 'JetBrains Mono'; color: var(--accent); font-size: 16px; margin-bottom: 5px; display: block; }}
+            .diag-desc {{ font-size: 13px; color: #888; }}
 
             @media (max-width: 1400px) {{ .grid-container {{ grid-template-columns: 1fr 1fr; }} }}
             @media (max-width: 900px) {{ .grid-container {{ grid-template-columns: 1fr; }} }}
@@ -169,8 +225,21 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             <div style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="card">
                     <div class="card-header"><h3>Global Threat Map</h3><span class="info-toggle" onclick="toggleInfo('info-globe')">?</span></div>
-                    <div id="info-globe" class="info-panel">Real-time origin analysis of blocked domains based on Country Code TLDs. Visualizes the geopolitical source of threats.</div>
-                    {fig_globe.to_html(full_html=False, include_plotlyjs=False)}
+                    <div id="info-globe" class="info-panel">Click a country to see detailed threat breakdown. .COM/.NET are mapped to US for visualization.</div>
+                    
+                    <div class="globe-container">
+                        <div class="globe-main" id="globe-plot">
+                            {fig_globe.to_html(full_html=False, include_plotlyjs=False)}
+                        </div>
+                        <div class="globe-intel" id="globe-intel">
+                            <div class="intel-label">REGION</div>
+                            <div class="intel-val" id="g-region">SELECT</div>
+                            <div class="intel-label">THREATS</div>
+                            <div class="intel-val" id="g-count">--</div>
+                            <div class="intel-label">PRIMARY TLDs</div>
+                            <div class="intel-list" id="g-tlds">--</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="card">
                     <div class="card-header"><h3>Collateral Damage</h3><span class="info-toggle" onclick="toggleInfo('info-col')">?</span></div>
@@ -215,9 +284,6 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                             <h3>ADBLOCK STRESS TEST</h3>
                             <button class="cyber-btn" id="runBench" onclick="runBenchmark()">INITIATE SEQUENCE</button>
                         </div>
-                        <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 4px; margin-bottom: 15px; font-size: 13px; border-left: 2px solid var(--accent);">
-                            Attempts connection to known trackers. <span style="color:var(--success)">Green = Blocked</span>. <span style="color:var(--danger)">Red = Vulnerable</span>.
-                        </div>
                         <div class="bench-grid" id="benchResults">
                             <div class="bench-col"><div class="bench-title">ADVERTISING</div><div id="col-ads">Waiting...</div></div>
                             <div class="bench-col"><div class="bench-title">ANALYTICS</div><div id="col-ana">Waiting...</div></div>
@@ -255,6 +321,8 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                         <div class="diag-row">
                             <a href="https://dnsleaktest.com" target="_blank" class="diag-card"><span class="diag-title">DNS LEAK TEST ↗</span><span class="diag-desc">Verify DNS path.</span></a>
                             <a href="https://rebind.network" target="_blank" class="diag-card"><span class="diag-title">REBINDING CHECK ↗</span><span class="diag-desc">Test router vulnerability.</span></a>
+                            <a href="https://d3ward.github.io/toolz/adblock.html" target="_blank" class="diag-card"><span class="diag-title">ADBLOCK BENCHMARK ↗</span><span class="diag-desc">3rd party stress test.</span></a>
+                            <a href="https://dnscheck.tools" target="_blank" class="diag-card"><span class="diag-title">DNSSEC & SPEED ↗</span><span class="diag-desc">Detailed diagnostics.</span></a>
                         </div>
                     </div>
                 </div>
@@ -283,6 +351,24 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
         </div>
 
         <script>
+            // --- GLOBAL VARIABLES ---
+            const regionData = {json.dumps(region_details)};
+            
+            // --- GLOBE CLICK HANDLER ---
+            // Hook into Plotly's click event
+            const globeDiv = document.querySelector('.globe-main .plotly-graph-div');
+            if(globeDiv) {{
+                globeDiv.on('plotly_click', function(data){{
+                    const pt = data.points[0];
+                    const iso = pt.location;
+                    const info = regionData[iso] || {{ count: 0, top_tlds: [] }};
+                    
+                    document.getElementById('g-region').innerText = pt.hovertext || iso;
+                    document.getElementById('g-count').innerText = info.count.toLocaleString();
+                    document.getElementById('g-tlds').innerText = info.top_tlds.join(', ');
+                }});
+            }}
+
             // --- INFO TOGGLE ---
             function toggleInfo(id) {{
                 const el = document.getElementById(id);
@@ -307,7 +393,6 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                 document.getElementById(id).style.display = 'block';
                 document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
                 event.target.classList.add('active');
-                
                 if(id === 'syscheck') {{ checkIdentity(); }}
             }}
             document.getElementById('benchmark').style.display = 'none';
