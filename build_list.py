@@ -3,11 +3,16 @@ import json
 import os
 import datetime
 import math
+import re
 from collections import Counter, defaultdict
 import pandas as pd
+import numpy as np
+from scipy import stats
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import tldextract
+import Levenshtein
 
 # --- CONFIGURATION ---
 SOURCES = [
@@ -20,13 +25,12 @@ SOURCES = [
 ]
 
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/spam-tlds-onlydomains.txt"
-
 DOMAIN_LIMIT = 300000
 HISTORY_FILE = "history.json"
 PREVIOUS_LIST_FILE = "blocklist.txt"
-PHISHING_TARGETS = ['paypal', 'apple', 'microsoft', 'google', 'amazon', 'netflix', 'facebook', 'bank', 'login', 'verify', 'secure', 'account', 'update', 'crypto', 'wallet']
+HVT_LIST = ['google', 'apple', 'microsoft', 'amazon', 'facebook', 'netflix', 'paypal', 'chase', 'wellsfargo', 'coinbase']
 
-# --- APPLE DESIGN SYSTEM COLORS ---
+# --- COLORS ---
 APPLE_COLORS = ['#0A84FF', '#30D158', '#BF5AF2', '#FF9F0A', '#FF453A', '#64D2FF', '#FF375F', '#5E5CE6']
 BG_COLOR = "#000000"
 CARD_COLOR = "#1C1C1E"
@@ -37,23 +41,25 @@ def calculate_entropy(text):
     entropy = 0
     for x in range(256):
         p_x = float(text.count(chr(x))) / len(text)
-        if p_x > 0:
-            entropy += - p_x * math.log(p_x, 2)
+        if p_x > 0: entropy += - p_x * math.log(p_x, 2)
     return entropy
 
+def get_ngrams(text, n=2):
+    # Extract bi-grams (e.g. "secure-login")
+    words = re.split(r'[^a-z0-9]', text)
+    words = [w for w in words if len(w) > 2]
+    return ['-'.join(words[i:i+n]) for i in range(len(words)-n+1)]
+
 def fetch_spam_tlds():
-    print(f"Fetching Spam TLDs from: {SPAM_TLD_URL}")
     tlds = set()
     try:
         r = requests.get(SPAM_TLD_URL, timeout=30)
         for line in r.text.splitlines():
             line = line.strip().lower()
             if line and not line.startswith('#'):
-                clean_tld = line.replace('*.', '').replace('.', '')
-                if clean_tld:
-                    tlds.add("." + clean_tld)
-    except Exception as e:
-        print(f"Error fetching Spam TLDs: {e}")
+                clean = line.replace('*.', '').replace('.', '')
+                if clean: tlds.add("." + clean)
+    except: pass
     return tuple(tlds) 
 
 def fetch_domains(url):
@@ -65,254 +71,251 @@ def fetch_domains(url):
             line = line.strip().lower()
             if '#' in line: line = line.split('#')[0].strip()
             if not line or line.startswith('!'): continue
-            line = line.lstrip('*.')
             parts = line.split()
-            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]:
-                domains.add(parts[1])
-            elif len(parts) == 1:
-                domains.add(parts[0])
-    except Exception as e:
-        print(f"Error fetching {url}: {e}")
-    return domains
-
-def load_previous_domains():
-    if not os.path.exists(PREVIOUS_LIST_FILE): return set()
-    prev = set()
-    try:
-        with open(PREVIOUS_LIST_FILE, "r") as f:
-            for line in f:
-                if line.startswith("0.0.0.0"): prev.add(line.split()[1].strip())
+            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]: domains.add(parts[1])
+            elif len(parts) == 1: domains.add(parts[0])
     except: pass
-    return prev
+    return domains
 
 def save_history(stats_data):
     history = []
     if os.path.exists(HISTORY_FILE):
-        try:
-            with open(HISTORY_FILE, "r") as f: history = json.load(f)
+        try: with open(HISTORY_FILE, "r") as f: history = json.load(f)
         except: pass
     history.append(stats_data)
     return history[-365:] 
 
-def generate_dashboard(final_domains, domain_scores, history, churn_stats, target_stats, removed_tld_count):
-    print("Generating Dashboard...")
+def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_overlap_matrix, top_bigrams):
+    print("Generating God Mode Dashboard...")
     
-    tlds = [d.split('.')[-1] for d in final_domains]
-    df_tld = pd.DataFrame(Counter(tlds).most_common(8), columns=['TLD', 'Count']) 
-    entropies = [calculate_entropy(d) for d in final_domains]
-    df_targets = pd.DataFrame(target_stats.items(), columns=['Target', 'Count']).sort_values('Count', ascending=True).tail(10)
+    # 1. Prepare Data
+    df_tld = df_main['tld'].value_counts().head(10).reset_index()
+    df_tld.columns = ['TLD', 'Count']
+    
     df_hist = pd.DataFrame(history)
+    
+    # Typosquatting
+    typos = df_main[df_main['typosquat'].notnull()]['typosquat'].value_counts().head(10).reset_index()
+    typos.columns = ['Target', 'Count']
 
-    common_layout = dict(
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        font=dict(family='-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif', color=TEXT_COLOR),
-        margin=dict(l=20, r=20, t=40, b=20)
+    # Bigrams (Phrases)
+    df_bigrams = pd.DataFrame(top_bigrams, columns=['Phrase', 'Count']).head(10)
+
+    # Length vs Entropy (The "Botnet Curve")
+    # Sample 2000 points for performance
+    df_sample = df_main.sample(min(2000, len(df_main)))
+
+    # Correlation Matrix (Source Overlap)
+    # Convert dict matrix to DF for heatmap
+    sources = sorted(list(set([k[0] for k in source_overlap_matrix.keys()])))
+    matrix_data = [[source_overlap_matrix.get((r, c), 0) for c in sources] for r in sources]
+
+    # --- PLOTLY LAYOUT ---
+    fig = make_subplots(
+        rows=4, cols=3,
+        specs=[[{"type": "indicator"}, {"type": "indicator"}, {"type": "indicator"}],
+               [{"type": "xy"}, {"type": "xy"}, {"type": "domain"}],
+               [{"type": "xy"}, {"type": "heatmap"}, {"type": "xy"}],
+               [{"type": "xy"}, {"type": "xy"}, {"type": "xy"}]],
+        subplot_titles=("", "", "", 
+                        "⚠️ Impersonation Targets", "🗣️ Attack Phrases (Bigrams)", "🌍 TLD Distribution",
+                        "🤖 Machine vs Human (Entropy)", "🔗 Source Correlation Matrix", "📏 Domain Geometry (Length)",
+                        "📈 Threat Growth", "🎯 Subdomain Depth", "🔡 Vowel Ratio (DGA Check)"),
+        vertical_spacing=0.08
     )
 
-    fig_targets = px.bar(df_targets, x='Count', y='Target', orientation='h', color_discrete_sequence=[APPLE_COLORS[6]])
-    fig_targets.update_layout(**common_layout, xaxis_title="", yaxis_title="")
+    common_layout = dict(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font=dict(color=TEXT_COLOR))
 
-    fig_entropy = go.Figure(data=[go.Histogram(x=entropies, nbinsx=40, marker_color=APPLE_COLORS[1])])
-    fig_entropy.update_layout(**common_layout, title_text="", showlegend=False)
+    # ROW 1: KPI Indicators
+    fig.add_trace(go.Indicator(mode="number", value=len(df_main), title={"text": "Total Threats"}), row=1, col=1)
+    fig.add_trace(go.Indicator(mode="number+delta", value=churn_stats['added'], delta={'reference': 0, 'relative': False}, title={"text": "New Today"}), row=1, col=2)
+    fig.add_trace(go.Indicator(mode="number", value=removed_tld_count, title={"text": "TLD Opt. Savings"}), row=1, col=3)
 
-    fig_tld = px.pie(df_tld, values='Count', names='TLD', hole=0.6, color_discrete_sequence=APPLE_COLORS)
-    fig_tld.update_layout(**common_layout)
-    fig_tld.update_traces(textposition='inside', textinfo='percent+label')
+    # ROW 2: Threat Nature
+    # Typosquats
+    fig.add_trace(go.Bar(x=typos['Count'], y=typos['Target'], orientation='h', marker_color=APPLE_COLORS[4]), row=2, col=1)
+    # Bigrams
+    fig.add_trace(go.Bar(x=df_bigrams['Count'], y=df_bigrams['Phrase'], orientation='h', marker_color=APPLE_COLORS[3]), row=2, col=2)
+    # TLDs
+    fig.add_trace(go.Pie(labels=df_tld['TLD'], values=df_tld['Count'], hole=0.6, marker=dict(colors=APPLE_COLORS)), row=2, col=3)
 
-    fig_hist = px.line(df_hist, x='date', y='total_count', markers=True, color_discrete_sequence=[APPLE_COLORS[0]])
-    fig_hist.update_layout(**common_layout, xaxis_title="", yaxis_title="")
-    fig_hist.update_xaxes(showgrid=False)
-    fig_hist.update_yaxes(gridcolor='#333')
+    # ROW 3: Forensics
+    # Entropy vs Length Scatter (Botnet Detection)
+    fig.add_trace(go.Scatter(x=df_sample['length'], y=df_sample['entropy'], mode='markers', 
+                             marker=dict(size=4, color=df_sample['entropy'], colorscale='Viridis', showscale=False),
+                             name='Domain'), row=3, col=1)
+    
+    # Correlation Heatmap
+    fig.add_trace(go.Heatmap(z=matrix_data, x=sources, y=sources, colorscale='RdBu', showscale=False), row=3, col=2)
+    
+    # Length Histogram
+    fig.add_trace(go.Histogram(x=df_main['length'], nbinsx=30, marker_color=APPLE_COLORS[5]), row=3, col=3)
 
+    # ROW 4: Trends & Geometry
+    # History
+    if not df_hist.empty and 'date' in df_hist.columns:
+        fig.add_trace(go.Scatter(x=df_hist['date'], y=df_hist['total_count'], mode='lines', line=dict(color=APPLE_COLORS[0], width=3)), row=4, col=1)
+    
+    # Subdomain Depth
+    depth_counts = df_main['depth'].value_counts().sort_index().head(8)
+    fig.add_trace(go.Bar(x=depth_counts.index, y=depth_counts.values, marker_color=APPLE_COLORS[2]), row=4, col=2)
+
+    # Vowel Ratio (DGA check)
+    fig.add_trace(go.Histogram(x=df_sample['vowel_ratio'], nbinsx=30, marker_color=APPLE_COLORS[6]), row=4, col=3)
+
+    # Final Layout Polish
+    fig.update_layout(height=1600, width=1400, showlegend=False, template="plotly_dark", **common_layout)
+    fig.update_yaxes(autorange="reversed", row=2, col=1) # Top targets at top
+    fig.update_yaxes(autorange="reversed", row=2, col=2) # Top phrases at top
+
+    # HTML Output
     html = f"""
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>DNS Intel</title>
+        <title>God Mode DNS Intel</title>
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
         <style>
-            :root {{ --bg: {BG_COLOR}; --card: {CARD_COLOR}; --text: {TEXT_COLOR}; --danger: #FF453A; --success: #30D158; --subtext: #8E8E93; }}
-            body {{ background-color: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Roboto, sans-serif; margin: 0; padding: 40px 20px; }}
-            .container {{ max-width: 1200px; margin: 0 auto; }}
-            header {{ margin-bottom: 40px; }}
-            h1 {{ font-size: 40px; font-weight: 700; margin: 0; }}
-            .subtitle {{ color: var(--subtext); font-size: 17px; margin-top: 8px; }}
-            .kpi-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 40px; }}
-            .kpi-card {{ background: var(--card); border-radius: 18px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); display: flex; flex-direction: column; justify-content: space-between; }}
-            .kpi-label {{ color: var(--subtext); font-size: 13px; font-weight: 600; text-transform: uppercase; }}
-            .kpi-value {{ font-size: 34px; font-weight: 600; margin-top: 8px; }}
-            .charts-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 24px; }}
-            .chart-card {{ background: var(--card); border-radius: 18px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); overflow: hidden; }}
-            h2 {{ font-size: 22px; margin: 0 0 20px 0; font-weight: 600; }}
-            .table-container {{ margin-top: 40px; background: var(--card); border-radius: 18px; padding: 24px; }}
-            table {{ width: 100%; border-collapse: collapse; }}
-            th {{ text-align: left; color: var(--subtext); font-size: 13px; padding: 12px; border-bottom: 1px solid #38383A; }}
-            td {{ padding: 16px 12px; border-bottom: 1px solid #2C2C2E; font-size: 15px; }}
-            tr:last-child td {{ border-bottom: none; }}
-            .badge {{ background: rgba(10, 132, 255, 0.15); color: #0A84FF; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; }}
-            
-            /* INFO SECTIONS */
-            details {{ margin-top: 15px; border-top: 1px solid #333; padding-top: 10px; }}
-            summary {{ color: #0A84FF; cursor: pointer; font-size: 13px; font-weight: 500; list-style: none; }}
-            summary::-webkit-details-marker {{ display: none; }}
-            .info-text {{ font-size: 13px; color: var(--subtext); line-height: 1.5; margin-top: 8px; }}
-            
-            @media (max-width: 700px) {{ .charts-grid {{ grid-template-columns: 1fr; }} h1 {{ font-size: 32px; }} }}
+            body {{ background-color: {BG_COLOR}; color: {TEXT_COLOR}; font-family: -apple-system, sans-serif; padding: 20px; }}
+            .container {{ max-width: 1400px; margin: 0 auto; }}
+            h1 {{ text-align: center; margin-bottom: 5px; }}
+            .sub {{ text-align: center; color: #888; margin-bottom: 30px; }}
         </style>
     </head>
     <body>
         <div class="container">
-            <header>
-                <h1>Security Dashboard</h1>
-                <div class="subtitle">Updated {datetime.date.today().strftime('%B %d, %Y')} • {len(final_domains):,} Active Threats</div>
-            </header>
+            <h1>🛡️ SOC Dashboard: GOD MODE</h1>
+            <div class="sub">Deep Forensics & Correlation Analysis • {datetime.date.today()}</div>
+            {fig.to_html(full_html=False, include_plotlyjs=False)}
             
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div>
-                        <div class="kpi-label">Active Threats</div>
-                        <div class="kpi-value">{len(final_domains):,}</div>
-                    </div>
-                    <details>
-                        <summary>About this metric</summary>
-                        <div class="info-text">The total count of unique domains currently blocked by your system. This list is optimized to remain under 300,000 entries for maximum router performance.</div>
-                    </details>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
+                <div style="background:{CARD_COLOR}; padding:20px; border-radius:12px;">
+                    <h3>🧠 Analyst Notes</h3>
+                    <ul style="line-height:1.6; color:#ccc;">
+                        <li><b>Bigrams:</b> Shows phrase patterns. "verify-account" usually implies phishing kits.</li>
+                        <li><b>Entropy Curve:</b> High entropy + High length = DGA (Domain Generation Algorithm) botnets.</li>
+                        <li><b>Correlation:</b> Dark blue squares mean two blocklists are almost identical (redundant).</li>
+                        <li><b>Vowel Ratio:</b> English is ~38% vowels. Significant deviation suggests machine-generated domains.</li>
+                    </ul>
                 </div>
-                <div class="kpi-card">
-                    <div>
-                        <div class="kpi-label">TLD Optimization</div>
-                        <div class="kpi-value" style="color: #FF9F0A">-{removed_tld_count}</div>
-                    </div>
-                    <details>
-                        <summary>Why is this negative?</summary>
-                        <div class="info-text">Domains removed from your list because they belong to a Spam TLD (e.g. .zip, .loan). Blocking the entire TLD in Control D is more efficient than listing these individually.</div>
-                    </details>
-                </div>
-                <div class="kpi-card">
-                    <div>
-                        <div class="kpi-label">New Today</div>
-                        <div class="kpi-value" style="color: var(--danger)">+{churn_stats['added']}</div>
-                    </div>
-                    <details>
-                        <summary>What does this mean?</summary>
-                        <div class="info-text">New threats identified since yesterday's update. A high number typically indicates a new botnet campaign or a fresh wave of phishing sites.</div>
-                    </details>
+                 <div style="background:{CARD_COLOR}; padding:20px; border-radius:12px;">
+                    <h3>🚨 Top 10 Detected Typosquats</h3>
+                    <table style="width:100%; text-align:left; color:#ddd;">
+                        { "".join([f"<tr><td style='padding:5px; border-bottom:1px solid #333'>{t}</td></tr>" for t in typos['Target'].head(10)]) }
+                    </table>
                 </div>
             </div>
-
-            <div class="charts-grid">
-                <div class="chart-card">
-                    <h2>Impersonation Targets</h2>
-                    {fig_targets.to_html(full_html=False, include_plotlyjs=False)}
-                    <details>
-                        <summary>Analysis</summary>
-                        <div class="info-text">These are domains pretending to be major brands (e.g., "secure-login-apple.com"). The chart shows which brands are currently being targeted the most by attackers.</div>
-                    </details>
-                </div>
-                
-                <div class="chart-card">
-                    <h2>Threat Landscape (TLDs)</h2>
-                    {fig_tld.to_html(full_html=False, include_plotlyjs=False)}
-                    <details>
-                        <summary>Analysis</summary>
-                        <div class="info-text">Shows the Top-Level Domains (extensions) where threats are hosted. Legitimate TLDs like .com are often abused, but obscure ones often signal cheap, disposable infrastructure.</div>
-                    </details>
-                </div>
-                
-                <div class="chart-card">
-                    <h2>Network Churn History</h2>
-                    {fig_hist.to_html(full_html=False, include_plotlyjs=False)}
-                    <details>
-                        <summary>Analysis</summary>
-                        <div class="info-text">Tracks the size of your blocklist over time. Sudden spikes indicate aggressive new protection rules; drops may indicate old "dead" domains being cleaned up.</div>
-                    </details>
-                </div>
-                
-                <div class="chart-card">
-                    <h2>Botnet Detection (Entropy)</h2>
-                    {fig_entropy.to_html(full_html=False, include_plotlyjs=False)}
-                    <details>
-                        <summary>How to read this</summary>
-                        <div class="info-text">Entropy measures randomness. Left side = Human readable names (e.g., "google"). Right side = Random gibberish (e.g., "x84k92l"). A spike on the right confirms botnet activity.</div>
-                    </details>
-                </div>
-            </div>
-            
-            <div class="table-container">
-                <h2>Top Phishing Targets</h2>
-                <table>
-                    <thead><tr><th>TARGET BRAND</th><th>DOMAINS DETECTED</th><th>STATUS</th></tr></thead>
-                    <tbody>{"".join(f"<tr><td>{t}</td><td>{c}</td><td><span class='badge'>BLOCKED</span></td></tr>" for t, c in list(target_stats.items())[:8])}</tbody>
-                </table>
-            </div>
-            <footer style="margin-top: 60px; text-align: center; color: #8E8E93; font-size: 13px;">Generated via GitHub Actions</footer>
         </div>
     </body>
     </html>
     """
-    
     with open("stats.html", "w", encoding="utf-8") as f: f.write(html)
 
 def main():
-    prev_domains = load_previous_domains()
-    domain_scores = Counter()
-    
-    # 0. Fetch Spam TLDs
-    spam_tlds = fetch_spam_tlds()
-    print(f"Loaded {len(spam_tlds)} Spam TLDs to purge.")
+    prev_domains = set()
+    if os.path.exists(PREVIOUS_LIST_FILE):
+        try: 
+            with open(PREVIOUS_LIST_FILE) as f: 
+                prev_domains = {line.split()[1] for line in f if line.startswith("0.0.0.0")}
+        except: pass
 
-    # 1. Fetch & Score Domains
+    domain_data = {} # Key: Domain, Value: {attributes}
+    source_sets = defaultdict(set)
+    spam_tlds = fetch_spam_tlds()
+    
+    print(f"Loaded {len(spam_tlds)} Spam TLDs.")
+
+    # 1. Ingest
     for url, weight, tag in SOURCES:
         domains = fetch_domains(url)
-        print(f"[{tag}] Found {len(domains)}")
+        source_sets[tag] = domains
+        print(f"[{tag}] {len(domains)}")
         for d in domains:
-            domain_scores[d] += weight
+            if d.endswith(spam_tlds): continue # Skip spam TLDs
+            if d.startswith("www."): d = d[4:] # Dedupe
+            
+            if d not in domain_data:
+                domain_data[d] = {'score': 0, 'sources': []}
+            domain_data[d]['score'] += weight
+            domain_data[d]['sources'].append(tag)
 
-    # 2. Spam TLD Purge
-    print("Purging domains from Spam TLDs...")
-    all_keys = list(domain_scores.keys())
-    removed_tld_count = 0
-    for d in all_keys:
-        if d.endswith(spam_tlds):
-            del domain_scores[d]
-            removed_tld_count += 1
-    print(f"  -> Purged {removed_tld_count} domains from list (Optimization).")
+    # 2. Rank & Cut
+    sorted_domains = sorted(domain_data.items(), key=lambda x: (-x[1]['score'], x[0]))[:DOMAIN_LIMIT]
+    final_domains = [x[0] for x in sorted_domains]
+    final_set = set(final_domains)
+    
+    # 3. Deep Analysis (DataFrame Construction)
+    print("Running Forensics on 300k domains (this takes a moment)...")
+    
+    # Pre-calculate costly metrics to build DF faster
+    rows = []
+    bigram_counter = Counter()
+    
+    # Regex for vowels
+    vowel_pattern = re.compile(r'[aeiou]')
+    
+    for d in final_domains:
+        # Basic geometry
+        length = len(d)
+        depth = d.count('.') + 1
+        tld = d.split('.')[-1]
+        
+        # Heuristics
+        entropy = calculate_entropy(d)
+        vowel_count = len(vowel_pattern.findall(d))
+        vowel_ratio = vowel_count / length if length > 0 else 0
+        
+        # Typosquatting (Fast check)
+        typo = None
+        for hvt in HVT_LIST:
+            if hvt in d and hvt != d.split('.')[0]: # Simple substring check first
+                 if Levenshtein.distance(d.split('.')[0], hvt) == 1:
+                     typo = f"{d} ({hvt})"
+                     break
+        
+        # N-Grams
+        bg = get_ngrams(d, 2)
+        bigram_counter.update(bg)
+        
+        rows.append({
+            'domain': d, 'length': length, 'depth': depth, 'tld': tld,
+            'entropy': entropy, 'vowel_ratio': vowel_ratio, 'typosquat': typo
+        })
 
-    # 3. Dedupe (www vs root)
-    print("Deduplicating...")
-    all_keys = list(domain_scores.keys())
-    existing = set(all_keys)
-    for d in all_keys:
-        if d.startswith("www.") and d[4:] in existing: del domain_scores[d]
+    df_main = pd.DataFrame(rows)
 
-    # 4. Sort & Cut
-    ranked = sorted(domain_scores.items(), key=lambda x: (-x[1], x[0]))
-    final_list = [d[0] for d in ranked[:DOMAIN_LIMIT]]
-    final_set = set(final_list)
+    # 4. Source Correlation (Overlap)
+    print("Calculating Source Correlation Matrix...")
+    # Jaccard Index: Intersection / Union
+    source_names = list(source_sets.keys())
+    overlap_matrix = {}
+    for s1 in source_names:
+        for s2 in source_names:
+            set1 = source_sets[s1].intersection(final_set)
+            set2 = source_sets[s2].intersection(final_set)
+            if len(set1) == 0 or len(set2) == 0:
+                overlap_matrix[(s1, s2)] = 0
+            else:
+                overlap = len(set1.intersection(set2)) / len(set1.union(set2))
+                overlap_matrix[(s1, s2)] = round(overlap, 2)
 
-    # 5. Stats
-    churn_stats = {"added": len(final_set - prev_domains), "removed": len(prev_domains - final_set)}
-    target_counts = Counter()
-    for d in final_list:
-        for target in PHISHING_TARGETS:
-            if target in d: target_counts[target] += 1
-    target_counts = dict(sorted(target_counts.items(), key=lambda item: item[1], reverse=True))
+    # 5. Stats & Output
+    churn = {"added": len(final_set - prev_domains), "removed": len(prev_domains - final_set)}
+    removed_tld_count = sum([1 for x in domain_data if x.endswith(spam_tlds)]) # Approx
 
-    stats = {"date": datetime.date.today().isoformat(), "total_count": len(final_list)}
+    stats = {"date": datetime.date.today().isoformat(), "total_count": len(final_domains)}
     history = save_history(stats)
     with open(HISTORY_FILE, "w") as f: json.dump(history, f)
 
-    generate_dashboard(final_list, domain_scores, history, churn_stats, target_counts, removed_tld_count)
+    generate_dashboard(df_main, history, churn, removed_tld_count, overlap_matrix, bigram_counter.most_common(15))
 
     with open("blocklist.txt", "w") as f:
-        f.write(f"# Isaac's Blocklist\n")
-        for domain in final_list: f.write(f"0.0.0.0 {domain}\n")
+        f.write(f"# Isaac's God Mode Blocklist\n")
+        for d in final_domains: f.write(f"0.0.0.0 {d}\n")
     with open("adblock.txt", "w") as f:
-        f.write(f"! Isaac's Blocklist\n")
-        for domain in final_list: f.write(f"||{domain}^\n")
+        f.write(f"! Isaac's God Mode Blocklist\n")
+        for d in final_domains: f.write(f"||{d}^\n")
 
 if __name__ == "__main__":
     main()
