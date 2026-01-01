@@ -8,7 +8,7 @@ from collections import Counter, defaultdict
 import pandas as pd
 import tldextract
 import Levenshtein
-from dashboard import generate_dashboard  # Import the new module
+from dashboard import generate_dashboard
 
 # --- CONFIGURATION ---
 SOURCES = [
@@ -22,14 +22,6 @@ SOURCES = [
 
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/spam-tlds-onlydomains.txt"
 
-FALLBACK_TLDS = {
-    ".zip", ".mov", ".loan", ".win", ".date", ".review", ".party", ".accountant", ".trade", 
-    ".download", ".gdn", ".racing", ".jetzt", ".stream", ".bid", ".men", ".bom", ".click", 
-    ".cricket", ".faith", ".link", ".science", ".webcam", ".top", ".xyz", ".online", 
-    ".site", ".pro", ".work", ".info", ".best", ".cam", ".cfd", ".cyou", ".icu", ".mw", ".rest",
-    ".wiki", ".monster", ".quest", ".bond", ".bussiness", ".center", ".club", ".cool"
-}
-
 DOMAIN_LIMIT = 300000
 HISTORY_FILE = "history.json"
 PREVIOUS_LIST_FILE = "blocklist.txt"
@@ -40,7 +32,8 @@ def calculate_entropy(text):
     entropy = 0
     for x in range(256):
         p_x = float(text.count(chr(x))) / len(text)
-        if p_x > 0: entropy += - p_x * math.log(p_x, 2)
+        if p_x > 0: 
+            entropy += - p_x * math.log(p_x, 2)
     return entropy
 
 def get_ngrams(text, n=2):
@@ -58,15 +51,14 @@ def fetch_spam_tlds():
                 line = line.strip().lower()
                 if line and not line.startswith('#'):
                     clean = line.replace('*.', '').replace('.', '')
-                    if clean: tlds.add("." + clean)
+                    if clean: 
+                        tlds.add("." + clean)
             print(f"  -> Successfully loaded {len(tlds)} TLDs.")
         else:
-            print("  -> Download failed. Using fallback.")
-            tlds = FALLBACK_TLDS
-    except:
-        print("  -> Download error. Using fallback.")
-        tlds = FALLBACK_TLDS
-    if not tlds: tlds = FALLBACK_TLDS
+            print(f"  -> Failed to download TLDs (Status {r.status_code}). Skipping TLD optimization.")
+    except Exception as e:
+        print(f"  -> Download error ({e}). Skipping TLD optimization.")
+    
     return tuple(tlds) 
 
 def fetch_domains(url):
@@ -76,19 +68,27 @@ def fetch_domains(url):
         r = requests.get(url, timeout=60)
         for line in r.text.splitlines():
             line = line.strip().lower()
-            if '#' in line: line = line.split('#')[0].strip()
-            if not line or line.startswith('!'): continue
+            if '#' in line: 
+                line = line.split('#')[0].strip()
+            if not line or line.startswith('!'): 
+                continue
             parts = line.split()
-            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]: domains.add(parts[1])
-            elif len(parts) == 1: domains.add(parts[0])
-    except: pass
+            if len(parts) >= 2 and parts[0] in ["0.0.0.0", "127.0.0.1"]: 
+                domains.add(parts[1])
+            elif len(parts) == 1: 
+                domains.add(parts[0])
+    except: 
+        pass
     return domains
 
 def save_history(stats_data):
     history = []
     if os.path.exists(HISTORY_FILE):
-        try: with open(HISTORY_FILE, "r") as f: history = json.load(f)
-        except: pass
+        try:
+            with open(HISTORY_FILE, "r") as f:
+                history = json.load(f)
+        except:
+            pass
     history.append(stats_data)
     return history[-365:] 
 
@@ -98,7 +98,8 @@ def main():
         try: 
             with open(PREVIOUS_LIST_FILE) as f: 
                 prev_domains = {line.split()[1] for line in f if line.startswith("0.0.0.0")}
-        except: pass
+        except: 
+            pass
 
     domain_data = {} 
     source_sets = defaultdict(set)
@@ -115,7 +116,8 @@ def main():
                 removed_tld_count += 1
                 continue 
 
-            if d.startswith("www."): d = d[4:] 
+            if d.startswith("www."): 
+                d = d[4:] 
             
             if d not in domain_data:
                 domain_data[d] = {'score': 0, 'sources': []}
@@ -163,8 +165,10 @@ def main():
         for s2 in source_names:
             set1 = source_sets[s1].intersection(final_set)
             set2 = source_sets[s2].intersection(final_set)
-            if len(set1) == 0 or len(set2) == 0: overlap_matrix[(s1, s2)] = 0
-            else: overlap_matrix[(s1, s2)] = round(len(set1.intersection(set2)) / len(set1.union(set2)), 2)
+            if len(set1) == 0 or len(set2) == 0: 
+                overlap_matrix[(s1, s2)] = 0
+            else: 
+                overlap_matrix[(s1, s2)] = round(len(set1.intersection(set2)) / len(set1.union(set2)), 2)
 
     # 5. Output
     churn = {"added": len(final_set - prev_domains), "removed": len(prev_domains - final_set)}
@@ -172,7 +176,6 @@ def main():
     history = save_history(stats)
     with open(HISTORY_FILE, "w") as f: json.dump(history, f)
 
-    # Call the frontend
     generate_dashboard(df_main, history, churn, removed_tld_count, overlap_matrix, bigram_counter.most_common(15), final_domains)
 
     with open("blocklist.txt", "w") as f:
