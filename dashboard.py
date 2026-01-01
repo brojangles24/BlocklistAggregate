@@ -17,11 +17,18 @@ COLORS = {
     'grid': 'rgba(0, 243, 255, 0.05)'
 }
 
-# Mapping generic TLDs to US for visualization purposes
+# FIXED: ISO-3 Codes for Plotly Compatibility
 GENERIC_TLD_MAP = {
-    'com': 'US', 'net': 'US', 'org': 'US', 'edu': 'US', 'gov': 'US', 'mil': 'US',
-    'io': 'IO', 'ai': 'AI', 'co': 'CO', 'uk': 'GB', 'ru': 'RU', 'cn': 'CN', 'de': 'DE', 
-    'jp': 'JP', 'fr': 'FR', 'au': 'AU', 'ca': 'CA', 'br': 'BR', 'in': 'IN'
+    # Generics -> USA
+    'com': 'USA', 'net': 'USA', 'org': 'USA', 'edu': 'USA', 'gov': 'USA', 'mil': 'USA', 'xyz': 'USA', 'info': 'USA',
+    # Country Codes
+    'cn': 'CHN', 'ru': 'RUS', 'ir': 'IRN', 'kp': 'PRK', 'in': 'IND', 'br': 'BRA',
+    'uk': 'GBR', 'de': 'DEU', 'fr': 'FRA', 'jp': 'JPN', 'au': 'AUS', 'ca': 'CAN',
+    'it': 'ITA', 'nl': 'NLD', 'es': 'ESP', 'se': 'SWE', 'no': 'NOR', 'dk': 'DNK',
+    'ch': 'CHE', 'kr': 'KOR', 'vn': 'VNM', 'id': 'IDN', 'th': 'THA', 'tw': 'TWN',
+    'ua': 'UKR', 'pl': 'POL', 'ro': 'ROU', 'tr': 'TUR', 'gr': 'GRC', 'za': 'ZAF',
+    'mx': 'MEX', 'ar': 'ARG', 'cl': 'CHL', 'co': 'COL', 'pe': 'PER', 've': 'VEN',
+    'io': 'IOT', 'ai': 'AIA', 'tv': 'TUV', 'me': 'MNE', 'cc': 'CCK', 'to': 'TON'
 }
 
 def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_overlap_matrix, top_bigrams, final_list, collateral_hits):
@@ -34,25 +41,17 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
     typos.columns = ['Target', 'Count']
     df_bigrams = pd.DataFrame(top_bigrams, columns=['Phrase', 'Count']).head(8)
     
-    # --- GEO LOGIC (FORCE COM -> US) ---
-    # Create a copy to avoid warnings
+    # --- GEO LOGIC (FIXED ISO-3) ---
     geo_df = df_main.copy()
+    geo_df['iso_alpha'] = geo_df['tld'].map(GENERIC_TLD_MAP)
+    geo_df = geo_df.dropna(subset=['iso_alpha']) # Remove unmappable TLDs
     
-    # Apply mapping: If it's in our map, use it. Otherwise assume it's a 2-letter country code.
-    geo_df['iso_alpha'] = geo_df['tld'].apply(lambda x: GENERIC_TLD_MAP.get(x, x.upper() if len(x) == 2 else None))
-    
-    # Drop unknowns
-    geo_df = geo_df.dropna(subset=['iso_alpha'])
-    
-    # Aggregate
     map_data = geo_df['iso_alpha'].value_counts().reset_index()
     map_data.columns = ['iso_alpha', 'count']
     
-    # Create a lookup for the JS click handler (Region -> Top TLDs)
-    # We want to know: "If I click US, what TLDs made it up?"
+    # Region Details for Click Handler
     region_details = {}
     for iso in map_data['iso_alpha']:
-        # Get top 3 TLDs for this ISO
         mask = geo_df['iso_alpha'] == iso
         top_tlds = geo_df[mask]['tld'].value_counts().head(3).index.tolist()
         region_details[iso] = {
@@ -63,14 +62,14 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
     # --- PLOTLY CONFIG ---
     layout_style = dict(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)',
         font=dict(family='JetBrains Mono, monospace', color=COLORS['text']),
-        margin=dict(l=10, r=10, t=30, b=10),
+        margin=dict(l=20, r=20, t=40, b=20),
         xaxis=dict(showgrid=True, gridcolor=COLORS['grid'], zeroline=False),
         yaxis=dict(showgrid=True, gridcolor=COLORS['grid'], zeroline=False)
     )
 
-    # 1. 3D Globe
+    # 1. 3D Globe (Fixed)
     fig_globe = px.scatter_geo(map_data, locations="iso_alpha", size="count", 
-                               hover_name="iso_alpha", size_max=40,
+                               hover_name="iso_alpha", size_max=50, # Bigger bubbles
                                projection="orthographic", color="count",
                                color_continuous_scale='Redor')
     
@@ -83,13 +82,13 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             showlakes=False,
             projection_type="orthographic"
         ),
-        height=400, margin=dict(l=0,r=0,t=0,b=0), 
+        height=350, margin=dict(l=0,r=0,t=0,b=0), 
         paper_bgcolor='rgba(0,0,0,0)', showlegend=False
     )
-    # Make markers clickable/hoverable with custom data
+    # Enable click events
     fig_globe.update_traces(marker=dict(line=dict(width=0, color=COLORS['accent'])))
 
-    # 2. Threat Radar
+    # 2. Radar
     avg_entropy = df_main['entropy'].mean()
     avg_len = df_main['length'].mean()
     avg_depth = df_main['depth'].mean()
@@ -176,6 +175,7 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             .terminal {{ background: #050505; border: 1px solid #333; padding: 15px; font-family: 'JetBrains Mono'; height: 100%; display: flex; flex-direction: column; }}
             .term-input {{ background: transparent; border: none; border-bottom: 1px solid #333; color: var(--accent); font-family: inherit; font-size: 16px; padding: 10px; width: 100%; outline: none; }}
             .term-output {{ flex-grow: 1; overflow-y: auto; margin-top: 10px; font-size: 13px; color: #aaa; scroll-behavior: smooth; }}
+            .term-match {{ color: var(--danger); display: block; margin: 4px 0; }}
             .btn-group {{ display: flex; gap: 10px; }}
             .cyber-btn {{ background: rgba(0, 243, 255, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 8px 16px; text-decoration: none; font-family: 'JetBrains Mono'; font-size: 12px; font-weight: 700; text-transform: uppercase; transition: 0.3s; cursor: pointer; }}
             .cyber-btn:hover {{ background: var(--accent); color: #000; box-shadow: 0 0 15px var(--accent); }}
@@ -225,7 +225,7 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             <div style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="card">
                     <div class="card-header"><h3>Global Threat Map</h3><span class="info-toggle" onclick="toggleInfo('info-globe')">?</span></div>
-                    <div id="info-globe" class="info-panel">Click a country to see detailed threat breakdown. .COM/.NET are mapped to US for visualization.</div>
+                    <div id="info-globe" class="info-panel">Click a country to see detailed threat breakdown. .COM/.NET are mapped to USA.</div>
                     
                     <div class="globe-container">
                         <div class="globe-main" id="globe-plot">
@@ -321,8 +321,6 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
                         <div class="diag-row">
                             <a href="https://dnsleaktest.com" target="_blank" class="diag-card"><span class="diag-title">DNS LEAK TEST ↗</span><span class="diag-desc">Verify DNS path.</span></a>
                             <a href="https://rebind.network" target="_blank" class="diag-card"><span class="diag-title">REBINDING CHECK ↗</span><span class="diag-desc">Test router vulnerability.</span></a>
-                            <a href="https://d3ward.github.io/toolz/adblock.html" target="_blank" class="diag-card"><span class="diag-title">ADBLOCK BENCHMARK ↗</span><span class="diag-desc">3rd party stress test.</span></a>
-                            <a href="https://dnscheck.tools" target="_blank" class="diag-card"><span class="diag-title">DNSSEC & SPEED ↗</span><span class="diag-desc">Detailed diagnostics.</span></a>
                         </div>
                     </div>
                 </div>
@@ -355,7 +353,6 @@ def generate_dashboard(df_main, history, churn_stats, removed_tld_count, source_
             const regionData = {json.dumps(region_details)};
             
             // --- GLOBE CLICK HANDLER ---
-            // Hook into Plotly's click event
             const globeDiv = document.querySelector('.globe-main .plotly-graph-div');
             if(globeDiv) {{
                 globeDiv.on('plotly_click', function(data){{
