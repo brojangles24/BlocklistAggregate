@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.FINAL_BOSS"
+VERSION = "2026.02.16.FINAL_BOSS_V2"
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -152,7 +152,7 @@ def main():
         # Enforcements
         f.write(f"\n{NSFW_REGEX_RAW}\n{YOUTUBE_RULE}\n")
 
-    print(f"Done. Deleted {syntax_nuke} ghost rules and {tld_nuke} TLD redundancies.")
+    print(f"Done. Deleted {syntax_nuke} ghost rules, {tld_nuke} TLD redundancies, and {keyword_nuke} keyword matches.")
 
 if __name__ == "__main__":
     main()
