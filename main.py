@@ -17,17 +17,15 @@ SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
-    "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/adguard_popup_filter.txt",
-    "https://adguardteam.github.io/AdguardFilters/BaseFilter/sections/adservers.txt",
-    "https://adguardteam.github.io/AdguardFilters/BaseFilter/sections/adservers_firstparty.txt",
-    "https://adguardteam.github.io/AdguardFilters/SpywareFilter/sections/tracking_servers_firstparty.txt",
-    "https://adguardteam.github.io/AdguardFilters/SpywareFilter/sections/tracking_servers.txt",
-    "https://adguardteam.github.io/AdguardFilters/SpywareFilter/sections/mobile.txt",
-    "https://adguardteam.github.io/AdguardFilters/BaseFilter/sections/adservers.txt",
+    "https://filters.adtidy.org/extension/chromium/filters/3.txt"    # DNS-Optimized Tracking
 ]
 
-NSFW_REGEX = re.compile(r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo)")
+# Keywords to Nuke (Applied to building AND injected into the list)
+NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo)"
+NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
+NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
 
+# YouTube Safety Rule
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
 OUTPUT_FILE = "blocklist.txt"
@@ -42,7 +40,6 @@ def fetch_url(url):
         return []
 
 def main():
-    raw_rules = set()
     blocked_tlds = set()
     advanced_rules = set()
     simple_domains = set()
@@ -50,86 +47,88 @@ def main():
     
     start_time = datetime.now()
 
-    # 1. Download and Categorize
+    # 1. First Pass: Download and Identify Nuclear TLDs
+    print(f"Fetching {len(SOURCES)} sources...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in SOURCES}
+        all_lines = []
         for future in concurrent.futures.as_completed(future_to_url):
-            lines = future.result()
-            for line in lines:
-                line = line.strip().lower()
-                if not line or line.startswith(('#', '!', ';')): continue
-                if NSFW_REGEX.search(line): continue
-                
-                # A. Handle Allows
-                if line.startswith("@@"):
-                    allow_rules.add(line)
-                    continue
-                
-                # B. Handle Advanced Rules ($)
-                if "$" in line:
-                    advanced_rules.add(line)
-                    continue
+            all_lines.extend(future.result())
 
-                # C. Handle Nuclear TLD blocks (||*.tld^)
-                if line.startswith("||*."):
-                    tld = line.replace("||*.", "").replace("^", "")
-                    blocked_tlds.add(tld)
-                    advanced_rules.add(line) # Keep TLD rules in the "protected" set
-                    continue
-                
-                # D. Extract naked domain for pruning logic
-                domain = line.replace("||", "").replace("^", "").strip()
-                parts = domain.split()
-                domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1")) else parts[0]
-                
-                if "." in domain and not domain.startswith("."):
-                    # Check if TLD is already nuked
-                    tld = domain.split('.')[-1]
-                    if tld not in blocked_tlds:
-                        simple_domains.add(domain)
+    # 2. Categorize and Filter
+    print("Categorizing rules and applying TLD Firewall...")
+    for line in all_lines:
+        # Strip comments and whitespace
+        line = line.strip().lower()
+        line = line.split('#')[0].split('!')[0].split(';')[0].strip()
+        
+        if not line or "adblock plus" in line: continue
+        
+        # Nuclear NSFW Scrub
+        if NSFW_REGEX_COMP.search(line): continue
+        
+        # Identify TLDs to nuke (||*.tld^ or ||tld^)
+        if line.startswith("||*.") and "^" in line and "$" not in line:
+            tld = line.replace("||*.", "").replace("^", "")
+            if "." not in tld: blocked_tlds.add(tld)
+            advanced_rules.add(line)
+            continue
 
-    print(f"Pruning {len(simple_domains):,} domains against {len(blocked_tlds)} Nuclear TLDs...")
+        # Handle Allows (Exceptions)
+        if line.startswith("@@"):
+            allow_rules.add(line)
+            continue
+        
+        # Handle Advanced Modifiers ($)
+        if "$" in line:
+            advanced_rules.add(line)
+            continue
 
-    # 2. Tree-Based Pruning for Simple Domains
-    # Reverse domains for efficient sorting/pruning
+        # Process standard domains for tree-pruning
+        domain = line.replace("||", "").replace("^", "").strip()
+        parts = domain.split()
+        # Handle hosts format (0.0.0.0 domain.com)
+        domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1")) else parts[0]
+        
+        if "." in domain and not domain.startswith("."):
+            tld = domain.split('.')[-1]
+            # TLD Firewall: Nuke it if it belongs to a blocked TLD
+            if tld in blocked_tlds:
+                continue
+            simple_domains.add(domain)
+
+    # 3. Exception-Aware Tree Pruning
+    print(f"Pruning {len(simple_domains):,} domains...")
     rev_domains = sorted(['.'.join(d.split('.')[::-1]) for d in simple_domains])
     pruned_rev = []
     last_added = ""
-    
     for rd in rev_domains:
-        if last_added and rd.startswith(last_added + "."):
-            continue
+        if last_added and rd.startswith(last_added + "."): continue
         pruned_rev.append(rd)
         last_added = rd
     
-    # 3. Final Construction
-    final_output = []
-    
-    # Add Advanced rules ($denyallow, ||*.tld^)
-    final_output.extend(list(advanced_rules))
-    
-    # Add Pruned Simple rules (converted back to AdGuard syntax)
+    # 4. Final Construction
+    final_output = list(advanced_rules)
     for rd in pruned_rev:
-        original = '.'.join(rd.split('.')[::-1])
-        final_output.append(f"||{original}^")
-        
-    # Add Allow rules (@@)
+        final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.extend(list(allow_rules))
     
-    # Add YouTube Rule
+    # Final cleanup and enforcement injection
     final_output.sort()
+    final_output.append(NSFW_REGEX_RAW)
     final_output.append(YOUTUBE_RULE)
 
     with open(OUTPUT_FILE, "w") as f:
         f.write("############################################################\n")
-        f.write("# ISAAC'S PROACTIVE MASTER (TREE-PRUNED & NUCLEAR)\n")
+        f.write("# ISAAC'S PROACTIVE MASTER (NUCLEAR EDITION)\n")
         f.write(f"# Revision: {VERSION}\n")
-        f.write(f"# Pruned Simple Rules: {len(pruned_rev):,}\n")
-        f.write(f"# Protected TLD/Advanced Rules: {len(advanced_rules):,}\n")
+        f.write(f"# Rules: {len(final_output):,} | TLDs: {len(blocked_tlds)}\n")
+        f.write("# Cleanup: Tree-Pruned, NSFW-Scrubbed, TLD-Nuked\n")
         f.write("############################################################\n\n")
         f.write("\n".join(final_output))
 
-    print(f"Process completed in {datetime.now() - start_time}.")
+    print(f"Completed in {datetime.now() - start_time}.")
+    print(f"Final Rule Count: {len(final_output):,}")
 
 if __name__ == "__main__":
     main()
