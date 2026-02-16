@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.FINAL_FIX"
+VERSION = "2026.02.16.ULTRA"
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -53,52 +53,55 @@ def main():
 
     spam_tlds_raw = fetch_url(SPAM_TLD_URL)
 
-    # 2. Extract TLDs for the Firewall (The Fix)
-    print("Extracting TLDs from Hagezi list to build the firewall...")
+    # 2. Extract TLD strings for the Firewall
+    print("Extracting TLDs for the cross-reference firewall...")
     for line in spam_tlds_raw:
         clean = line.strip().lower()
-        # Look for wildcards: ||*.xyz^ or *.xyz^
-        if "*." in clean:
-            match = re.search(r"\*\.([a-z0-9\-]+)\^", clean)
-            if match:
-                blocked_tlds.add(match.group(1))
-        # Look for simple TLD blocks: ||xyz^
-        elif clean.startswith("||") and clean.count(".") == 0 and clean.endswith("^"):
-            tld = clean.replace("||", "").replace("^", "")
-            blocked_tlds.add(tld)
+        # Extracts 'xyz' from '||*.xyz^' or '||xyz^'
+        tld_match = re.search(r"(\*\.|\^|\|\|)([a-z0-9\-]+)\^", clean)
+        if tld_match:
+            tld = tld_match.group(2)
+            if tld and len(tld) > 1:
+                blocked_tlds.add(tld)
 
-    print(f"Firewall active for {len(blocked_tlds)} TLDs (including .xyz, .top, etc.)")
-
-    # 3. Process Core Sources with TLD and Keyword Scrubbing
+    # 3. Process Core Sources with "Deep Scan" TLD and Keyword Scrubbing
     tld_nuke_count = 0
     keyword_nuke_count = 0
     
     for line in all_lines:
-        line = line.strip().lower()
-        line = line.split('#')[0].split('!')[0].split(';')[0].strip()
+        line_clean = line.strip().lower()
+        # Split comments
+        line_clean = line_clean.split('#')[0].split('!')[0].split(';')[0].strip()
         
-        if not line or "adblock plus" in line: continue
+        if not line_clean or "adblock plus" in line_clean: continue
         
         # Keyword Nuke
-        if NSFW_REGEX_COMP.search(line):
+        if NSFW_REGEX_COMP.search(line_clean):
             keyword_nuke_count += 1
             continue
         
-        if line.startswith("@@") or "||~" in line:
-            allow_rules.add(line)
-        elif "$" in line:
-            advanced_rules.add(line)
+        # --- THE AGGRESSIVE TLD SCRUB ---
+        # Check if the line contains any blocked TLD pattern
+        is_redundant = False
+        for tld in blocked_tlds:
+            if f".{tld}" in line_clean:
+                is_redundant = True
+                break
+        
+        if is_redundant:
+            tld_nuke_count += 1
+            continue
+        # -------------------------------
+
+        if line_clean.startswith("@@") or "||~" in line_clean:
+            allow_rules.add(line_clean)
+        elif "$" in line_clean:
+            advanced_rules.add(line_clean)
         else:
-            domain = line.replace("||", "").replace("^", "").strip()
+            domain = line_clean.replace("||", "").replace("^", "").strip()
             parts = domain.split()
             domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1")) else parts[0]
-            
             if "." in domain and not domain.startswith("."):
-                tld = domain.split('.')[-1]
-                # THE TLD FIREWALL: Check if the domain's TLD is in our blocked set
-                if tld in blocked_tlds:
-                    tld_nuke_count += 1
-                    continue
                 simple_domains.add(domain)
 
     # 4. Tree-Pruning
@@ -111,14 +114,13 @@ def main():
         pruned_rev.append(rd)
         last_added = rd
     
-    # 5. Assemble
+    # 5. Assemble and Final Write
     final_output = list(advanced_rules)
     for rd in pruned_rev:
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.extend(list(allow_rules))
     final_output.sort()
     
-    # 6. Final Write
     with open(OUTPUT_FILE, "w") as f:
         f.write("############################################################\n")
         f.write("# PART 1: HAGEZI SPAM TLD LIST (UNEDITED RAW)\n")
@@ -128,14 +130,13 @@ def main():
 
         f.write("############################################################\n")
         f.write(f"# PART 2: OPTIMIZED CORE - {VERSION}\n")
-        f.write(f"# Scrubbed: {keyword_nuke_count} Keywords | {tld_nuke_count} TLD Redundancies\n")
+        f.write(f"# Removed: {keyword_nuke_count} Keywords | {tld_nuke_count} TLD Redundancies\n")
         f.write("############################################################\n\n")
         f.write("\n".join(final_output))
-        f.write(f"\n{NSFW_REGEX_RAW}")
-        f.write(f"\n{YOUTUBE_RULE}\n")
+        f.write(f"\n{NSFW_REGEX_RAW}\n{YOUTUBE_RULE}\n")
 
-    print(f"Completed. Nuked {tld_nuke_count} domains for matching TLDs.")
-    print(f"Nuked {keyword_nuke_count} rules for matching Keywords.")
+    print(f"Success. Nuked {tld_nuke_count} rules matching Hagezi TLDs.")
+    print(f"Nuked {keyword_nuke_count} rules matching NSFW Keywords.")
 
 if __name__ == "__main__":
     main()
