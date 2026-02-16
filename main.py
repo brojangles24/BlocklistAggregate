@@ -48,31 +48,29 @@ def parse_lines(lines, is_spam_tld_list=False):
         line = line.strip().lower()
         if not line or line.startswith(('#', '!', ';')): continue
         
-        # 1. Detect Allows (@@) - CRITICAL: Do this BEFORE any other processing
+        # 1. Detect Allows (@@)
         is_allow = line.startswith('@@')
-        current_rule = line[2:] if is_allow else line
+        rule_content = line[2:] if is_allow else line
         
-        # 2. Clean AdGuard/Hosts syntax/modifiers
-        current_rule = current_rule.split('#')[0].split(';')[0].split('$')[0].strip()
-        if current_rule.startswith("||"): current_rule = current_rule[2:]
-        if current_rule.endswith("^"): current_rule = current_rule[:-1]
-        if current_rule.startswith("*."): current_rule = current_rule[2:]
+        # 2. Extract domain for logic, but don't lose the format
+        clean_domain = rule_content.split('#')[0].split(';')[0].split('$')[0].strip()
+        if clean_domain.startswith("||"): clean_domain = clean_domain[2:]
+        if clean_domain.endswith("^"): clean_domain = clean_domain[:-1]
+        if clean_domain.startswith("*."): clean_domain = clean_domain[2:]
         
-        # 3. Handle TLD-only rules in the Spam TLD list
-        # Example: "top" or ".top" or "||top^"
-        if is_spam_tld_list and not is_allow and ('.' not in current_rule or current_rule.startswith('.')):
-            tld = current_rule.strip('.')
-            spam_tlds.add(tld)
-            continue
-
-        # 4. Extract domain
-        parts = current_rule.split()
+        # Extract actual domain from hosts format if needed
+        parts = clean_domain.split()
         domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1", "::1")) else parts[0]
 
         if not domain or is_ip(domain): continue
         if NSFW_REGEX.search(domain): continue
 
-        # 5. Route to correct bucket
+        # 3. Handle TLD-only entries in the spam list
+        if is_spam_tld_list and not is_allow and ('.' not in domain or domain.startswith('.')):
+            tld = domain.strip('.')
+            spam_tlds.add(tld)
+            continue
+
         if is_allow:
             allows.add(domain)
         else:
@@ -81,39 +79,43 @@ def parse_lines(lines, is_spam_tld_list=False):
                 
     return blocks, allows, spam_tlds
 
-def prune_blocks(block_set, allow_set, spam_tld_set):
-    print(f"Applying TLD Firewall and Pruning...")
+def prune_and_reformat(block_set, allow_set, spam_tld_set):
+    print(f"Filtering {len(block_set):,} blocks with TLD Firewall...")
     
-    # 1. TLD Firewall: Remove domains if TLD is blocked, UNLESS they have an allow rule
-    filtered_blocks = set()
+    # 1. Filter out domains that fall under a blocked TLD (unless allowed)
+    filtered = set()
     for d in block_set:
         tld = d.split('.')[-1]
         if tld in spam_tld_set:
-            if d not in allow_set: # Only skip if NOT whitelisted
-                continue
-        filtered_blocks.add(d)
+            if d in allow_set:
+                filtered.add(d)
+            continue
+        filtered.add(d)
 
-    # 2. Tree-based Pruning (The "Optimizer")
-    rev_blocks = sorted(['.'.join(d.split('.')[::-1]) for d in filtered_blocks])
+    # 2. Tree Pruning
+    rev_blocks = sorted(['.'.join(d.split('.')[::-1]) for d in filtered])
     pruned_rev = []
     last_added = ""
     for rb in rev_blocks:
         current_domain = '.'.join(rb.split('.')[::-1])
-        # Only prune if it's a subdomain AND doesn't have a specific exception rule
         if last_added and rb.startswith(last_added + "."):
             if current_domain not in allow_set:
                 continue
         pruned_rev.append(rb)
         last_added = rb
     
-    # 3. Format back with AdGuard Signs ||...^
-    final_signed_blocks = [f"||{'.'.join(d.split('.')[::-1])}^" for d in pruned_rev]
+    # 3. Final Re-Formatting: ADD THE SIGNS BACK
+    final_list = [f"||{'.'.join(d.split('.')[::-1])}^" for d in pruned_rev]
     
-    # 4. Add the TLD Wildcards themselves (the firewall rules)
+    # 4. Add the TLD Firewalls as wildcards
     for tld in spam_tld_set:
-        final_signed_blocks.append(f"||*.{tld}^")
+        final_list.append(f"||*.{tld}^")
         
-    return final_signed_blocks
+    # 5. Add the Allows with proper syntax
+    for a in allow_set:
+        final_list.append(f"@@||{a}^")
+        
+    return sorted(final_list)
 
 def main():
     all_blocks = set()
@@ -121,37 +123,26 @@ def main():
     all_spam_tlds = set()
     start_time = datetime.now()
 
-    # Concurrent fetch
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in SOURCES}
         for future in concurrent.futures.as_completed(future_to_url):
             lines, url = future.result()
-            is_tld_src = "spam-tlds" in url
-            b, a, t = parse_lines(lines, is_spam_tld_list=is_tld_src)
+            b, a, t = parse_lines(lines, is_spam_tld_list=("spam-tlds" in url))
             all_blocks.update(b)
             all_allows.update(a)
             all_spam_tlds.update(t)
-            print(f"  + Scanned {url[:45]}...")
 
-    # Prune and re-format
-    final_blocks = prune_blocks(all_blocks, all_allows, all_spam_tlds)
-    
-    # Combine with properly formatted allows
-    final_list = sorted(final_blocks)
-    final_list += sorted([f"@@||{a}^" for a in all_allows])
-    
-    # Add YouTube rewrite
-    final_list.append(YOUTUBE_RULE)
+    final_rules = prune_and_reformat(all_blocks, all_allows, all_spam_tlds)
+    final_rules.append(YOUTUBE_RULE) # Add the YouTube Regex
 
     with open(OUTPUT_FILE, "w") as f:
         f.write("############################################################\n")
-        f.write("# ISAAC'S ULTIMATE EXCEPTION-AWARE MASTER LIST\n")
-        f.write(f"# Revision: {VERSION} | TLD Firewall: ON | YouTube: Restricted\n")
-        f.write(f"# Statistics: Blocks: {len(final_blocks):,} | Allows: {len(all_allows):,}\n")
+        f.write("# ISAAC'S ADGUARD-SYNTAX MASTER LIST (NUCLEAR EDITION)\n")
+        f.write(f"# TLD Firewall: {len(all_spam_tlds)} TLDs Blocked as ||*.tld^\n")
         f.write("############################################################\n\n")
-        f.write("\n".join(final_list))
+        f.write("\n".join(final_rules))
 
-    print(f"Finished in {datetime.now() - start_time}. Final rules: {len(final_list):,}")
+    print(f"Finished in {datetime.now() - start_time}. Total rules: {len(final_rules):,}")
 
 if __name__ == "__main__":
     main()
