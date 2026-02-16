@@ -57,8 +57,6 @@ def main():
 
     print("Fetching RAW Spam TLD list...")
     spam_tlds = fetch_url(SPAM_TLD_URL)
-    # Filter comments from the raw list for clean merging
-    spam_tlds = [line.strip() for line in spam_tlds if line.strip() and not line.startswith(('#', '!', ';'))]
 
     # 2. Process Core Sources (Pruning & Scrubbing)
     print("Executing deduplication and keyword scrubbing...")
@@ -90,30 +88,38 @@ def main():
         pruned_rev.append(rd)
         last_added = rd
     
-    # 4. Final Construction
-    print("Merging and sorting master file...")
+    # 4. Construction (Building the Sorted Core)
+    print("Assembling optimized core list...")
     final_output = list(advanced_rules)
     for rd in pruned_rev:
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.extend(list(allow_rules))
+    final_output.sort()
     
-    # Merge the RAW Spam TLDs here
-    all_final_rules = final_output + spam_tlds
-    all_final_rules.sort()
-    
-    # 5. Writing the file
+    # 5. Writing the file with the Bottom Appendix
+    print(f"Writing {OUTPUT_FILE}...")
     with open(OUTPUT_FILE, "w") as f:
+        # Header
         f.write("############################################################\n")
-        f.write(f"# ISAAC'S PROACTIVE MASTER - REVISION: {VERSION}\n")
-        f.write(f"# Status: Tree-Pruned, NSFW-Scrubbed, RAW-TLD Appended\n")
+        f.write(f"# ISAAC'S PROACTIVE MASTER - {VERSION}\n")
+        f.write("# Part 1: Sorted & Tree-Pruned Core Rules\n")
         f.write("############################################################\n\n")
         
-        f.write("\n".join(all_final_rules))
+        # Optimized Rules
+        f.write("\n".join(final_output))
+        
+        # Enforcement Rules
         f.write(f"\n{NSFW_REGEX_RAW}")
-        f.write(f"\n{YOUTUBE_RULE}")
+        f.write(f"\n{YOUTUBE_RULE}\n\n")
+        
+        # The Nuclear Appendix (Raw & Unedited)
+        f.write("############################################################\n")
+        f.write("# PART 2: HAGEZI SPAM TLD LIST (UNEDITED RAW)\n")
+        f.write("############################################################\n")
+        f.write("\n".join(spam_tlds))
 
     print(f"Completed in {datetime.now() - start_time}.")
-    print(f"Final Rule Count: {len(all_final_rules):,}")
+    print(f"Successfully generated {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     main()
