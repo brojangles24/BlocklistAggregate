@@ -5,8 +5,9 @@ from datetime import datetime
 
 # --- CONFIGURATION ---
 VERSION = datetime.now().strftime("%Y.%m.%d.01")
-SOURCES = [
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt",
+
+# 11 Core sources for optimization
+CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
@@ -17,15 +18,16 @@ SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
-    "https://filters.adtidy.org/extension/chromium/filters/3.txt"    # DNS-Optimized Tracking
+    "https://filters.adtidy.org/extension/chromium/filters/3.txt"
 ]
 
-# Nuclear NSFW Scrubbing
-NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo)"
-NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
-NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
+# The "Unedited" Source
+SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
-# YouTube Safety Rule
+# Keywords & Enforcement
+NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo)"
+NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
+NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
 OUTPUT_FILE = "blocklist.txt"
@@ -40,62 +42,46 @@ def fetch_url(url):
         return []
 
 def main():
-    blocked_tlds = set()
     advanced_rules = set()
     simple_domains = set()
     allow_rules = set()
     start_time = datetime.now()
 
-    print(f"Starting Multi-Threaded Fetch for {len(SOURCES)} sources...")
+    # 1. Fetch Everything
+    print(f"Fetching {len(CORE_SOURCES)} core sources...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_url = {executor.submit(fetch_url, url): url for url in SOURCES}
+        future_to_url = {executor.submit(fetch_url, url): url for url in CORE_SOURCES}
         all_lines = []
         for future in concurrent.futures.as_completed(future_to_url):
             all_lines.extend(future.result())
 
-    print("Analyzing Syntax and Applying Nuclear TLD Firewall...")
+    print("Fetching RAW Spam TLD list...")
+    spam_tlds = fetch_url(SPAM_TLD_URL)
+    # Filter comments from the raw list for clean merging
+    spam_tlds = [line.strip() for line in spam_tlds if line.strip() and not line.startswith(('#', '!', ';'))]
+
+    # 2. Process Core Sources (Pruning & Scrubbing)
+    print("Executing deduplication and keyword scrubbing...")
     for line in all_lines:
-        # Strip comments (full-line and inline)
         line = line.strip().lower()
         line = line.split('#')[0].split('!')[0].split(';')[0].strip()
         
         if not line or "adblock plus" in line: continue
-        
-        # 1. Proactive Keyword Scrub
         if NSFW_REGEX_COMP.search(line): continue
         
-        # 2. Identify Nuclear TLDs & Preserve Wildcard Rule
-        if line.startswith("||*.") and "^" in line and "$" not in line:
-            tld = line.replace("||*.", "").replace("^", "")
-            if "." not in tld: 
-                blocked_tlds.add(tld)
-            advanced_rules.add(line) 
-            continue
-
-        # 3. Handle Allows and Inversions (||~google...)
         if line.startswith("@@") or "||~" in line:
             allow_rules.add(line)
-            continue
-        
-        # 4. Handle Advanced Modifiers ($)
-        if "$" in line:
+        elif "$" in line:
             advanced_rules.add(line)
-            continue
+        else:
+            domain = line.replace("||", "").replace("^", "").strip()
+            parts = domain.split()
+            domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1")) else parts[0]
+            if "." in domain and not domain.startswith("."):
+                simple_domains.add(domain)
 
-        # 5. Extract Domains for Tree-Pruning
-        domain = line.replace("||", "").replace("^", "").strip()
-        parts = domain.split()
-        domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1")) else parts[0]
-        
-        if "." in domain and not domain.startswith("."):
-            tld = domain.split('.')[-1]
-            # TLD Firewall
-            if tld in blocked_tlds:
-                continue
-            simple_domains.add(domain)
-
-    # 3. Tree-Based Pruning
-    print(f"Pruning {len(simple_domains):,} redundant subdomains...")
+    # 3. Tree-Pruning
+    print(f"Pruning {len(simple_domains):,} domains...")
     rev_domains = sorted(['.'.join(d.split('.')[::-1]) for d in simple_domains])
     pruned_rev = []
     last_added = ""
@@ -105,26 +91,29 @@ def main():
         last_added = rd
     
     # 4. Final Construction
+    print("Merging and sorting master file...")
     final_output = list(advanced_rules)
     for rd in pruned_rev:
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.extend(list(allow_rules))
     
-    # Assembly and Sort
-    final_output.sort()
-    final_output.append(NSFW_REGEX_RAW)
-    final_output.append(YOUTUBE_RULE)
-
+    # Merge the RAW Spam TLDs here
+    all_final_rules = final_output + spam_tlds
+    all_final_rules.sort()
+    
+    # 5. Writing the file
     with open(OUTPUT_FILE, "w") as f:
         f.write("############################################################\n")
-        f.write("# ISAAC'S PROACTIVE MASTER (NUCLEAR EDITION)\n")
-        f.write(f"# Revision: {VERSION}\n")
-        f.write(f"# Total Rules: {len(final_output):,} | Nuked TLDs: {len(blocked_tlds)}\n")
+        f.write(f"# ISAAC'S PROACTIVE MASTER - REVISION: {VERSION}\n")
+        f.write(f"# Status: Tree-Pruned, NSFW-Scrubbed, RAW-TLD Appended\n")
         f.write("############################################################\n\n")
-        f.write("\n".join(final_output))
+        
+        f.write("\n".join(all_final_rules))
+        f.write(f"\n{NSFW_REGEX_RAW}")
+        f.write(f"\n{YOUTUBE_RULE}")
 
     print(f"Completed in {datetime.now() - start_time}.")
-    print(f"Final Rule Count: {len(final_output):,}")
+    print(f"Final Rule Count: {len(all_final_rules):,}")
 
 if __name__ == "__main__":
     main()
