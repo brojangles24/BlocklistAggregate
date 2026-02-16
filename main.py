@@ -16,6 +16,7 @@ SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt"
 ]
 
 # Keywords to Nuke
@@ -25,6 +26,9 @@ NSFW_REGEX = re.compile(r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|b
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
 OUTPUT_FILE = "blocklist.txt"
+
+def is_ip(val):
+    return re.match(r"^\d{1,3}(\.\d{1,3}){3}$", val) is not None
 
 def fetch_url(url):
     try:
@@ -44,70 +48,72 @@ def parse_lines(lines, is_spam_tld_list=False):
         line = line.strip().lower()
         if not line or line.startswith(('#', '!', ';')): continue
         
-        # Detect Allows
+        # 1. Detect Allows (@@) - CRITICAL: Do this BEFORE any other processing
         is_allow = line.startswith('@@')
-        if is_allow: line = line[2:]
+        current_rule = line[2:] if is_allow else line
         
-        # Clean AdGuard/Hosts syntax
-        line = line.split('#')[0].split(';')[0].split('$')[0].strip()
-        if line.startswith("||"): line = line[2:]
-        if line.endswith("^"): line = line[:-1]
-        if line.startswith("*."): line = line[2:]
+        # 2. Clean AdGuard/Hosts syntax/modifiers
+        current_rule = current_rule.split('#')[0].split(';')[0].split('$')[0].strip()
+        if current_rule.startswith("||"): current_rule = current_rule[2:]
+        if current_rule.endswith("^"): current_rule = current_rule[:-1]
+        if current_rule.startswith("*."): current_rule = current_rule[2:]
         
-        # Extract domain
-        parts = line.split()
-        domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1", "::1")) else parts[0]
-
-        # Validation
-        if not domain: continue
-
-        # Keyword Filter (Remove if matched)
-        if NSFW_REGEX.search(domain):
+        # 3. Handle TLD-only rules in the Spam TLD list
+        # Example: "top" or ".top" or "||top^"
+        if is_spam_tld_list and not is_allow and ('.' not in current_rule or current_rule.startswith('.')):
+            tld = current_rule.strip('.')
+            spam_tlds.add(tld)
             continue
 
-        if is_spam_tld_list and not is_allow:
-            # If it's a TLD list, treat entries as TLDs to block everything under them
-            # Format: .top or top
-            tld = domain.strip('.')
-            spam_tlds.add(tld)
-            blocks.add(f"||*.{tld}^")
+        # 4. Extract domain
+        parts = current_rule.split()
+        domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1", "::1")) else parts[0]
+
+        if not domain or is_ip(domain): continue
+        if NSFW_REGEX.search(domain): continue
+
+        # 5. Route to correct bucket
+        if is_allow:
+            allows.add(domain)
         else:
             if '.' in domain and not domain.startswith('.'):
-                if is_allow: allows.add(domain)
-                else: blocks.add(domain)
+                blocks.add(domain)
                 
     return blocks, allows, spam_tlds
 
 def prune_blocks(block_set, allow_set, spam_tld_set):
-    """
-    1. Removes any domain whose TLD is in the spam list.
-    2. Performs standard tree pruning.
-    """
-    print(f"Pruning and TLD filtering...")
-    filtered_blocks = set()
+    print(f"Applying TLD Firewall and Pruning...")
     
+    # 1. TLD Firewall: Remove domains if TLD is blocked, UNLESS they have an allow rule
+    filtered_blocks = set()
     for d in block_set:
-        # TLD Firewall: Remove domain if its TLD is in the spam list
-        # (Unless it is already the wildcard rule itself)
-        if not d.startswith("||*."):
-            tld = d.split('.')[-1]
-            if tld in spam_tld_set and d not in allow_set:
+        tld = d.split('.')[-1]
+        if tld in spam_tld_set:
+            if d not in allow_set: # Only skip if NOT whitelisted
                 continue
         filtered_blocks.add(d)
 
-    # Standard Tree Pruning
+    # 2. Tree-based Pruning (The "Optimizer")
     rev_blocks = sorted(['.'.join(d.split('.')[::-1]) for d in filtered_blocks])
     pruned_rev = []
     last_added = ""
     for rb in rev_blocks:
         current_domain = '.'.join(rb.split('.')[::-1])
+        # Only prune if it's a subdomain AND doesn't have a specific exception rule
         if last_added and rb.startswith(last_added + "."):
             if current_domain not in allow_set:
                 continue
         pruned_rev.append(rb)
         last_added = rb
+    
+    # 3. Format back with AdGuard Signs ||...^
+    final_signed_blocks = [f"||{'.'.join(d.split('.')[::-1])}^" for d in pruned_rev]
+    
+    # 4. Add the TLD Wildcards themselves (the firewall rules)
+    for tld in spam_tld_set:
+        final_signed_blocks.append(f"||*.{tld}^")
         
-    return ['.'.join(d.split('.')[::-1]) for d in pruned_rev]
+    return final_signed_blocks
 
 def main():
     all_blocks = set()
@@ -115,38 +121,37 @@ def main():
     all_spam_tlds = set()
     start_time = datetime.now()
 
+    # Concurrent fetch
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in SOURCES}
         for future in concurrent.futures.as_completed(future_to_url):
             lines, url = future.result()
-            is_tld = "spam-tlds" in url
-            b, a, t = parse_lines(lines, is_spam_tld_list=is_tld)
+            is_tld_src = "spam-tlds" in url
+            b, a, t = parse_lines(lines, is_spam_tld_list=is_tld_src)
             all_blocks.update(b)
             all_allows.update(a)
             all_spam_tlds.update(t)
-            print(f"  + Processed {url[:45]}...")
+            print(f"  + Scanned {url[:45]}...")
 
-    raw_block_count = len(all_blocks)
+    # Prune and re-format
     final_blocks = prune_blocks(all_blocks, all_allows, all_spam_tlds)
     
-    # Combine everything
-    final_list = sorted(final_blocks + [f"@@||{a}^" for a in all_allows])
+    # Combine with properly formatted allows
+    final_list = sorted(final_blocks)
+    final_list += sorted([f"@@||{a}^" for a in all_allows])
     
-    # Add the YouTube Rule at the end
+    # Add YouTube rewrite
     final_list.append(YOUTUBE_RULE)
 
     with open(OUTPUT_FILE, "w") as f:
         f.write("############################################################\n")
-        f.write("# ISAAC'S ULTIMATE MASTER BLOCKLIST\n")
-        f.write(f"# Revision: {VERSION}\n")
-        f.write(f"# TLD Firewall: ACTIVE ({len(all_spam_tlds)} TLDs)\n")
-        f.write(f"# Keyword Filtering: ACTIVE (NSFW Scrubbed)\n")
-        f.write(f"# YouTube Restricted Mode: ENABLED\n")
-        f.write(f"# Blocks: {len(final_blocks):,} | Allows: {len(all_allows):,}\n")
+        f.write("# ISAAC'S ULTIMATE EXCEPTION-AWARE MASTER LIST\n")
+        f.write(f"# Revision: {VERSION} | TLD Firewall: ON | YouTube: Restricted\n")
+        f.write(f"# Statistics: Blocks: {len(final_blocks):,} | Allows: {len(all_allows):,}\n")
         f.write("############################################################\n\n")
         f.write("\n".join(final_list))
 
-    print(f"Done! Final count: {len(final_list):,} (Pruned {raw_block_count - len(final_blocks):,} entries)")
+    print(f"Finished in {datetime.now() - start_time}. Final rules: {len(final_list):,}")
 
 if __name__ == "__main__":
     main()
