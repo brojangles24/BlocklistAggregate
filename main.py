@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.FINAL_BOSS_V3"
+VERSION = "2026.02.16.ZERO_EXCEPTION_NUCLEAR"
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -41,7 +41,6 @@ def main():
     blocked_tlds = set()
     advanced_rules = set()
     simple_domains = set()
-    allow_rules = set()
     start_time = datetime.now()
 
     print("Fetching sources...")
@@ -63,11 +62,12 @@ def main():
             if tld and len(tld) > 1:
                 blocked_tlds.add(tld)
 
-    # 2. Surgical Scrub (The Meat of the Script)
-    print("Surgically scrubbing core lists...")
+    # 2. Surgical Scrub
+    print("Surgically scrubbing core lists and nuking exceptions...")
     tld_nuke = 0
     keyword_nuke = 0
     syntax_nuke = 0
+    exception_nuke = 0
 
     for line in all_lines:
         line_clean = line.strip().lower()
@@ -75,7 +75,12 @@ def main():
         
         if not line_clean or "adblock plus" in line_clean: continue
         
-        # A. SCRUB INCOMPATIBLE SYNTAX (Cookies, Paths, Browser-only Regex)
+        # A. NUKE ALL EXCEPTIONS (The request)
+        if line_clean.startswith("@@"):
+            exception_nuke += 1
+            continue
+
+        # B. SCRUB INCOMPATIBLE SYNTAX (Cookies, Paths, Browser-only Regex)
         if line_clean.startswith("/") and any(x in line_clean for x in [".js", ".php", ".png", ".jpg", "/api/", "/v1/"]):
             syntax_nuke += 1
             continue
@@ -83,12 +88,12 @@ def main():
             syntax_nuke += 1
             continue
 
-        # B. KEYWORD SCRUB
+        # C. KEYWORD SCRUB
         if NSFW_REGEX_COMP.search(line_clean):
             keyword_nuke += 1
             continue
         
-        # C. TLD REDUNDANCY SCRUB
+        # D. TLD REDUNDANCY SCRUB
         is_redundant = False
         for tld in blocked_tlds:
             if f".{tld}" in line_clean:
@@ -98,20 +103,9 @@ def main():
             tld_nuke += 1
             continue
 
-        # D. CATEGORIZE VALID RULES (With Surgical Exception Filter)
-        if line_clean.startswith("@@"):
-            # KEEP domain exceptions (@@||example.com^), TOSS path exceptions (@@/path/)
-            if "||" in line_clean and "/" not in line_clean.split("||")[1].split("$")[0]:
-                allow_rules.add(line_clean)
-            elif "|" in line_clean and "/" not in line_clean:
-                allow_rules.add(line_clean)
-            else:
-                syntax_nuke += 1
-                continue
-        elif "||~" in line_clean:
-            allow_rules.add(line_clean)
-        elif "$" in line_clean:
-            # Keep only DNS-compatible modifiers
+        # E. CATEGORIZE VALID RULES
+        if "$" in line_clean:
+            # Keep only DNS-compatible enforcements
             if any(x in line_clean for x in ["$dnsrewrite", "$important", "$client", "$network"]):
                 advanced_rules.add(line_clean)
         else:
@@ -135,33 +129,28 @@ def main():
     final_output = list(advanced_rules)
     for rd in pruned_rev:
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
-    final_output.extend(list(allow_rules))
     final_output.sort()
     
     # 5. Write to File
     with open(OUTPUT_FILE, "w") as f:
-        # Title Branding
-        f.write("! Title: Isaac's Extended Blocklist\n")
+        f.write("! Title: Isaac's Zero-Exception Nuclear List\n")
         f.write(f"! Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
         f.write(f"! Revision: {VERSION}\n\n")
 
-        # Part 1: RAW Hagezi TLDs
         f.write("############################################################\n")
         f.write("# PART 1: HAGEZI SPAM TLD LIST (UNEDITED RAW)\n")
         f.write("############################################################\n")
         f.write("\n".join(spam_tlds_raw) + "\n\n")
 
-        # Part 2: Optimized Core
         f.write("############################################################\n")
-        f.write(f"# PART 2: OPTIMIZED CORE (TLD/NSFW/SYNTAX SCRUBBED)\n")
-        f.write(f"# Removed: {syntax_nuke} Ghost Rules | {keyword_nuke} NSFW | {tld_nuke} Redundant\n")
+        f.write(f"# PART 2: OPTIMIZED CORE (EXCEPTIONS PURGED)\n")
+        f.write(f"# Nuked: {exception_nuke} Exceptions | {syntax_nuke} Ghost Rules\n")
         f.write("############################################################\n\n")
         f.write("\n".join(final_output) + "\n")
         
-        # Enforcements
         f.write(f"\n{NSFW_REGEX_RAW}\n{YOUTUBE_RULE}\n")
 
-    print(f"Done. Deleted {syntax_nuke} ghost rules, {tld_nuke} TLD redundancies, and {keyword_nuke} keyword matches.")
+    print(f"Done. Deleted {exception_nuke} exceptions, {syntax_nuke} ghost rules, and {keyword_nuke} keywords.")
 
 if __name__ == "__main__":
     main()
