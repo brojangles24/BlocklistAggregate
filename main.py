@@ -20,7 +20,7 @@ SOURCES = [
     "https://filters.adtidy.org/extension/chromium/filters/3.txt"    # DNS-Optimized Tracking
 ]
 
-# Keywords to Nuke (Applied to building AND injected into the list)
+# Nuclear NSFW Scrubbing
 NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo)"
 NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
 NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
@@ -44,61 +44,58 @@ def main():
     advanced_rules = set()
     simple_domains = set()
     allow_rules = set()
-    
     start_time = datetime.now()
 
-    # 1. First Pass: Download and Identify Nuclear TLDs
-    print(f"Fetching {len(SOURCES)} sources...")
+    print(f"Starting Multi-Threaded Fetch for {len(SOURCES)} sources...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in SOURCES}
         all_lines = []
         for future in concurrent.futures.as_completed(future_to_url):
             all_lines.extend(future.result())
 
-    # 2. Categorize and Filter
-    print("Categorizing rules and applying TLD Firewall...")
+    print("Analyzing Syntax and Applying Nuclear TLD Firewall...")
     for line in all_lines:
-        # Strip comments and whitespace
+        # Strip comments (full-line and inline)
         line = line.strip().lower()
         line = line.split('#')[0].split('!')[0].split(';')[0].strip()
         
         if not line or "adblock plus" in line: continue
         
-        # Nuclear NSFW Scrub
+        # 1. Proactive Keyword Scrub
         if NSFW_REGEX_COMP.search(line): continue
         
-        # Identify TLDs to nuke (||*.tld^ or ||tld^)
+        # 2. Identify Nuclear TLDs & Preserve Wildcard Rule
         if line.startswith("||*.") and "^" in line and "$" not in line:
             tld = line.replace("||*.", "").replace("^", "")
-            if "." not in tld: blocked_tlds.add(tld)
-            advanced_rules.add(line)
+            if "." not in tld: 
+                blocked_tlds.add(tld)
+            advanced_rules.add(line) 
             continue
 
-        # Handle Allows (Exceptions)
-        if line.startswith("@@"):
+        # 3. Handle Allows and Inversions (||~google...)
+        if line.startswith("@@") or "||~" in line:
             allow_rules.add(line)
             continue
         
-        # Handle Advanced Modifiers ($)
+        # 4. Handle Advanced Modifiers ($)
         if "$" in line:
             advanced_rules.add(line)
             continue
 
-        # Process standard domains for tree-pruning
+        # 5. Extract Domains for Tree-Pruning
         domain = line.replace("||", "").replace("^", "").strip()
         parts = domain.split()
-        # Handle hosts format (0.0.0.0 domain.com)
         domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1")) else parts[0]
         
         if "." in domain and not domain.startswith("."):
             tld = domain.split('.')[-1]
-            # TLD Firewall: Nuke it if it belongs to a blocked TLD
+            # TLD Firewall
             if tld in blocked_tlds:
                 continue
             simple_domains.add(domain)
 
-    # 3. Exception-Aware Tree Pruning
-    print(f"Pruning {len(simple_domains):,} domains...")
+    # 3. Tree-Based Pruning
+    print(f"Pruning {len(simple_domains):,} redundant subdomains...")
     rev_domains = sorted(['.'.join(d.split('.')[::-1]) for d in simple_domains])
     pruned_rev = []
     last_added = ""
@@ -113,7 +110,7 @@ def main():
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.extend(list(allow_rules))
     
-    # Final cleanup and enforcement injection
+    # Assembly and Sort
     final_output.sort()
     final_output.append(NSFW_REGEX_RAW)
     final_output.append(YOUTUBE_RULE)
@@ -122,8 +119,7 @@ def main():
         f.write("############################################################\n")
         f.write("# ISAAC'S PROACTIVE MASTER (NUCLEAR EDITION)\n")
         f.write(f"# Revision: {VERSION}\n")
-        f.write(f"# Rules: {len(final_output):,} | TLDs: {len(blocked_tlds)}\n")
-        f.write("# Cleanup: Tree-Pruned, NSFW-Scrubbed, TLD-Nuked\n")
+        f.write(f"# Total Rules: {len(final_output):,} | Nuked TLDs: {len(blocked_tlds)}\n")
         f.write("############################################################\n\n")
         f.write("\n".join(final_output))
 
