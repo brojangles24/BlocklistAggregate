@@ -19,112 +19,78 @@ SOURCES = [
     "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt"
 ]
 
-# Keywords to Nuke
 NSFW_REGEX = re.compile(r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo)")
 
-# YouTube Safety Rule
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
 OUTPUT_FILE = "blocklist.txt"
 
 def fetch_url(url):
     try:
-        r = requests.get(url, timeout=25)
+        r = requests.get(url, timeout=30)
         r.raise_for_status()
-        return r.text.splitlines(), url
+        return r.text.splitlines()
     except Exception as e:
         print(f"Error fetching {url}: {e}")
-        return [], url
-
-def parse_lines(lines):
-    blocks = set()
-    allows = set()
-    advanced_rules = set() # For $denyallow and other complex AdGuard rules
-
-    for line in lines:
-        line = line.strip().lower()
-        if not line or line.startswith(('#', '!', ';')): continue
-        
-        # 1. PRESERVE ADVANCED SYNTAX (like $denyallow)
-        # If the line contains a modifier ($), we keep it exactly as is
-        if '$' in line:
-            advanced_rules.add(line)
-            continue
-
-        # 2. Identify Allows (@@)
-        is_allow = line.startswith('@@')
-        clean_line = line[2:] if is_allow else line
-        
-        # 3. Clean AdGuard markers to get the domain for logic
-        domain = clean_line.replace("||", "").replace("^", "").strip()
-        
-        # Extract domain from Hosts format (0.0.0.0 domain.com)
-        parts = domain.split()
-        domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1", "::1")) else parts[0]
-
-        if not domain or NSFW_REGEX.search(domain): continue
-
-        if is_allow:
-            allows.add(domain)
-        else:
-            if '.' in domain and not domain.startswith('.'):
-                blocks.add(domain)
-                
-    return blocks, allows, advanced_rules
-
-def prune_and_reformat(block_set, allow_set, advanced_rules):
-    print(f"Pruning {len(block_set):,} domains...")
-    
-    # Tree Pruning for the simple domains
-    rev_blocks = sorted(['.'.join(d.split('.')[::-1]) for d in block_set])
-    pruned_rev = []
-    last_added = ""
-    for rb in rev_blocks:
-        current_domain = '.'.join(rb.split('.')[::-1])
-        if last_added and rb.startswith(last_added + "."):
-            if current_domain not in allow_set: continue
-        pruned_rev.append(rb)
-        last_added = rb
-    
-    # Re-format simple blocks
-    final_list = [f"||{'.'.join(d.split('.')[::-1])}^" for d in pruned_rev]
-    
-    # Add Advanced Rules (denallows) exactly as they were
-    final_list.extend(list(advanced_rules))
-    
-    # Add Allows
-    for a in allow_set:
-        final_list.append(f"@@||{a}^")
-        
-    return sorted(final_list)
+        return []
 
 def main():
-    all_blocks = set()
-    all_allows = set()
-    all_advanced = set()
+    raw_rules = set()
+    blocked_tlds = set()
     start_time = datetime.now()
 
+    # 1. First Pass: Download and identify Nuclear TLD rules
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in SOURCES}
         for future in concurrent.futures.as_completed(future_to_url):
-            lines, url = future.result()
-            b, a, adv = parse_lines(lines)
-            all_blocks.update(b)
-            all_allows.update(a)
-            all_advanced.update(adv)
-            print(f"  + Scanned {url[:45]}...")
+            lines = future.result()
+            for line in lines:
+                line = line.strip()
+                if not line or line.startswith(('#', '!', ';')):
+                    continue
+                
+                # Identify Nuclear TLD rules (e.g., ||*.top^)
+                if line.startswith("||*.") and "^" in line and "$" not in line:
+                    tld = line.replace("||*.", "").replace("^", "")
+                    blocked_tlds.add(tld)
+                
+                raw_rules.add(line)
 
-    final_rules = prune_and_reformat(all_blocks, all_allows, all_advanced)
-    final_rules.append(YOUTUBE_RULE)
+    print(f"Detected {len(blocked_tlds)} Nuclear TLD blocks. Scrubbing redundant domains...")
+
+    # 2. Second Pass: Filter NSFW and Redundant TLD subdomains
+    final_rules = set()
+    for rule in raw_rules:
+        # A. Nuke NSFW
+        if NSFW_REGEX.search(rule):
+            continue
+            
+        # B. Nuke redundant domains if the TLD is already blocked
+        # Example: If ||*.top^ exists, we delete ||badsite.top^
+        if not rule.startswith("||*.") and "^" in rule:
+            # Extract naked domain to find the TLD
+            clean_domain = rule.replace("||", "").split('^')[0].split('$')[0]
+            tld = clean_domain.split('.')[-1]
+            if tld in blocked_tlds:
+                # If there's an allow rule (@@) or it's a DenyAllow, we KEEP it
+                if not rule.startswith("@@") and "$denyallow" not in rule:
+                    continue
+        
+        final_rules.add(rule)
+
+    # 3. Final Construction
+    sorted_output = sorted(list(final_rules))
+    sorted_output.append(YOUTUBE_RULE)
 
     with open(OUTPUT_FILE, "w") as f:
         f.write("############################################################\n")
-        f.write("# ISAAC'S ULTIMATE HAGEZI-COMPATIBLE MASTER LIST\n")
-        f.write(f"# Revision: {VERSION} | Advanced Rules: {len(all_advanced)}\n")
+        f.write("# ISAAC'S PROACTIVE MASTER (STRICT + TLD FIREWALL)\n")
+        f.write(f"# Revision: {VERSION}\n")
+        f.write(f"# Nuclear TLDs: {len(blocked_tlds)} | Total Rules: {len(sorted_output):,}\n")
         f.write("############################################################\n\n")
-        f.write("\n".join(final_rules))
+        f.write("\n".join(sorted_output))
 
-    print(f"Finished in {datetime.now() - start_time}. Total rules: {len(final_rules):,}")
+    print(f"Finished in {datetime.now() - start_time}.")
 
 if __name__ == "__main__":
     main()
