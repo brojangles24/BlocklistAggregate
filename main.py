@@ -6,7 +6,7 @@ from datetime import datetime
 # --- CONFIGURATION ---
 VERSION = datetime.now().strftime("%Y.%m.%d.01")
 
-# 11 Core sources for optimization
+# Core sources for optimization
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -21,7 +21,7 @@ CORE_SOURCES = [
     "https://filters.adtidy.org/extension/chromium/filters/3.txt"
 ]
 
-# The "Unedited" Source
+# The "Do Not Touch" Source
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
 # Keywords & Enforcement
@@ -48,18 +48,18 @@ def main():
     start_time = datetime.now()
 
     # 1. Fetch Everything
-    print(f"Fetching {len(CORE_SOURCES)} core sources...")
+    print(f"Fetching core sources...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in CORE_SOURCES}
         all_lines = []
         for future in concurrent.futures.as_completed(future_to_url):
             all_lines.extend(future.result())
 
-    print("Fetching RAW Spam TLD list...")
+    print("Fetching Hagezi Spam TLDs...")
     spam_tlds = fetch_url(SPAM_TLD_URL)
 
     # 2. Process Core Sources (Pruning & Scrubbing)
-    print("Executing deduplication and keyword scrubbing...")
+    print("Executing deduplication and keyword scrubbing on core lists...")
     for line in all_lines:
         line = line.strip().lower()
         line = line.split('#')[0].split('!')[0].split(';')[0].strip()
@@ -88,38 +88,35 @@ def main():
         pruned_rev.append(rd)
         last_added = rd
     
-    # 4. Construction (Building the Sorted Core)
-    print("Assembling optimized core list...")
+    # 4. Construct Core
     final_output = list(advanced_rules)
     for rd in pruned_rev:
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.extend(list(allow_rules))
     final_output.sort()
     
-    # 5. Writing the file with the Bottom Appendix
+    # 5. Final Write (Separate Sections)
     print(f"Writing {OUTPUT_FILE}...")
     with open(OUTPUT_FILE, "w") as f:
-        # Header
         f.write("############################################################\n")
         f.write(f"# ISAAC'S PROACTIVE MASTER - {VERSION}\n")
-        f.write("# Part 1: Sorted & Tree-Pruned Core Rules\n")
         f.write("############################################################\n\n")
         
-        # Optimized Rules
+        # Part 1: Sorted Core
         f.write("\n".join(final_output))
+        f.write("\n")
         
-        # Enforcement Rules
-        f.write(f"\n{NSFW_REGEX_RAW}")
-        f.write(f"\n{YOUTUBE_RULE}\n\n")
+        # Part 2: Custom Enforcement
+        f.write(f"{NSFW_REGEX_RAW}\n")
+        f.write(f"{YOUTUBE_RULE}\n\n")
         
-        # The Nuclear Appendix (Raw & Unedited)
+        # Part 3: RAW Hagezi Spam TLDs
         f.write("############################################################\n")
-        f.write("# PART 2: HAGEZI SPAM TLD LIST (UNEDITED RAW)\n")
+        f.write("# HAGEZI SPAM TLD LIST (UNEDITED RAW)\n")
         f.write("############################################################\n")
         f.write("\n".join(spam_tlds))
 
     print(f"Completed in {datetime.now() - start_time}.")
-    print(f"Successfully generated {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     main()
