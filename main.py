@@ -53,35 +53,29 @@ def main():
 
     spam_tlds_raw = fetch_url(SPAM_TLD_URL)
 
-    # 2. Extract TLD strings for the Firewall
-    print("Extracting TLDs for the cross-reference firewall...")
+    # 2. Extract TLD strings for the Cross-Reference Firewall
+    print("Building TLD Firewall...")
     for line in spam_tlds_raw:
         clean = line.strip().lower()
-        # Extracts 'xyz' from '||*.xyz^' or '||xyz^'
         tld_match = re.search(r"(\*\.|\^|\|\|)([a-z0-9\-]+)\^", clean)
         if tld_match:
             tld = tld_match.group(2)
             if tld and len(tld) > 1:
                 blocked_tlds.add(tld)
 
-    # 3. Process Core Sources with "Deep Scan" TLD and Keyword Scrubbing
+    # 3. Process Core Sources (Keyword + TLD Redundancy Scrub)
     tld_nuke_count = 0
     keyword_nuke_count = 0
-    
     for line in all_lines:
         line_clean = line.strip().lower()
-        # Split comments
         line_clean = line_clean.split('#')[0].split('!')[0].split(';')[0].strip()
         
         if not line_clean or "adblock plus" in line_clean: continue
-        
-        # Keyword Nuke
         if NSFW_REGEX_COMP.search(line_clean):
             keyword_nuke_count += 1
             continue
         
-        # --- THE AGGRESSIVE TLD SCRUB ---
-        # Check if the line contains any blocked TLD pattern
+        # Scrub redundant domains already covered by the TLD wildcards
         is_redundant = False
         for tld in blocked_tlds:
             if f".{tld}" in line_clean:
@@ -91,7 +85,6 @@ def main():
         if is_redundant:
             tld_nuke_count += 1
             continue
-        # -------------------------------
 
         if line_clean.startswith("@@") or "||~" in line_clean:
             allow_rules.add(line_clean)
@@ -105,7 +98,7 @@ def main():
                 simple_domains.add(domain)
 
     # 4. Tree-Pruning
-    print(f"Pruning {len(simple_domains):,} core domains...")
+    print(f"Pruning core domains...")
     rev_domains = sorted(['.'.join(d.split('.')[::-1]) for d in simple_domains])
     pruned_rev = []
     last_added = ""
@@ -114,14 +107,20 @@ def main():
         pruned_rev.append(rd)
         last_added = rd
     
-    # 5. Assemble and Final Write
+    # 5. Assemble Core
     final_output = list(advanced_rules)
     for rd in pruned_rev:
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.extend(list(allow_rules))
     final_output.sort()
     
+    # 6. Final Construction and Write
     with open(OUTPUT_FILE, "w") as f:
+        # CUSTOM HEADER
+        f.write("! Title: Isaac's Extended Blocklist\n")
+        f.write(f"! Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"! Revision: {VERSION}\n\n")
+
         f.write("############################################################\n")
         f.write("# PART 1: HAGEZI SPAM TLD LIST (UNEDITED RAW)\n")
         f.write("############################################################\n")
@@ -129,14 +128,13 @@ def main():
         f.write("\n\n")
 
         f.write("############################################################\n")
-        f.write(f"# PART 2: OPTIMIZED CORE - {VERSION}\n")
+        f.write(f"# PART 2: OPTIMIZED CORE (SCRUBBED & PRUNED)\n")
         f.write(f"# Removed: {keyword_nuke_count} Keywords | {tld_nuke_count} TLD Redundancies\n")
         f.write("############################################################\n\n")
         f.write("\n".join(final_output))
         f.write(f"\n{NSFW_REGEX_RAW}\n{YOUTUBE_RULE}\n")
 
-    print(f"Success. Nuked {tld_nuke_count} rules matching Hagezi TLDs.")
-    print(f"Nuked {keyword_nuke_count} rules matching NSFW Keywords.")
+    print(f"Success. Nuked {tld_nuke_count} TLD-matching rules and {keyword_nuke_count} NSFW rules.")
 
 if __name__ == "__main__":
     main()
