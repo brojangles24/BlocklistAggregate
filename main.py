@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.FINAL"
+VERSION = "2026.02.16.FINAL_FIX"
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -53,21 +53,36 @@ def main():
 
     spam_tlds_raw = fetch_url(SPAM_TLD_URL)
 
-    # 2. Pre-Scan Spam TLDs to build the Firewall
-    print("Building TLD Firewall from Hagezi list...")
+    # 2. Extract TLDs for the Firewall (The Fix)
+    print("Extracting TLDs from Hagezi list to build the firewall...")
     for line in spam_tlds_raw:
         clean = line.strip().lower()
-        if clean.startswith("||*.") and "^" in clean:
-            tld = clean.replace("||*.", "").replace("^", "")
-            if tld and "." not in tld:
-                blocked_tlds.add(tld)
+        # Look for wildcards: ||*.xyz^ or *.xyz^
+        if "*." in clean:
+            match = re.search(r"\*\.([a-z0-9\-]+)\^", clean)
+            if match:
+                blocked_tlds.add(match.group(1))
+        # Look for simple TLD blocks: ||xyz^
+        elif clean.startswith("||") and clean.count(".") == 0 and clean.endswith("^"):
+            tld = clean.replace("||", "").replace("^", "")
+            blocked_tlds.add(tld)
 
-    # 3. Process Core Sources (Pruning, Scrubbing, and TLD Nuke)
-    print(f"Scrubbing core lists against {len(blocked_tlds)} blocked TLDs...")
+    print(f"Firewall active for {len(blocked_tlds)} TLDs (including .xyz, .top, etc.)")
+
+    # 3. Process Core Sources with TLD and Keyword Scrubbing
+    tld_nuke_count = 0
+    keyword_nuke_count = 0
+    
     for line in all_lines:
         line = line.strip().lower()
         line = line.split('#')[0].split('!')[0].split(';')[0].strip()
-        if not line or "adblock plus" in line or NSFW_REGEX_COMP.search(line): continue
+        
+        if not line or "adblock plus" in line: continue
+        
+        # Keyword Nuke
+        if NSFW_REGEX_COMP.search(line):
+            keyword_nuke_count += 1
+            continue
         
         if line.startswith("@@") or "||~" in line:
             allow_rules.add(line)
@@ -77,11 +92,14 @@ def main():
             domain = line.replace("||", "").replace("^", "").strip()
             parts = domain.split()
             domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1")) else parts[0]
+            
             if "." in domain and not domain.startswith("."):
                 tld = domain.split('.')[-1]
-                # THE NUCLEAR FIX: If the domain's TLD is in our firewall, kill it now.
-                if tld not in blocked_tlds:
-                    simple_domains.add(domain)
+                # THE TLD FIREWALL: Check if the domain's TLD is in our blocked set
+                if tld in blocked_tlds:
+                    tld_nuke_count += 1
+                    continue
+                simple_domains.add(domain)
 
     # 4. Tree-Pruning
     print(f"Pruning {len(simple_domains):,} core domains...")
@@ -93,7 +111,7 @@ def main():
         pruned_rev.append(rd)
         last_added = rd
     
-    # 5. Assemble and Sort Core
+    # 5. Assemble
     final_output = list(advanced_rules)
     for rd in pruned_rev:
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
@@ -109,13 +127,15 @@ def main():
         f.write("\n\n")
 
         f.write("############################################################\n")
-        f.write(f"# PART 2: OPTIMIZED CORE (TLD-CLEANED) - {VERSION}\n")
+        f.write(f"# PART 2: OPTIMIZED CORE - {VERSION}\n")
+        f.write(f"# Scrubbed: {keyword_nuke_count} Keywords | {tld_nuke_count} TLD Redundancies\n")
         f.write("############################################################\n\n")
         f.write("\n".join(final_output))
         f.write(f"\n{NSFW_REGEX_RAW}")
         f.write(f"\n{YOUTUBE_RULE}\n")
 
-    print(f"Done. Deleted all core domains matching the {len(blocked_tlds)} blocked TLDs.")
+    print(f"Completed. Nuked {tld_nuke_count} domains for matching TLDs.")
+    print(f"Nuked {keyword_nuke_count} rules for matching Keywords.")
 
 if __name__ == "__main__":
     main()
