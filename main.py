@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.FINAL_BOSS_V2"
+VERSION = "2026.02.16.FINAL_BOSS_V3"
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -63,7 +63,7 @@ def main():
             if tld and len(tld) > 1:
                 blocked_tlds.add(tld)
 
-    # 2. Surgical Scrub (TLD Redundancies, NSFW Keywords, and Incompatible Syntax)
+    # 2. Surgical Scrub (The Meat of the Script)
     print("Surgically scrubbing core lists...")
     tld_nuke = 0
     keyword_nuke = 0
@@ -98,8 +98,17 @@ def main():
             tld_nuke += 1
             continue
 
-        # D. CATEGORIZE VALID RULES
-        if line_clean.startswith("@@") or "||~" in line_clean:
+        # D. CATEGORIZE VALID RULES (With Surgical Exception Filter)
+        if line_clean.startswith("@@"):
+            # KEEP domain exceptions (@@||example.com^), TOSS path exceptions (@@/path/)
+            if "||" in line_clean and "/" not in line_clean.split("||")[1].split("$")[0]:
+                allow_rules.add(line_clean)
+            elif "|" in line_clean and "/" not in line_clean:
+                allow_rules.add(line_clean)
+            else:
+                syntax_nuke += 1
+                continue
+        elif "||~" in line_clean:
             allow_rules.add(line_clean)
         elif "$" in line_clean:
             # Keep only DNS-compatible modifiers
