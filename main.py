@@ -16,7 +16,14 @@ SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt"
+    "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
+    "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/adguard_popup_filter.txt",
+    "https://adguardteam.github.io/AdguardFilters/BaseFilter/sections/adservers.txt",
+    "https://adguardteam.github.io/AdguardFilters/BaseFilter/sections/adservers_firstparty.txt",
+    "https://adguardteam.github.io/AdguardFilters/SpywareFilter/sections/tracking_servers_firstparty.txt",
+    "https://adguardteam.github.io/AdguardFilters/SpywareFilter/sections/tracking_servers.txt",
+    "https://adguardteam.github.io/AdguardFilters/SpywareFilter/sections/mobile.txt",
+    "https://adguardteam.github.io/AdguardFilters/BaseFilter/sections/adservers.txt",
 ]
 
 NSFW_REGEX = re.compile(r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo)")
