@@ -3,10 +3,11 @@ import concurrent.futures
 import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from collections import Counter
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.FINAL_BOSS_V10"
-AZ_TZ = ZoneInfo("America/Phoenix") # Forces Arizona Time (UTC-7)
+VERSION = "2026.02.16.FINAL_BOSS_V11"
+AZ_TZ = ZoneInfo("America/Phoenix") 
 
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
@@ -30,7 +31,6 @@ NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
 
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
-# --- SAFE SEARCH REWRITES ---
 FORCE_SAFE = """
 ! --- SEARCH ENGINE SAFESEARCH REWRITES ---
 ||edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
@@ -73,16 +73,10 @@ def main():
     advanced_rules = set()
     simple_domains = set()
     
-    tld_nuke = 0
-    keyword_nuke = 0
-    cosmetic_nuke = 0
-    syntax_nuke = 0
-    
     start_time = datetime.now(AZ_TZ)
     print(f"DEBUG: Script initialized at {start_time.strftime('%Y-%m-%d %I:%M %p')} AZ Time")
 
     # 1. Build TLD Firewall
-    print("Building TLD Firewall...")
     spam_tlds_raw = fetch_url(SPAM_TLD_URL)
     for line in spam_tlds_raw:
         clean = line.strip().lower()
@@ -102,67 +96,56 @@ def main():
         for future in concurrent.futures.as_completed(future_to_url):
             all_lines.extend(future.result())
 
-    # 3. Aggressive Processing Loop
-    print("Executing Aggressive Scrub...")
+    # 3. Processing Loop
+    print("Executing Aggressive Scrub & Pattern Detection...")
     for line in all_lines:
         line_clean = line.strip().lower()
         line_clean = line_clean.split('!')[0].split(' #')[0].strip()
         
         if not line_clean or "adblock plus" in line_clean: continue
         
+        # Keyword Nuke
         domain_check = line_clean.replace("||", "").replace("^", "").split('$')[0]
-        if NSFW_REGEX_COMP.search(domain_check):
-            keyword_nuke += 1
-            continue
+        if NSFW_REGEX_COMP.search(domain_check): continue
 
-        if any(x in line_clean for x in ["##", "#@#", "#?#", "#%#", "#$#"]):
-            cosmetic_nuke += 1
-            continue
-
+        # Cosmetic Purge
+        if any(x in line_clean for x in ["##", "#@#", "#?#", "#%#", "#$#"]): continue
         if line_clean.startswith("@@"): continue
 
-        if line_clean.startswith("|"):
-             line_clean = re.sub(r"^\|{2,}", "||", line_clean)
-
+        # DNS Rule Handling
         if "$" in line_clean:
-            is_valid_dns = any(mod in line_clean for mod in DNS_VALID_MODIFIERS)
-            if not is_valid_dns:
-                syntax_nuke += 1
-                continue
-            else:
+            if any(mod in line_clean for mod in DNS_VALID_MODIFIERS):
                 advanced_rules.add(line_clean)
-                continue
-
-        if "/" in line_clean:
-            if line_clean.startswith("/") and line_clean.endswith("/"):
-                advanced_rules.add(line_clean)
-                continue
-            if line_clean.startswith("||") and "/" in line_clean.replace("||", ""):
-                 syntax_nuke += 1
-                 continue
+            continue
                  
         domain_part = line_clean.replace("||", "").replace("^", "").strip().rstrip('.')
+        if domain_part.endswith(blocked_tlds_tuple): continue
 
-        if domain_part.endswith(blocked_tlds_tuple):
-            tld_nuke += 1
-            continue
-
-        if re.match(r"^\d{1,3}(\.\d{1,3}){3}$", domain_part):
-            syntax_nuke += 1
-            continue
-            
-        if "." not in domain_part:
-            if domain_part.endswith("*"):
-                 advanced_rules.add(line_clean)
-            else:
-                syntax_nuke += 1
-                continue
-        else:
+        if "." in domain_part:
             simple_domains.add(domain_part)
 
-    # 4. Tree-Pruning
+    # 4. INTELLIGENT TLD COLLAPSING
+    # We find domains that appear with 5+ different TLDs and collapse them
+    print("Collapsing redundant regional TLDs...")
+    domain_base_counts = Counter()
+    for d in simple_domains:
+        parts = d.split('.')
+        if len(parts) >= 2:
+            # Join all parts except the last one (the TLD)
+            base = '.'.join(parts[:-1]) 
+            domain_base_counts[base] += 1
+
+    collapsed_wildcards = set()
+    for base, count in domain_base_counts.items():
+        if count > 5: # If a domain appears in 5+ regions, nuke it globally
+            collapsed_wildcards.add(f"||{base}.*^")
+
+    # 5. Tree-Pruning & Final Construction
     print(f"Tree-Pruning {len(simple_domains):,} core domains...")
-    rev_domains = sorted(['.'.join(d.split('.')[::-1]) for d in simple_domains])
+    # Remove domains already covered by our new wildcards
+    filtered_domains = {d for d in simple_domains if not any(d.startswith(w.replace('||','').replace('.*^','')) for w in collapsed_wildcards)}
+    
+    rev_domains = sorted(['.'.join(d.split('.')[::-1]) for d in filtered_domains])
     pruned_rev = []
     last_added = ""
     for rd in rev_domains:
@@ -170,13 +153,12 @@ def main():
         pruned_rev.append(rd)
         last_added = rd
     
-    # 5. Final Construction
-    final_output = list(advanced_rules)
+    final_output = list(advanced_rules) + list(collapsed_wildcards)
     for rd in pruned_rev:
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.sort()
     
-    # 6. Write to File (Including Homepage and AZ Time)
+    # 6. Write to File
     now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
     print(f"Writing {len(final_output):,} rules to file...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
@@ -184,10 +166,7 @@ def main():
         f.write("! Homepage: https://github.com/brojangles24/BlocklistAggregate\n")
         f.write(f"! Last Updated: {now_az} (Arizona Time)\n")
         f.write(f"! Revision: {VERSION}\n")
-        f.write("! Description: Aggressive keyword filtering + Full SafeSearch Enforcement.\n\n")
-
-        f.write("! --- SPAM TLDs (HAGEZI RAW) ---\n")
-        f.write("\n".join(spam_tlds_raw) + "\n\n")
+        f.write("! Description: Aggressive keyword filtering + Intelligent TLD Collapsing.\n\n")
 
         f.write("! --- OPTIMIZED DNS CORE ---\n")
         f.write("\n".join(final_output) + "\n\n")
