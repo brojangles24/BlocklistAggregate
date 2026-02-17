@@ -195,7 +195,7 @@ def main():
         f.write("\n! --- NUCLEAR REGEX ENFORCEMENT ---\n")
         f.write(f"{NSFW_REGEX_RAW}\n")
         f.write(f"{YOUTUBE_RULE}\n")
-        F.write(f"{FORCE_SAFE}\n")
+        f.write(f"{FORCE_SAFE}\n")
 
     # --- FINAL STATS PRINT ---
     elapsed = datetime.now() - start_time
