@@ -1,9 +1,9 @@
-! Title: Isaac's Scorched Earth List
-! Last Updated: 2026-02-17 01:17:19
-! Revision: 2026.02.16.SCORCHED_EARTH_FINAL
-! Description: Aggressive keyword filtering enabled. False positives expected.
+! Title: Isaac's Scorched Earth Ultimate List
+! Last Updated: 2026-02-17 01:42:35
+! Revision: 2026.02.16.FINAL_BOSS_V10
+! Description: Aggressive keyword filtering + Full SafeSearch Enforcement.
 
-! --- SPAM TLDs ---
+! --- SPAM TLDs (HAGEZI RAW) ---
 ! Title: HaGeZi's The World's Most Abused TLDs
 ! Description: The Top Most Abused Top Level Domains
 ! Source: https://www.spamhaus.org/reputation-statistics/gtlds/domains/
@@ -891567,6 +891567,29 @@ d4?appid*type*
 |||load.ss^
 |||load.sst^
 
-! --- NUCLEAR REGEX ENFORCEMENT ---
+! --- ENFORCEMENT RULES ---
 /(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)/
 /^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com
+
+! --- SEARCH ENGINE SAFESEARCH REWRITES ---
+||edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
+||www.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
+||search.brave.com^$dnsrewrite=NOERROR;CNAME;safesearch.brave.com
+||duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
+||start.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
+||www.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
+||www.ecosia.org^$dnsrewrite=NOERROR;CNAME;strict-safe-search.ecosia.org
+||pixabay.com^$dnsrewrite=NOERROR;CNAME;safesearch.pixabay.com
+||api.qwant.com^$dnsrewrite=NOERROR;CNAME;safeapi.qwant.com
+||www.startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
+||startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
+
+! --- GOOGLE SAFESEARCH (GLOBAL) ---
+||google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
+||www.google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
+
+! --- YANDEX FAMILY SEARCH ---
+||yandex.com^$dnsrewrite=NOERROR;A;213.180.193.56
+||yandex.ru^$dnsrewrite=NOERROR;A;213.180.193.56
+||ya.ru^$dnsrewrite=NOERROR;A;213.180.193.56
+
