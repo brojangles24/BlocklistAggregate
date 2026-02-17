@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 import re
 import textwrap
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from collections import defaultdict
 from urllib import request
 from urllib.error import URLError, HTTPError
 
@@ -55,7 +55,7 @@ MAX_FETCH_WORKERS = 6
 def fetch_url(url):
     try:
         req = request.Request(url, headers={"User-Agent": "BlocklistAggregate/1.0"})
-        with request.urlopen(req, timeout=FETCH_TIMEOUT_SECONDS) as resp:
+        with request.urlopen(req, timeout=30) as resp:
             body = resp.read().decode('utf-8', errors='replace')
         return body.splitlines()
     except (HTTPError, URLError, TimeoutError) as e:
@@ -66,20 +66,27 @@ def fetch_url(url):
         return []
 
 
-def fetch_all_sources(urls):
-    results = {}
-    with ThreadPoolExecutor(max_workers=min(MAX_FETCH_WORKERS, max(1, len(urls)))) as pool:
-        future_to_url = {pool.submit(fetch_url, url): url for url in urls}
-        for future in as_completed(future_to_url):
-            url = future_to_url[future]
-            try:
-                results[url] = future.result()
-            except Exception as e:
-                print(f"  !! Error fetching {url}: {e}")
-                results[url] = []
+def domain_key_from_rule(rule):
+    domain = rule[2:].rstrip('^').lower().rstrip('.')
+    domain = domain.replace('*.', '')
 
-    return [results.get(url, []) for url in urls]
+    if not domain or any(c in domain for c in ('/', ':')):
+        return None
 
+    labels = [part for part in domain.split('.') if part]
+    if len(labels) < 2:
+        return None
+
+    # Treat common country-code second-level domains (e.g., co.uk) as suffixes.
+    common_cc_slds = {
+        'ac', 'co', 'com', 'edu', 'gov', 'mil', 'net', 'org', 'sch'
+    }
+    suffix_labels = 1
+    if len(labels) >= 3 and len(labels[-1]) == 2 and labels[-2] in common_cc_slds:
+        suffix_labels = 2
+
+    key_labels = labels[:-suffix_labels]
+    return '.'.join(key_labels) if key_labels else None
 
 
 def clean_line(line):
@@ -106,6 +113,26 @@ def is_dns_compatible(rule):
 def consolidate_domains_tldaware(rules):
     # Keep only strict duplicates removed (exact rule text), no tree or wildcard pruning.
     return set(rules)
+
+
+def parse_spam_tld_patterns(spam_tlds):
+    patterns = []
+    for raw in spam_tlds:
+        line = raw.partition('!')[0].partition('#')[0].strip().lower().lstrip('.')
+        if not line:
+            continue
+        key = domain_key_from_rule(rule)
+        if not key:
+            others.add(rule)
+            continue
+        grouped[key].append(rule)
+
+        suffix = labels[-len(pattern):]
+        if all(p == '*' or h == '*' or p == h for p, h in zip(pattern, suffix)):
+            return True
+
+    return False
+
 
 
 def parse_spam_tld_patterns(spam_tlds):
@@ -145,11 +172,44 @@ def host_matches_spam_tld(host, spam_tld_patterns):
     return False
 
 
+def prune_redundant_rules(rules):
+    wildcard_prefixes = [
+        rule[2:-2]
+        for rule in rules
+        if rule.startswith('||') and rule.endswith('*^')
+    ]
+
+    if not wildcard_prefixes:
+        return rules
+
+    pruned = set()
+    for rule in rules:
+        if not rule.startswith('||'):
+            pruned.add(rule)
+            continue
+
+        if rule.endswith('*^'):
+            host = rule[2:-2]
+            covered = any(host.startswith(prefix) and host != prefix for prefix in wildcard_prefixes)
+            if not covered:
+                pruned.add(rule)
+            continue
+
+        host = rule_host(rule)
+        if not host:
+            pruned.add(rule)
+            continue
+
+        covered = any(host.startswith(prefix) and host != prefix for prefix in wildcard_prefixes)
+        if not covered:
+            pruned.add(rule)
+
+    return pruned
+
 
 def filter_keywords_and_tlds(rules, spam_tlds, nsfw_pattern):
     filtered = set()
     spam_tld_patterns = parse_spam_tld_patterns(spam_tlds)
-    nsfw_re = re.compile(nsfw_pattern)
 
     for rule in rules:
         if nsfw_re.search(rule):
@@ -161,7 +221,7 @@ def filter_keywords_and_tlds(rules, spam_tlds, nsfw_pattern):
 
         filtered.add(rule)
 
-    return filtered
+    return prune_redundant_rules(filtered)
 
 
 def main():
@@ -179,7 +239,7 @@ def main():
     dns_rules = set(r for r in raw_rules if is_dns_compatible(r))
     dns_rules = filter_keywords_and_tlds(dns_rules, spam_tlds, NSFW_REGEX_RAW)
 
-    consolidated = consolidate_domains_tldaware(dns_rules)
+    consolidated = prune_redundant_rules(consolidate_domains_tldaware(dns_rules))
 
     now_str = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
 
