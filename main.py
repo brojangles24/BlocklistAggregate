@@ -1,12 +1,10 @@
 import requests
 import concurrent.futures
-import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
-from collections import Counter
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.FINAL_BOSS_V11"
+VERSION = "2026.02.16.DEDUPE_ONLY_V1"
 AZ_TZ = ZoneInfo("America/Phoenix") 
 
 CORE_SOURCES = [
@@ -24,11 +22,8 @@ CORE_SOURCES = [
 ]
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
-# --- AGGRESSIVE REGEX (NO SAFETY) ---
-NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
-NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
-NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
-
+# --- STATIC ENFORCEMENT RULES ---
+NSFW_REGEX_RAW = "/(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)/"
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
 FORCE_SAFE = """
@@ -56,7 +51,6 @@ FORCE_SAFE = """
 """
 
 OUTPUT_FILE = "blocklist.txt"
-DNS_VALID_MODIFIERS = ["$dnsrewrite", "$important", "$client", "$network", "$ctag", "$badfilter", "$denyallow"]
 
 def fetch_url(url):
     try:
@@ -69,106 +63,41 @@ def fetch_url(url):
         return []
 
 def main():
-    blocked_tlds = set()
-    advanced_rules = set()
-    simple_domains = set()
-    
+    unique_rules = set()
     start_time = datetime.now(AZ_TZ)
     print(f"DEBUG: Script initialized at {start_time.strftime('%Y-%m-%d %I:%M %p')} AZ Time")
 
-    # 1. Build TLD Firewall
-    spam_tlds_raw = fetch_url(SPAM_TLD_URL)
-    for line in spam_tlds_raw:
-        clean = line.strip().lower()
-        tld_match = re.search(r"(\*\.|\^|\|\|)([a-z0-9\-]+)\^", clean)
-        if tld_match:
-            tld = tld_match.group(2)
-            if tld and len(tld) > 1:
-                blocked_tlds.add(tld)
-    
-    blocked_tlds_tuple = tuple(f".{t}" for t in blocked_tlds)
-
-    # 2. Fetch Sources
+    # 1. Fetch Core Sources
     print("Fetching core sources...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        future_to_url = {executor.submit(fetch_url, url): url for url in CORE_SOURCES}
-        all_lines = []
+        # Include the Spam TLD URL in the general fetch now since we aren't parsing it specifically
+        all_urls = CORE_SOURCES + [SPAM_TLD_URL]
+        future_to_url = {executor.submit(fetch_url, url): url for url in all_urls}
+        
         for future in concurrent.futures.as_completed(future_to_url):
-            all_lines.extend(future.result())
+            lines = future.result()
+            for line in lines:
+                clean = line.strip()
+                # Only ignore comments and empty lines to keep the final file clean
+                if clean and not clean.startswith(("!", "#", "[Adblock Plus")):
+                    unique_rules.add(clean)
 
-    # 3. Processing Loop
-    print("Executing Aggressive Scrub & Pattern Detection...")
-    for line in all_lines:
-        line_clean = line.strip().lower()
-        line_clean = line_clean.split('!')[0].split(' #')[0].strip()
-        
-        if not line_clean or "adblock plus" in line_clean: continue
-        
-        # Keyword Nuke
-        domain_check = line_clean.replace("||", "").replace("^", "").split('$')[0]
-        if NSFW_REGEX_COMP.search(domain_check): continue
-
-        # Cosmetic Purge
-        if any(x in line_clean for x in ["##", "#@#", "#?#", "#%#", "#$#"]): continue
-        if line_clean.startswith("@@"): continue
-
-        # DNS Rule Handling
-        if "$" in line_clean:
-            if any(mod in line_clean for mod in DNS_VALID_MODIFIERS):
-                advanced_rules.add(line_clean)
-            continue
-                 
-        domain_part = line_clean.replace("||", "").replace("^", "").strip().rstrip('.')
-        if domain_part.endswith(blocked_tlds_tuple): continue
-
-        if "." in domain_part:
-            simple_domains.add(domain_part)
-
-    # 4. INTELLIGENT TLD COLLAPSING
-    # We find domains that appear with 5+ different TLDs and collapse them
-    print("Collapsing redundant regional TLDs...")
-    domain_base_counts = Counter()
-    for d in simple_domains:
-        parts = d.split('.')
-        if len(parts) >= 2:
-            # Join all parts except the last one (the TLD)
-            base = '.'.join(parts[:-1]) 
-            domain_base_counts[base] += 1
-
-    collapsed_wildcards = set()
-    for base, count in domain_base_counts.items():
-        if count > 5: # If a domain appears in 5+ regions, nuke it globally
-            collapsed_wildcards.add(f"||{base}.*^")
-
-    # 5. Tree-Pruning & Final Construction
-    print(f"Tree-Pruning {len(simple_domains):,} core domains...")
-    # Remove domains already covered by our new wildcards
-    filtered_domains = {d for d in simple_domains if not any(d.startswith(w.replace('||','').replace('.*^','')) for w in collapsed_wildcards)}
+    # 2. Final Construction
+    # We convert set to list and sort for a consistent output file
+    final_output = sorted(list(unique_rules))
     
-    rev_domains = sorted(['.'.join(d.split('.')[::-1]) for d in filtered_domains])
-    pruned_rev = []
-    last_added = ""
-    for rd in rev_domains:
-        if last_added and rd.startswith(last_added + "."): continue
-        pruned_rev.append(rd)
-        last_added = rd
-    
-    final_output = list(advanced_rules) + list(collapsed_wildcards)
-    for rd in pruned_rev:
-        final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
-    final_output.sort()
-    
-    # 6. Write to File
+    # 3. Write to File
     now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
-    print(f"Writing {len(final_output):,} rules to file...")
+    print(f"Writing {len(final_output):,} unique rules to file...")
+    
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("! Title: Isaac's Scorched Earth Ultimate List\n")
+        f.write("! Title: Isaac's Deduplicated Ultimate List\n")
         f.write("! Homepage: https://github.com/brojangles24/BlocklistAggregate\n")
         f.write(f"! Last Updated: {now_az} (Arizona Time)\n")
         f.write(f"! Revision: {VERSION}\n")
-        f.write("! Description: Aggressive keyword filtering + Intelligent TLD Collapsing.\n\n")
+        f.write("! Description: Combined list with exact-match deduplication only.\n\n")
 
-        f.write("! --- OPTIMIZED DNS CORE ---\n")
+        f.write("! --- DEDUPLICATED CORE RULES ---\n")
         f.write("\n".join(final_output) + "\n\n")
         
         f.write("! --- ENFORCEMENT RULES ---\n")
@@ -177,7 +106,7 @@ def main():
         f.write(f"{FORCE_SAFE}\n")
 
     elapsed = datetime.now(AZ_TZ) - start_time
-    print(f"\n--- SCRUB COMPLETE in {elapsed.total_seconds():.2f}s ---")
+    print(f"\n--- PROCESS COMPLETE in {elapsed.total_seconds():.2f}s ---")
     print(f"Final blocklist saved to {OUTPUT_FILE}")
 
 if __name__ == "__main__":
