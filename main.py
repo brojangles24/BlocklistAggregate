@@ -53,7 +53,7 @@ FORCE_SAFE = """
 ||ya.ru^$dnsrewrite=NOERROR;A;213.180.193.56
 """
 
-OUTPUT_FILE = "scorched_earth_blocklist.txt"
+OUTPUT_FILE = "blocklist.txt"
 DNS_VALID_MODIFIERS = ["$dnsrewrite", "$important", "$client", "$network", "$ctag", "$badfilter", "$denyallow"]
 
 def fetch_url(url):
