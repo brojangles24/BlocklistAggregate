@@ -5,7 +5,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.SCRUB_DEDUPE_V1"
+VERSION = "2026.02.16.SCRUB_TRACKER_V1"
 AZ_TZ = ZoneInfo("America/Phoenix") 
 
 CORE_SOURCES = [
@@ -54,7 +54,6 @@ OUTPUT_FILE = "blocklist.txt"
 
 def fetch_url(url):
     try:
-        print(f"  -> Downloading: {url}")
         r = requests.get(url, timeout=30)
         r.raise_for_status()
         return r.text.splitlines()
@@ -65,53 +64,66 @@ def fetch_url(url):
 def main():
     unique_rules = set()
     blocked_tlds = set()
-    start_time = datetime.now(AZ_TZ)
     
-    print(f"DEBUG: Script initialized at {start_time.strftime('%Y-%m-%d %I:%M %p')} AZ Time")
+    # Counters
+    keyword_nuke_count = 0
+    tld_nuke_count = 0
+    exception_nuke_count = 0
+    
+    start_time = datetime.now(AZ_TZ)
+    print(f"DEBUG: Script initialized at {start_time.strftime('%Y-%m-%d %I:%M %p')} AZ Time\n")
 
-    # 1. Build the TLD Blacklist
-    print("Building Spam TLD Firewall...")
+    # 1. Process Hagezi Spam TLDs (Special Case: Keep @@)
+    print("--- STEP 1: Processing Spam TLD Firewall ---")
     tld_raw = fetch_url(SPAM_TLD_URL)
     for line in tld_raw:
-        clean = line.strip().lower()
-        # Extract TLD from Hagezi format: ||tld^
-        tld_match = re.search(r"\|\|([a-z0-9\-]+)\^", clean)
+        clean = line.split(' !')[0].split(' #')[0].strip()
+        if not clean or clean.startswith(("!", "#", "[Adblock Plus")):
+            continue
+        
+        unique_rules.add(clean)
+        
+        tld_match = re.search(r"\|\|([a-z0-9\-]+)\^", clean.lower())
         if tld_match:
             blocked_tlds.add(f".{tld_match.group(1)}")
     
     blocked_tlds_tuple = tuple(blocked_tlds)
-    print(f"  -> Loaded {len(blocked_tlds)} Spam TLDs.")
+    print(f"Loaded {len(blocked_tlds)} Spam TLDs.\n")
 
     # 2. Fetch Core Sources
-    print("Fetching core sources...")
+    print("--- STEP 2: Fetching and Scrubbing Core Sources ---")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in CORE_SOURCES}
         
         for future in concurrent.futures.as_completed(future_to_url):
+            url = future_to_url[future]
             lines = future.result()
+            print(f"  -> Scrubbing: {url}")
+            
             for line in lines:
-                # Basic cleaning
                 clean = line.split(' !')[0].split(' #')[0].strip()
                 
-                # Filter out pure comments/empty lines
                 if not clean or clean.startswith(("!", "#", "[Adblock Plus")):
                     continue
                 
-                # --- THE SCRUB ---
-                # Lowercase for checking purposes
+                # A. Remove exceptions (@@)
+                if clean.startswith("@@"):
+                    exception_nuke_count += 1
+                    continue
+                
                 check_val = clean.lower()
                 
-                # 1. Keyword Check
+                # B. Keyword Scrub
                 if NSFW_REGEX_COMP.search(check_val):
+                    keyword_nuke_count += 1
                     continue
                 
-                # 2. TLD Check
-                # Extracts the domain part (removes || and ^) to check the ending
+                # C. TLD Scrub
                 domain_part = check_val.replace("||", "").split("^")[0].split("$")[0]
                 if domain_part.endswith(blocked_tlds_tuple):
+                    tld_nuke_count += 1
                     continue
 
-                # If it passed both, add to set
                 unique_rules.add(clean)
 
     # 3. Final Construction
@@ -119,12 +131,13 @@ def main():
     
     # 4. Write to File
     now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
-    print(f"Writing {len(final_output):,} unique rules to file...")
     
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(f"! Last Updated: {now_az} (Arizona Time)\n")
-        f.write(f"! Total Rules After Scrub & Dedupe: {len(final_output):,}\n")
-        f.write(f"! Version: {VERSION}\n\n")
+        f.write(f"! Total Rules: {len(final_output):,}\n")
+        f.write(f"! Keyword Matches Removed: {keyword_nuke_count:,}\n")
+        f.write(f"! Spam TLD Matches Removed: {tld_nuke_count:,}\n")
+        f.write(f"! Non-Spam TLD Exceptions Removed: {exception_nuke_count:,}\n\n")
 
         f.write("\n".join(final_output) + "\n\n")
         
@@ -133,9 +146,15 @@ def main():
         f.write(f"{YOUTUBE_RULE}\n")
         f.write(f"{FORCE_SAFE.strip()}\n")
 
+    # Console Summary
     elapsed = datetime.now(AZ_TZ) - start_time
-    print(f"\n--- PROCESS COMPLETE in {elapsed.total_seconds():.2f}s ---")
-    print(f"Final blocklist saved to {OUTPUT_FILE}")
+    print(f"\n--- SCRUB COMPLETE ---")
+    print(f"Total Keyword Nukes:   {keyword_nuke_count:,}")
+    print(f"Total Spam TLD Nukes:  {tld_nuke_count:,}")
+    print(f"Total @@ Rules Nuked:  {exception_nuke_count:,}")
+    print(f"Final Rule Count:      {len(final_output):,}")
+    print(f"Execution Time:        {elapsed.total_seconds():.2f}s")
+    print(f"Saved to:              {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     main()
