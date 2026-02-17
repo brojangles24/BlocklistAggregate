@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.ZERO_EXCEPTION_NUCLEAR"
+VERSION = "2026.02.16.NUCLEAR_FINAL_BOSS_V4"
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -20,7 +20,7 @@ CORE_SOURCES = [
 ]
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
-# Keywords & Enforcement
+# Keywords & Enforcements
 NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo)"
 NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
 NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
@@ -63,7 +63,7 @@ def main():
                 blocked_tlds.add(tld)
 
     # 2. Surgical Scrub
-    print("Surgically scrubbing core lists and nuking exceptions...")
+    print("Executing Nuclear Scrub (Nuking Exceptions & Repairing Triple-Pipes)...")
     tld_nuke = 0
     keyword_nuke = 0
     syntax_nuke = 0
@@ -75,25 +75,29 @@ def main():
         
         if not line_clean or "adblock plus" in line_clean: continue
         
-        # A. NUKE ALL EXCEPTIONS (The request)
+        # A. EXCEPTION PURGE (Remove all @@ rules as requested)
         if line_clean.startswith("@@"):
             exception_nuke += 1
             continue
 
-        # B. SCRUB INCOMPATIBLE SYNTAX (Cookies, Paths, Browser-only Regex)
-        if line_clean.startswith("/") and any(x in line_clean for x in [".js", ".php", ".png", ".jpg", "/api/", "/v1/"]):
+        # B. TRIPLE-PIPE REPAIR (Convert ||| to ||)
+        if line_clean.startswith("|||"):
+            line_clean = line_clean.replace("|||", "||", 1)
+
+        # C. PATH & BROWSER SYNTAX SCRUB
+        if line_clean.startswith("/") and any(x in line_clean for x in [".js", ".php", ".png", ".jpg", "/api/"]):
             syntax_nuke += 1
             continue
-        if any(x in line_clean for x in ["$cookie", "$script", "$image", "$stylesheet", "$popup", "$subdocument"]):
+        if any(x in line_clean for x in ["$cookie", "$script", "$image", "$stylesheet", "$popup"]):
             syntax_nuke += 1
             continue
 
-        # C. KEYWORD SCRUB
+        # D. KEYWORD SCRUB
         if NSFW_REGEX_COMP.search(line_clean):
             keyword_nuke += 1
             continue
         
-        # D. TLD REDUNDANCY SCRUB
+        # E. TLD REDUNDANCY SCRUB
         is_redundant = False
         for tld in blocked_tlds:
             if f".{tld}" in line_clean:
@@ -103,17 +107,30 @@ def main():
             tld_nuke += 1
             continue
 
-        # E. CATEGORIZE VALID RULES
+        # F. CATEGORIZE & FILTER
         if "$" in line_clean:
             # Keep only DNS-compatible enforcements
             if any(x in line_clean for x in ["$dnsrewrite", "$important", "$client", "$network"]):
                 advanced_rules.add(line_clean)
         else:
-            domain = line_clean.replace("||", "").replace("^", "").strip()
-            parts = domain.split()
-            domain = parts[1] if (len(parts) >= 2 and parts[0] in ("0.0.0.0", "127.0.0.1")) else parts[0]
-            if "." in domain and not domain.startswith("."):
-                simple_domains.add(domain)
+            # IP & Wildcard Check
+            temp_domain = line_clean.replace("||", "").replace("^", "").strip()
+            
+            # Nuke raw IP blocks (e.g. 167.206.10.148)
+            if re.match(r"^\d{1,3}(\.\d{1,3}){3}$", temp_domain):
+                syntax_nuke += 1
+                continue
+            
+            # Keep valid domains or AdGuard wildcards (like ||piwik.^)
+            if "." in temp_domain or "^" in line_clean:
+                # If it's a wildcard like ||piwik.^, it goes to advanced_rules to preserve syntax
+                if "^" in line_clean and "." not in temp_domain:
+                    advanced_rules.add(line_clean)
+                else:
+                    simple_domains.add(temp_domain)
+            else:
+                syntax_nuke += 1
+                continue
 
     # 3. Tree-Pruning
     print(f"Pruning {len(simple_domains):,} core domains...")
@@ -137,23 +154,28 @@ def main():
         f.write(f"! Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
         f.write(f"! Revision: {VERSION}\n\n")
 
+        # Part 1: RAW TLD Firewall
         f.write("############################################################\n")
         f.write("# PART 1: HAGEZI SPAM TLD LIST (UNEDITED RAW)\n")
         f.write("############################################################\n")
         f.write("\n".join(spam_tlds_raw) + "\n\n")
 
+        # Part 2: Scrubbed Core
         f.write("############################################################\n")
-        f.write(f"# PART 2: OPTIMIZED CORE (EXCEPTIONS PURGED)\n")
-        f.write(f"# Nuked: {exception_nuke} Exceptions | {syntax_nuke} Ghost Rules\n")
+        f.write(f"# PART 2: OPTIMIZED CORE (NO EXCEPTIONS | NO GHOSTS)\n")
         f.write("############################################################\n\n")
         f.write("\n".join(final_output) + "\n")
         
+        # Global Regex & YouTube
         f.write(f"\n{NSFW_REGEX_RAW}\n{YOUTUBE_RULE}\n")
-        print(f"--- NUCLEAR SCRUB COMPLETE ---")
-        print(f"Deleted {syntax_nuke:,} ghost rules (incompatible syntax).")
-        print(f"Deleted {tld_nuke:,} TLD redundancies (already covered by Part 1).")
-        print(f"Deleted {keyword_nuke:,} NSFW keyword matches.")
-        print(f"Deleted {exception_nuke:,} 'Allow' rules (exceptions purged).")
-        print(f"Final blocklist saved to {OUTPUT_FILE}")
+
+    # --- FINAL STATS PRINT ---
+    print(f"\n--- NUCLEAR SCRUB COMPLETE ---")
+    print(f"Deleted {syntax_nuke:,} ghost rules (paths, IPs, bad syntax).")
+    print(f"Deleted {tld_nuke:,} TLD redundancies (covered by Part 1).")
+    print(f"Deleted {keyword_nuke:,} NSFW keyword matches.")
+    print(f"Deleted {exception_nuke:,} 'Allow' rules (@@ exceptions purged).")
+    print(f"Final blocklist saved to {OUTPUT_FILE}")
+
 if __name__ == "__main__":
     main()
