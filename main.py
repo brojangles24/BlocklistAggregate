@@ -2,12 +2,9 @@ import requests
 import concurrent.futures
 import re
 from datetime import datetime
-from zoneinfo import ZoneInfo
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.TLD_SHIELD_V3"
-AZ_TZ = ZoneInfo("America/Phoenix") 
-
+VERSION = "2026.02.16.SCORCHED_EARTH_FINAL"
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -19,17 +16,15 @@ CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
 ]
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
-# --- SCRUBBING CRITERIA ---
+# --- AGGRESSIVE REGEX (NO SAFETY) ---
+# No \b boundaries. No exceptions.
+# Matches "sex" inside "sussex", "porn" inside "foodporn", etc.
 NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
 NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
-
-# --- ENFORCEMENT ---
 NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
-YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 FORCE_SAFE = """
 ||edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
 ||www.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
@@ -49,10 +44,14 @@ FORCE_SAFE = """
 ||ya.ru^$dnsrewrite=NOERROR;A;213.180.193.56
 """
 
-OUTPUT_FILE = "blocklist.txt"
+YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
+OUTPUT_FILE = "adguard_scorched_earth.txt"
+
+DNS_VALID_MODIFIERS = ["$dnsrewrite", "$important", "$client", "$network", "$ctag", "$badfilter", "$denyallow"]
 
 def fetch_url(url):
     try:
+        print(f"  -> Downloading: {url}")
         r = requests.get(url, timeout=30)
         r.raise_for_status()
         return r.text.splitlines()
@@ -61,103 +60,150 @@ def fetch_url(url):
         return []
 
 def main():
-    unique_rules = set()
-    spam_tld_extensions = set()
+    blocked_tlds = set()
+    advanced_rules = set()
+    simple_domains = set()
     
-    # Tracking
-    kw_nukes = 0
-    tld_nukes = 0
-    allow_nukes = 0
+    # Stats
+    tld_nuke = 0
+    keyword_nuke = 0
+    cosmetic_nuke = 0
+    syntax_nuke = 0
     
-    start_time = datetime.now(AZ_TZ)
-    print(f"DEBUG: Process started at {start_time.strftime('%Y-%m-%d %I:%M %p')}\n")
+    start_time = datetime.now()
+    print(f"--- STARTING SCORCHED EARTH SCRUB ({start_time.strftime('%H:%M:%S')}) ---")
 
-    # 1. Fetch Spam TLDs first
-    print("--- STEP 1: Building TLD Firewall & Preserving TLD Rules ---")
-    tld_lines = fetch_url(SPAM_TLD_URL)
-    for line in tld_lines:
-        clean = line.split(' !')[0].split(' #')[0].strip()
-        if not clean or clean.startswith(("!", "#", "[Adblock")):
-            continue
-        
-        # Preserve EVERYTHING from this specific file (including @@ rules)
-        unique_rules.add(clean)
-        
-        # Identify the TLD extension for scrubbing core sources
-        # Look for the pattern ||tld^ specifically
-        match = re.search(r"\|\|([a-z0-9\-]+)\^", clean.lower())
-        if match:
-            # We skip @@ lines when building the 'nuke' list to be safe
-            if not clean.startswith("@@"):
-                spam_tld_extensions.add(match.group(1))
+    # 1. Build TLD Firewall
+    print("Building TLD Firewall...")
+    spam_tlds_raw = fetch_url(SPAM_TLD_URL)
+    for line in spam_tlds_raw:
+        clean = line.strip().lower()
+        tld_match = re.search(r"(\*\.|\^|\|\|)([a-z0-9\-]+)\^", clean)
+        if tld_match:
+            tld = tld_match.group(2)
+            if tld and len(tld) > 1:
+                blocked_tlds.add(tld)
+    
+    blocked_tlds_tuple = tuple(f".{t}" for t in blocked_tlds)
+    print(f"  -> Memorized {len(blocked_tlds)} spam TLDs.")
 
-    print(f"  -> Protected TLD rules added.")
-    print(f"  -> {len(spam_tld_extensions)} TLD extensions identified for scrubbing.\n")
-
-    # 2. Process Core Sources
-    print("--- STEP 2: Scrubbing Core Sources ---")
+    # 2. Fetch Sources
+    print("Fetching sources...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in CORE_SOURCES}
-        
+        all_lines = []
         for future in concurrent.futures.as_completed(future_to_url):
-            url = future_to_url[future]
-            lines = future.result()
-            print(f"  -> Processing: {url}")
+            all_lines.extend(future.result())
+
+    # 3. Processing Loop
+    print("Executing Aggressive Scrub...")
+    for line in all_lines:
+        line_clean = line.strip().lower()
+        line_clean = line_clean.split('!')[0].split(' #')[0].strip()
+        
+        if not line_clean or "adblock plus" in line_clean: continue
+        
+        # --- PHASE 1: KEYWORD NUKE (THE PRIORITY KILLER) ---
+        # We check this FIRST so it steals the stats from TLD/Syntax nukes.
+        # We strip modifiers to check just the domain text.
+        domain_check = line_clean.replace("||", "").replace("^", "").split('$')[0]
+        
+        if NSFW_REGEX_COMP.search(domain_check):
+            keyword_nuke += 1
+            continue
+
+        # --- PHASE 2: COSMETIC & SYNTAX PURGE ---
+        if any(x in line_clean for x in ["##", "#@#", "#?#", "#%#", "#$#"]):
+            cosmetic_nuke += 1
+            continue
+
+        if line_clean.startswith("@@"): continue
+
+        if line_clean.startswith("|"):
+             line_clean = re.sub(r"^\|{2,}", "||", line_clean)
+
+        if "$" in line_clean:
+            is_valid_dns = any(mod in line_clean for mod in DNS_VALID_MODIFIERS)
+            if not is_valid_dns:
+                syntax_nuke += 1
+                continue
+            else:
+                advanced_rules.add(line_clean)
+                continue
+
+        if "/" in line_clean:
+            if line_clean.startswith("/") and line_clean.endswith("/"):
+                advanced_rules.add(line_clean)
+                continue
+            if line_clean.startswith("||") and "/" in line_clean.replace("||", ""):
+                 syntax_nuke += 1
+                 continue
+                 
+        # --- PHASE 3: TLD & DOMAIN VALIDATION ---
+        domain_part = line_clean.replace("||", "").replace("^", "").strip().rstrip('.')
+
+        if domain_part.endswith(blocked_tlds_tuple):
+            tld_nuke += 1
+            continue
+
+        if re.match(r"^\d{1,3}(\.\d{1,3}){3}$", domain_part):
+            syntax_nuke += 1
+            continue
             
-            for line in lines:
-                clean = line.split(' !')[0].split(' #')[0].strip()
-                
-                if not clean or clean.startswith(("!", "#", "[Adblock")):
-                    continue
-                
-                # Rule 1: Remove all @@ rules from CORE sources
-                if clean.startswith("@@"):
-                    allow_nukes += 1
-                    continue
-                
-                check_val = clean.lower()
-                
-                # Rule 2: Keyword Scrub
-                if NSFW_REGEX_COMP.search(check_val):
-                    kw_nukes += 1
-                    continue
-                
-                # Rule 3: Improved TLD Scrub
-                # Extract domain by removing common markers
-                domain_bits = check_val.replace("||", "").replace("@@", "").split("^")[0].split("$")[0].split("/")[0]
-                
-                is_spam = False
-                if "." in domain_bits:
-                    # Get the extension (last part after the dot)
-                    ext = domain_bits.split(".")[-1]
-                    if ext in spam_tld_extensions:
-                        is_spam = True
-                
-                if is_spam:
-                    tld_nukes += 1
-                    continue
+        if "." not in domain_part:
+            if domain_part.endswith("*"):
+                 advanced_rules.add(line_clean)
+            else:
+                syntax_nuke += 1
+                continue
+        else:
+            simple_domains.add(domain_part)
 
-                unique_rules.add(clean)
-
-    # 3. Output
-    final_list = sorted(list(unique_rules))
-    now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
+    # 4. Tree-Pruning
+    print(f"Tree-Pruning {len(simple_domains):,} core domains...")
+    rev_domains = sorted(['.'.join(d.split('.')[::-1]) for d in simple_domains])
+    pruned_rev = []
+    last_added = ""
     
+    for rd in rev_domains:
+        if last_added and rd.startswith(last_added + "."): 
+            continue
+        pruned_rev.append(rd)
+        last_added = rd
+    
+    # 5. Final Construction
+    final_output = list(advanced_rules)
+    for rd in pruned_rev:
+        final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
+    
+    final_output.sort()
+    
+    # 6. Write to File
+    print(f"Writing {len(final_output):,} rules to file...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write(f"! Last Updated: {now_az} (Arizona Time)\n")
-        f.write(f"! Keyword Nukes: {kw_nukes:,} | TLD Nukes: {tld_nukes:,} | Core @@ Nukes: {allow_nukes:,}\n")
-        f.write(f"! Rules: {len(final_list):,}\n\n")
-        f.write("\n".join(final_list) + "\n\n")
-        f.write("! --- ENFORCEMENT ---\n")
+        f.write("! Title: Isaac's Scorched Earth List\n")
+        f.write(f"! Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"! Revision: {VERSION}\n")
+        f.write("! Description: Aggressive keyword filtering enabled. False positives expected.\n\n")
+
+        f.write("! --- SPAM TLDs ---\n")
+        f.write("\n".join(spam_tlds_raw) + "\n\n")
+
+        f.write("! --- OPTIMIZED DNS CORE ---\n")
+        f.write("\n".join(final_output) + "\n")
+        
+        f.write("\n! --- NUCLEAR REGEX ENFORCEMENT ---\n")
         f.write(f"{NSFW_REGEX_RAW}\n")
         f.write(f"{YOUTUBE_RULE}\n")
-        f.write(f"{FORCE_SAFE.strip()}\n")
+        F.write(f"{FORCE_SAFE}\n")
 
-    print(f"\n--- RESULTS ---")
-    print(f"Keywords Scrubbed: {kw_nukes:,}")
-    print(f"Spam TLDs Scrubbed: {tld_nukes:,}")
-    print(f"Core @@ Removed:   {allow_nukes:,}")
-    print(f"Final Count:       {len(final_list):,}")
+    # --- FINAL STATS PRINT ---
+    elapsed = datetime.now() - start_time
+    print(f"\n--- SCRUB COMPLETE in {elapsed.total_seconds():.2f}s ---")
+    print(f"Deleted {keyword_nuke:,} domains via Aggressive Regex.")
+    print(f"Deleted {tld_nuke:,} TLD redundancies.")
+    print(f"Deleted {cosmetic_nuke:,} cosmetic rules.")
+    print(f"Final blocklist saved to {OUTPUT_FILE}")
 
 if __name__ == "__main__":
     main()
