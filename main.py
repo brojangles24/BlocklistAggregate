@@ -5,7 +5,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.SCRUB_TRACKER_V1"
+VERSION = "2026.02.16.SCRUB_FIXED_V2"
 AZ_TZ = ZoneInfo("America/Phoenix") 
 
 CORE_SOURCES = [
@@ -65,7 +65,6 @@ def main():
     unique_rules = set()
     blocked_tlds = set()
     
-    # Counters
     keyword_nuke_count = 0
     tld_nuke_count = 0
     exception_nuke_count = 0
@@ -73,22 +72,23 @@ def main():
     start_time = datetime.now(AZ_TZ)
     print(f"DEBUG: Script initialized at {start_time.strftime('%Y-%m-%d %I:%M %p')} AZ Time\n")
 
-    # 1. Process Hagezi Spam TLDs (Special Case: Keep @@)
-    print("--- STEP 1: Processing Spam TLD Firewall ---")
+    # 1. Build the TLD Blacklist
+    print("--- STEP 1: Building Spam TLD Firewall ---")
     tld_raw = fetch_url(SPAM_TLD_URL)
     for line in tld_raw:
         clean = line.split(' !')[0].split(' #')[0].strip()
         if not clean or clean.startswith(("!", "#", "[Adblock Plus")):
             continue
         
+        # Add the raw rule to the set
         unique_rules.add(clean)
         
-        tld_match = re.search(r"\|\|([a-z0-9\-]+)\^", clean.lower())
-        if tld_match:
-            blocked_tlds.add(f".{tld_match.group(1)}")
+        # Extract the TLD itself (e.g., from ||top^ get top)
+        tld_extract = clean.replace("||", "").replace("^", "").lower()
+        if tld_extract and "." not in tld_extract:
+            blocked_tlds.add(tld_extract)
     
-    blocked_tlds_tuple = tuple(blocked_tlds)
-    print(f"Loaded {len(blocked_tlds)} Spam TLDs.\n")
+    print(f"Loaded {len(blocked_tlds)} unique Spam TLD extensions.\n")
 
     # 2. Fetch Core Sources
     print("--- STEP 2: Fetching and Scrubbing Core Sources ---")
@@ -98,7 +98,7 @@ def main():
         for future in concurrent.futures.as_completed(future_to_url):
             url = future_to_url[future]
             lines = future.result()
-            print(f"  -> Scrubbing: {url}")
+            print(f"  -> Processing: {url}")
             
             for line in lines:
                 clean = line.split(' !')[0].split(' #')[0].strip()
@@ -106,21 +106,30 @@ def main():
                 if not clean or clean.startswith(("!", "#", "[Adblock Plus")):
                     continue
                 
-                # A. Remove exceptions (@@)
                 if clean.startswith("@@"):
                     exception_nuke_count += 1
                     continue
                 
                 check_val = clean.lower()
                 
-                # B. Keyword Scrub
+                # A. Keyword Scrub
                 if NSFW_REGEX_COMP.search(check_val):
                     keyword_nuke_count += 1
                     continue
                 
-                # C. TLD Scrub
-                domain_part = check_val.replace("||", "").split("^")[0].split("$")[0]
-                if domain_part.endswith(blocked_tlds_tuple):
+                # B. Improved TLD Scrub
+                # Remove common Adblock syntax to isolate the domain
+                domain_part = check_val.replace("||", "").split("^")[0].split("$")[0].split("/")[0]
+                
+                # Check if the domain ends with any of the blocked TLDs
+                # We check for ".tld" to ensure we don't accidentally nuke "apple.com" if "le.com" was a spam TLD
+                is_spam_tld = False
+                for tld in blocked_tlds:
+                    if domain_part.endswith(f".{tld}"):
+                        is_spam_tld = True
+                        break
+                
+                if is_spam_tld:
                     tld_nuke_count += 1
                     continue
 
@@ -133,28 +142,22 @@ def main():
     now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
     
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write(f"! Last Updated: {now_az} (Arizona Time)\n")
-        f.write(f"! Total Rules: {len(final_output):,}\n")
-        f.write(f"! Keyword Matches Removed: {keyword_nuke_count:,}\n")
-        f.write(f"! Spam TLD Matches Removed: {tld_nuke_count:,}\n")
-        f.write(f"! Non-Spam TLD Exceptions Removed: {exception_nuke_count:,}\n\n")
-
+        f.write(f"! Last Updated: {now_az} (AZ)\n")
+        f.write(f"! Final Rules: {len(final_output):,}\n")
+        f.write(f"! Keyword Nukes: {keyword_nuke_count:,} | TLD Nukes: {tld_nuke_count:,} | @@ Nukes: {exception_nuke_count:,}\n\n")
         f.write("\n".join(final_output) + "\n\n")
-        
         f.write("! --- ENFORCEMENT ---\n")
         f.write(f"{NSFW_REGEX_RAW}\n")
         f.write(f"{YOUTUBE_RULE}\n")
         f.write(f"{FORCE_SAFE.strip()}\n")
 
-    # Console Summary
     elapsed = datetime.now(AZ_TZ) - start_time
     print(f"\n--- SCRUB COMPLETE ---")
-    print(f"Total Keyword Nukes:   {keyword_nuke_count:,}")
-    print(f"Total Spam TLD Nukes:  {tld_nuke_count:,}")
-    print(f"Total @@ Rules Nuked:  {exception_nuke_count:,}")
-    print(f"Final Rule Count:      {len(final_output):,}")
-    print(f"Execution Time:        {elapsed.total_seconds():.2f}s")
-    print(f"Saved to:              {OUTPUT_FILE}")
+    print(f"Keywords Nuked:    {keyword_nuke_count:,}")
+    print(f"Spam TLDs Nuked:   {tld_nuke_count:,}")
+    print(f"@@ Rules Nuked:    {exception_nuke_count:,}")
+    print(f"Final Rule Count:  {len(final_output):,}")
+    print(f"Time:              {elapsed.total_seconds():.2f}s")
 
 if __name__ == "__main__":
     main()
