@@ -47,7 +47,8 @@ FORCE_SAFE = """
 """
 
 OUTPUT_FILE = "blocklist.txt"
-MIN_TLD_COUNT = 3
+FETCH_TIMEOUT_SECONDS = 20
+MAX_FETCH_WORKERS = 6
 
 # --- FUNCTIONS ---
 
@@ -90,7 +91,7 @@ def domain_key_from_rule(rule):
 
 def clean_line(line):
     line = line.partition('!')[0].partition('#')[0].strip()
-    if not line or '@@' in line:
+    if not line or line.startswith('@@'):
         return None
     if line.startswith('||') and not line.endswith('^'):
         line += '^'
@@ -109,13 +110,16 @@ def is_dns_compatible(rule):
     return True
 
 
-def consolidate_domains_tldaware(rules, min_tld_count=MIN_TLD_COUNT):
-    grouped = defaultdict(list)
-    others = set()
+def consolidate_domains_tldaware(rules):
+    # Keep only strict duplicates removed (exact rule text), no tree or wildcard pruning.
+    return set(rules)
 
-    for rule in rules:
-        if not rule.startswith('||'):
-            others.add(rule)
+
+def parse_spam_tld_patterns(spam_tlds):
+    patterns = []
+    for raw in spam_tlds:
+        line = raw.partition('!')[0].partition('#')[0].strip().lower().lstrip('.')
+        if not line:
             continue
         key = domain_key_from_rule(rule)
         if not key:
@@ -123,14 +127,12 @@ def consolidate_domains_tldaware(rules, min_tld_count=MIN_TLD_COUNT):
             continue
         grouped[key].append(rule)
 
-    consolidated = set(others)
-    for key, variants in grouped.items():
-        if len(variants) >= min_tld_count:
-            consolidated.add(f'||{key}*^')
-        else:
-            consolidated.update(variants)
+        suffix = labels[-len(pattern):]
+        if all(p == '*' or h == '*' or p == h for p, h in zip(pattern, suffix)):
+            return True
 
-    return consolidated
+    return False
+
 
 
 def parse_spam_tld_patterns(spam_tlds):
@@ -210,7 +212,7 @@ def filter_keywords_and_tlds(rules, spam_tlds, nsfw_pattern):
     spam_tld_patterns = parse_spam_tld_patterns(spam_tlds)
 
     for rule in rules:
-        if re.search(nsfw_pattern, rule):
+        if nsfw_re.search(rule):
             continue
 
         host = rule_host(rule)
@@ -226,8 +228,8 @@ def main():
     print('DEBUG: Starting process')
 
     raw_rules = set()
-    for url in CORE_SOURCES:
-        for line in fetch_url(url):
+    for lines in fetch_all_sources(CORE_SOURCES):
+        for line in lines:
             clean = clean_line(line)
             if clean:
                 raw_rules.add(clean)
