@@ -1,10 +1,11 @@
 import requests
 import concurrent.futures
+import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.CLEAN_DEDUPE_V1"
+VERSION = "2026.02.16.SCRUB_DEDUPE_V1"
 AZ_TZ = ZoneInfo("America/Phoenix") 
 
 CORE_SOURCES = [
@@ -22,8 +23,12 @@ CORE_SOURCES = [
 ]
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
+# --- SCRUBBING CRITERIA ---
+NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
+NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
+
 # --- STATIC ENFORCEMENT RULES ---
-NSFW_REGEX_RAW = "/(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)/"
+NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
 FORCE_SAFE = """
@@ -59,43 +64,71 @@ def fetch_url(url):
 
 def main():
     unique_rules = set()
+    blocked_tlds = set()
     start_time = datetime.now(AZ_TZ)
+    
     print(f"DEBUG: Script initialized at {start_time.strftime('%Y-%m-%d %I:%M %p')} AZ Time")
 
-    # 1. Fetch Core Sources
+    # 1. Build the TLD Blacklist
+    print("Building Spam TLD Firewall...")
+    tld_raw = fetch_url(SPAM_TLD_URL)
+    for line in tld_raw:
+        clean = line.strip().lower()
+        # Extract TLD from Hagezi format: ||tld^
+        tld_match = re.search(r"\|\|([a-z0-9\-]+)\^", clean)
+        if tld_match:
+            blocked_tlds.add(f".{tld_match.group(1)}")
+    
+    blocked_tlds_tuple = tuple(blocked_tlds)
+    print(f"  -> Loaded {len(blocked_tlds)} Spam TLDs.")
+
+    # 2. Fetch Core Sources
     print("Fetching core sources...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        all_urls = CORE_SOURCES + [SPAM_TLD_URL]
-        future_to_url = {executor.submit(fetch_url, url): url for url in all_urls}
+        future_to_url = {executor.submit(fetch_url, url): url for url in CORE_SOURCES}
         
         for future in concurrent.futures.as_completed(future_to_url):
             lines = future.result()
             for line in lines:
-                # Remove inline comments and strip whitespace
-                # We split by ' !' or ' #' to avoid breaking rules that might contain '#' (like some CSS rules)
-                # unless there is a space before it, which usually indicates a comment.
+                # Basic cleaning
                 clean = line.split(' !')[0].split(' #')[0].strip()
                 
-                # Filter out lines that are purely comments or empty
-                if clean and not clean.startswith(("!", "#", "[Adblock Plus")):
-                    unique_rules.add(clean)
+                # Filter out pure comments/empty lines
+                if not clean or clean.startswith(("!", "#", "[Adblock Plus")):
+                    continue
+                
+                # --- THE SCRUB ---
+                # Lowercase for checking purposes
+                check_val = clean.lower()
+                
+                # 1. Keyword Check
+                if NSFW_REGEX_COMP.search(check_val):
+                    continue
+                
+                # 2. TLD Check
+                # Extracts the domain part (removes || and ^) to check the ending
+                domain_part = check_val.replace("||", "").split("^")[0].split("$")[0]
+                if domain_part.endswith(blocked_tlds_tuple):
+                    continue
 
-    # 2. Final Construction
+                # If it passed both, add to set
+                unique_rules.add(clean)
+
+    # 3. Final Construction
     final_output = sorted(list(unique_rules))
     
-    # 3. Write to File
+    # 4. Write to File
     now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
     print(f"Writing {len(final_output):,} unique rules to file...")
     
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        # Header info (minimalist)
-        f.write(f"! Last Updated: {now_az} (AZ)\n")
-        f.write(f"! Unique Rules: {len(final_output):,}\n\n")
+        f.write(f"! Last Updated: {now_az} (Arizona Time)\n")
+        f.write(f"! Total Rules After Scrub & Dedupe: {len(final_output):,}\n")
+        f.write(f"! Version: {VERSION}\n\n")
 
-        # The actual rules
         f.write("\n".join(final_output) + "\n\n")
         
-        # Enforcement Rules
+        f.write("! --- ENFORCEMENT ---\n")
         f.write(f"{NSFW_REGEX_RAW}\n")
         f.write(f"{YOUTUBE_RULE}\n")
         f.write(f"{FORCE_SAFE.strip()}\n")
