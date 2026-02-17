@@ -18,7 +18,6 @@ CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
-    "https://filters.adtidy.org/extension/chromium/filters/3.txt"
 ]
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
