@@ -73,14 +73,12 @@ def main():
     advanced_rules = set()
     simple_domains = set()
     
-    # Stats
     tld_nuke = 0
     keyword_nuke = 0
     cosmetic_nuke = 0
     syntax_nuke = 0
     
     start_time = datetime.now(AZ_TZ)
-    # Corrected Indentation
     print(f"DEBUG: Script initialized at {start_time.strftime('%Y-%m-%d %I:%M %p')} AZ Time")
 
     # 1. Build TLD Firewall
@@ -112,13 +110,11 @@ def main():
         
         if not line_clean or "adblock plus" in line_clean: continue
         
-        # --- PHASE 1: KEYWORD NUKE ---
         domain_check = line_clean.replace("||", "").replace("^", "").split('$')[0]
         if NSFW_REGEX_COMP.search(domain_check):
             keyword_nuke += 1
             continue
 
-        # --- PHASE 2: COSMETIC & SYNTAX PURGE ---
         if any(x in line_clean for x in ["##", "#@#", "#?#", "#%#", "#$#"]):
             cosmetic_nuke += 1
             continue
@@ -145,7 +141,6 @@ def main():
                  syntax_nuke += 1
                  continue
                  
-        # --- PHASE 3: TLD & DOMAIN VALIDATION ---
         domain_part = line_clean.replace("||", "").replace("^", "").strip().rstrip('.')
 
         if domain_part.endswith(blocked_tlds_tuple):
@@ -181,7 +176,7 @@ def main():
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.sort()
     
-    # 6. Write to File (Locked to AZ 12-hour format)
+    # 6. Write to File (Including Homepage and AZ Time)
     now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
     print(f"Writing {len(final_output):,} rules to file...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
@@ -202,12 +197,8 @@ def main():
         f.write(f"{YOUTUBE_RULE}\n")
         f.write(f"{FORCE_SAFE}\n")
 
-    # --- FINAL STATS PRINT ---
     elapsed = datetime.now(AZ_TZ) - start_time
     print(f"\n--- SCRUB COMPLETE in {elapsed.total_seconds():.2f}s ---")
-    print(f"Deleted {keyword_nuke:,} domains via Aggressive Regex.")
-    print(f"Deleted {tld_nuke:,} TLD redundancies.")
-    print(f"Deleted {cosmetic_nuke:,} cosmetic rules.")
     print(f"Final blocklist saved to {OUTPUT_FILE}")
 
 if __name__ == "__main__":
