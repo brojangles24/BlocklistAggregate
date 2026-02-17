@@ -80,7 +80,7 @@ def main():
     syntax_nuke = 0
     
     start_time = datetime.now(AZ_TZ)
-    # FIXED INDENTATION BELOW
+    # Corrected Indentation
     print(f"DEBUG: Script initialized at {start_time.strftime('%Y-%m-%d %I:%M %p')} AZ Time")
 
     # 1. Build TLD Firewall
@@ -181,11 +181,12 @@ def main():
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.sort()
     
-    # 6. Write to File (Using 12-hour AM/PM format)
+    # 6. Write to File (Locked to AZ 12-hour format)
     now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
     print(f"Writing {len(final_output):,} rules to file...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("! Title: Isaac's Scorched Earth Ultimate List\n")
+        f.write("! Homepage: https://github.com/brojangles24/BlocklistAggregate\n")
         f.write(f"! Last Updated: {now_az} (Arizona Time)\n")
         f.write(f"! Revision: {VERSION}\n")
         f.write("! Description: Aggressive keyword filtering + Full SafeSearch Enforcement.\n\n")
