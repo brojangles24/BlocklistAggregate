@@ -71,11 +71,12 @@ def main():
 
     for line in all_lines:
         line_clean = line.strip().lower()
+        # Strip comments/whitespace
         line_clean = line_clean.split('#')[0].split('!')[0].split(';')[0].strip()
         
         if not line_clean or "adblock plus" in line_clean: continue
         
-        # A. EXCEPTION PURGE (Remove all @@ rules as requested)
+        # A. EXCEPTION PURGE (Remove all @@ rules)
         if line_clean.startswith("@@"):
             exception_nuke += 1
             continue
@@ -84,7 +85,7 @@ def main():
         if line_clean.startswith("|||"):
             line_clean = line_clean.replace("|||", "||", 1)
 
-        # C. PATH & BROWSER SYNTAX SCRUB
+        # C. PATH & BROWSER SYNTAX SCRUB (DNS Blindspots)
         if line_clean.startswith("/") and any(x in line_clean for x in [".js", ".php", ".png", ".jpg", "/api/"]):
             syntax_nuke += 1
             continue
@@ -107,30 +108,31 @@ def main():
             tld_nuke += 1
             continue
 
-        # F. CATEGORIZE & FILTER
+        # F. CATEGORIZE & FILTER (The "AdGuard-Native" Logic)
         if "$" in line_clean:
             # Keep only DNS-compatible enforcements
             if any(x in line_clean for x in ["$dnsrewrite", "$important", "$client", "$network"]):
                 advanced_rules.add(line_clean)
         else:
-            # IP & Wildcard Check
-            temp_domain = line_clean.replace("||", "").replace("^", "").strip()
+            # Domain and IP Validation
+            domain_only = line_clean.replace("||", "").replace("^", "").strip()
             
-            # Nuke raw IP blocks (e.g. 167.206.10.148)
-            if re.match(r"^\d{1,3}(\.\d{1,3}){3}$", temp_domain):
+            # Nuke raw IP blocks (e.g. 167.206.10.148) - DNS doesn't see these
+            if re.match(r"^\d{1,3}(\.\d{1,3}){3}$", domain_only):
                 syntax_nuke += 1
                 continue
             
-            # Keep valid domains or AdGuard wildcards (like ||piwik.^)
-            if "." in temp_domain or "^" in line_clean:
-                # If it's a wildcard like ||piwik.^, it goes to advanced_rules to preserve syntax
-                if "^" in line_clean and "." not in temp_domain:
+            # Nuke incomplete wildcards (e.g. ||piwik.^) if they lack a TLD or dot
+            if "." not in domain_only and not domain_only.endswith("*"):
+                # If it's a known AdGuard wildcard like ||piwik.^ we keep it as 'Advanced'
+                if "^" in line_clean:
                     advanced_rules.add(line_clean)
                 else:
-                    simple_domains.add(temp_domain)
+                    syntax_nuke += 1
+                    continue
             else:
-                syntax_nuke += 1
-                continue
+                # Standard domain - add to simple list for tree-pruning
+                simple_domains.add(domain_only)
 
     # 3. Tree-Pruning
     print(f"Pruning {len(simple_domains):,} core domains...")
