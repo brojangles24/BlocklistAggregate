@@ -2,10 +2,10 @@ import requests
 from datetime import datetime, timezone
 import re
 import textwrap
+from collections import defaultdict
 
 # --- CONFIGURATION ---
 VERSION = "2026.02.16.CORE_CLEAN_TLD_RAW"
-# Use UTC to avoid threading/tzdata issues
 AZ_TZ = timezone.utc
 
 CORE_SOURCES = [
@@ -46,6 +46,7 @@ FORCE_SAFE = """
 """
 
 OUTPUT_FILE = "blocklist.txt"
+MIN_TLD_COUNT = 3
 
 # --- FUNCTIONS ---
 
@@ -60,63 +61,100 @@ def fetch_url(url):
         return []
 
 
-def clean_rule(line):
+def clean_line(line):
     line = line.partition('!')[0].partition('#')[0].strip()
     if not line or '@@' in line:
         return None
-    line = re.sub(r'\$.*$', '', line).strip()
-    if not line:
-        return None
-    m = re.match(r'\|\|([\w\-\.]+)\..{2,3}$', line)
-    if m:
-        return f'||{m.group(1)}^'
     if line.startswith('||') and not line.endswith('^'):
         line += '^'
     return line
 
 
+def is_dns_compatible(rule, dns_incompatible_modifiers=None):
+    if not rule:
+        return False
+    if rule.startswith('@@') or '##' in rule or '#@#' in rule:
+        return False
+    if '/' in rule and not rule.startswith('/') and not rule.startswith('||'):
+        return False
+    if '$' in rule:
+        return False
+    return True
+
+
+def consolidate_domains(rules, min_tld_count=MIN_TLD_COUNT):
+    from collections import defaultdict
+    pattern_groups = defaultdict(list)
+    others = set()
+
+    for rule in rules:
+        m = re.match(r'\|\|([\w\-\.]+)\.(\w{2,3})\^?', rule)
+        if m:
+            key = m.group(1)
+            pattern_groups[key].append(rule)
+        else:
+            others.add(rule)
+
+    consolidated = set(others)
+    for base, variants in pattern_groups.items():
+        if len(variants) >= min_tld_count:
+            consolidated.add(f'||{base}*^')
+        else:
+            consolidated.update(variants)
+
+    return consolidated
+
+
+def filter_keywords_and_tlds(rules, spam_tlds, nsfw_pattern):
+    filtered = set()
+    tlds = [tld.strip() for tld in spam_tlds if tld.strip()]
+    for rule in rules:
+        if re.search(nsfw_pattern, rule):
+            continue
+        if any(rule.endswith('.' + tld + '^') or rule.endswith('.' + tld) for tld in tlds):
+            continue
+        filtered.add(rule)
+    return filtered
+
+
 def main():
-    core_rules = set()
-    start_time = datetime.now(AZ_TZ)
-    print(f"DEBUG: Process started at {start_time.strftime('%I:%M %p')}\n")
+    print('DEBUG: Starting process')
 
-    # Fetch Core Sources sequentially to avoid thread limits
-    print("--- STEP 1: Fetching & Cleaning Core Sources ---")
+    raw_rules = set()
     for url in CORE_SOURCES:
-        lines = fetch_url(url)
-        for line in lines:
-            clean = clean_rule(line)
+        for line in fetch_url(url):
+            clean = clean_line(line)
             if clean:
-                core_rules.add(clean)
+                raw_rules.add(clean)
 
-    # Fetch Hagezi Spam TLDs (RAW)
-    print("--- STEP 2: Fetching Hagezi Spam TLDs (Preserving Raw) ---")
-    raw_tld_lines = fetch_url(SPAM_TLD_URL)
+    spam_tlds = fetch_url(SPAM_TLD_URL)
 
-    # Final Construction
-    sorted_core = sorted(core_rules)
+    dns_rules = set(r for r in raw_rules if is_dns_compatible(r))
+    dns_rules = filter_keywords_and_tlds(dns_rules, spam_tlds, NSFW_REGEX_RAW)
+
+    consolidated = consolidate_domains(dns_rules)
+
     now_str = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
 
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-        f.write(f"! Title: Isaac's Clean Blocklist\n")
-        f.write(f"! Last Updated: {now_str} (AZ Time)\n")
-        f.write(f"! Core Rules: {len(sorted_core):,}\n\n")
+        f.write(f"! Title: Isaac's Clean DNS Blocklist\n")
+        f.write(f"! Last Updated: {now_str} (UTC)\n")
+        f.write(f"! Version: {VERSION}\n")
+        f.write(f"! Core Rules: {len(consolidated):,}\n")
+        f.write(f"! Spam TLDs: {len(spam_tlds):,}\n\n")
 
-        f.write("! --- CLEANED CORE BLOCK RULES ---\n")
-        f.write('\n'.join(sorted_core) + '\n\n')
+        f.write("! --- DNS-COMPATIBLE CORE BLOCK RULES ---\n")
+        f.write('\n'.join(sorted(consolidated)) + '\n\n')
 
         f.write("! --- HAGEZI SPAM TLDs (RAW) ---\n")
-        f.write('\n'.join(raw_tld_lines) + '\n\n')
+        f.write('\n'.join(spam_tlds) + '\n\n')
 
         f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
         f.write(f"{NSFW_REGEX_RAW}\n")
         f.write(f"{YOUTUBE_RULE}\n")
         f.write(textwrap.dedent(FORCE_SAFE).strip() + '\n')
 
-    print(f"\n--- SUCCESS ---")
-    print(f"Core Blocks (No @@ / DNS-only): {len(sorted_core):,}")
-    print(f"Hagezi TLD Rules:    {len(raw_tld_lines):,}")
-    print(f"Final file saved:    {OUTPUT_FILE}")
+    print(f"SUCCESS: Blocklist generated at {OUTPUT_FILE}")
 
 
 if __name__ == '__main__':
