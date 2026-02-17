@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.SCORCHED_EARTH_FINAL"
+VERSION = "2026.02.16.FINAL_BOSS_V10"
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -21,15 +21,39 @@ CORE_SOURCES = [
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
 # --- AGGRESSIVE REGEX (NO SAFETY) ---
-# No \b boundaries. No exceptions.
-# Matches "sex" inside "sussex", "porn" inside "foodporn", etc.
 NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
 NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
 NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
 
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
-OUTPUT_FILE = "blocklist.txt"
 
+# --- SAFE SEARCH REWRITES ---
+# Using consistent || syntax for broader coverage.
+FORCE_SAFE = """
+! --- SEARCH ENGINE SAFESEARCH REWRITES ---
+||edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
+||www.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
+||search.brave.com^$dnsrewrite=NOERROR;CNAME;safesearch.brave.com
+||duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
+||start.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
+||www.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
+||www.ecosia.org^$dnsrewrite=NOERROR;CNAME;strict-safe-search.ecosia.org
+||pixabay.com^$dnsrewrite=NOERROR;CNAME;safesearch.pixabay.com
+||api.qwant.com^$dnsrewrite=NOERROR;CNAME;safeapi.qwant.com
+||www.startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
+||startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
+
+! --- GOOGLE SAFESEARCH (GLOBAL) ---
+||google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
+||www.google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
+
+! --- YANDEX FAMILY SEARCH ---
+||yandex.com^$dnsrewrite=NOERROR;A;213.180.193.56
+||yandex.ru^$dnsrewrite=NOERROR;A;213.180.193.56
+||ya.ru^$dnsrewrite=NOERROR;A;213.180.193.56
+"""
+
+OUTPUT_FILE = "scorched_earth_blocklist.txt"
 DNS_VALID_MODIFIERS = ["$dnsrewrite", "$important", "$client", "$network", "$ctag", "$badfilter", "$denyallow"]
 
 def fetch_url(url):
@@ -54,7 +78,7 @@ def main():
     syntax_nuke = 0
     
     start_time = datetime.now()
-    print(f"--- STARTING SCORCHED EARTH SCRUB ({start_time.strftime('%H:%M:%S')}) ---")
+    print(f"--- STARTING SCORCHED EARTH V10 ({start_time.strftime('%H:%M:%S')}) ---")
 
     # 1. Build TLD Firewall
     print("Building TLD Firewall...")
@@ -68,17 +92,16 @@ def main():
                 blocked_tlds.add(tld)
     
     blocked_tlds_tuple = tuple(f".{t}" for t in blocked_tlds)
-    print(f"  -> Memorized {len(blocked_tlds)} spam TLDs.")
 
     # 2. Fetch Sources
-    print("Fetching sources...")
+    print("Fetching core sources...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
         future_to_url = {executor.submit(fetch_url, url): url for url in CORE_SOURCES}
         all_lines = []
         for future in concurrent.futures.as_completed(future_to_url):
             all_lines.extend(future.result())
 
-    # 3. Processing Loop
+    # 3. Aggressive Processing Loop
     print("Executing Aggressive Scrub...")
     for line in all_lines:
         line_clean = line.strip().lower()
@@ -87,10 +110,7 @@ def main():
         if not line_clean or "adblock plus" in line_clean: continue
         
         # --- PHASE 1: KEYWORD NUKE (THE PRIORITY KILLER) ---
-        # We check this FIRST so it steals the stats from TLD/Syntax nukes.
-        # We strip modifiers to check just the domain text.
         domain_check = line_clean.replace("||", "").replace("^", "").split('$')[0]
-        
         if NSFW_REGEX_COMP.search(domain_check):
             keyword_nuke += 1
             continue
@@ -147,10 +167,8 @@ def main():
     rev_domains = sorted(['.'.join(d.split('.')[::-1]) for d in simple_domains])
     pruned_rev = []
     last_added = ""
-    
     for rd in rev_domains:
-        if last_added and rd.startswith(last_added + "."): 
-            continue
+        if last_added and rd.startswith(last_added + "."): continue
         pruned_rev.append(rd)
         last_added = rd
     
@@ -158,26 +176,26 @@ def main():
     final_output = list(advanced_rules)
     for rd in pruned_rev:
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
-    
     final_output.sort()
     
     # 6. Write to File
     print(f"Writing {len(final_output):,} rules to file...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("! Title: Isaac's Scorched Earth List\n")
+        f.write("! Title: Isaac's Scorched Earth Ultimate List\n")
         f.write(f"! Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
         f.write(f"! Revision: {VERSION}\n")
-        f.write("! Description: Aggressive keyword filtering enabled. False positives expected.\n\n")
+        f.write("! Description: Aggressive keyword filtering + Full SafeSearch Enforcement.\n\n")
 
-        f.write("! --- SPAM TLDs ---\n")
+        f.write("! --- SPAM TLDs (HAGEZI RAW) ---\n")
         f.write("\n".join(spam_tlds_raw) + "\n\n")
 
         f.write("! --- OPTIMIZED DNS CORE ---\n")
-        f.write("\n".join(final_output) + "\n")
+        f.write("\n".join(final_output) + "\n\n")
         
-        f.write("\n! --- NUCLEAR REGEX ENFORCEMENT ---\n")
+        f.write("! --- ENFORCEMENT RULES ---\n")
         f.write(f"{NSFW_REGEX_RAW}\n")
         f.write(f"{YOUTUBE_RULE}\n")
+        f.write(f"{FORCE_SAFE}\n")
 
     # --- FINAL STATS PRINT ---
     elapsed = datetime.now() - start_time
