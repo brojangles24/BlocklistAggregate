@@ -45,7 +45,7 @@ FORCE_SAFE = """
 """
 
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
-OUTPUT_FILE = "adguard_scorched_earth.txt"
+OUTPUT_FILE = "blocklist.txt"
 
 DNS_VALID_MODIFIERS = ["$dnsrewrite", "$important", "$client", "$network", "$ctag", "$badfilter", "$denyallow"]
 
