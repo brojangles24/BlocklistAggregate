@@ -3,9 +3,19 @@ from datetime import datetime, timezone, timedelta
 import re
 import textwrap
 from collections import defaultdict
+import sys
+
+# Try to import tldextract, handle missing dependency gracefully
+try:
+    import tldextract
+    HAS_TLDEXTRACT = True
+except ImportError:
+    HAS_TLDEXTRACT = False
+    print("!! WARNING: 'tldextract' not found. Install it with `pip install tldextract` for accurate TLD parsing.")
+    print("!! Falling back to basic string splitting (less accurate).\n")
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.17.CORE_CLEAN"
+VERSION = "2026.02.17.CORE_CLEAN_TLD_AWARE"
 # Fixed: Arizona is UTC-7 (MST) and does not observe DST
 AZ_TZ = timezone(timedelta(hours=-7))
 
@@ -49,7 +59,7 @@ FORCE_SAFE = """
 """
 
 OUTPUT_FILE = "blocklist.txt"
-MIN_TLD_COUNT = 4  # Minimum variations to trigger wildcard consolidation
+MIN_TLD_COUNT = 3  # Lowered to 3 since tldextract is accurate
 
 # --- FUNCTIONS ---
 
@@ -64,47 +74,82 @@ def fetch_url(url):
         return []
 
 def clean_line(line):
-    # Remove comments and whitespace
     line = line.partition('!')[0].partition('#')[0].strip()
-    
-    # Filter invalid or whitelist lines
     if not line or '@@' in line:
         return None
     
-    # Ensure Adblock syntax for domains
+    # Standardize domain lines
     if not line.startswith('||') and not line.startswith('/'):
-         # Simple heuristic: if it looks like a domain, wrap it
          if '.' in line and ' ' not in line:
              line = f"||{line}^"
 
-    # Ensure trailing caret for exact domain matches
     if line.startswith('||') and not line.endswith('^'):
         line += '^'
         
     return line
 
 def is_dns_compatible(rule):
-    if not rule: 
-        return False
-    # Filter cosmetic rules
-    if '##' in rule or '#@#' in rule:
-        return False
-    # Filter rules with paths (unless regex)
-    if '/' in rule and not rule.startswith('/') and not rule.startswith('||'):
-        return False
-    # Filter rules with unsupported modifiers (keeping simple domain blocks)
-    # Note: If targeting AdGuard Home, some $ modifiers are okay, but for a raw list, stripping them is safer.
-    if '$' in rule:
-        return False
+    if not rule: return False
+    if '##' in rule or '#@#' in rule: return False
+    if '/' in rule and not rule.startswith('/') and not rule.startswith('||'): return False
+    if '$' in rule: return False
     return True
 
-def extract_tld_from_rule(rule):
-    """Extracts 'zip' from '||example.zip^'"""
-    # Remove syntax wrappers
-    clean = rule.replace('||', '').replace('^', '')
-    if '.' in clean:
-        return clean.split('.')[-1]
-    return None
+def extract_tld_raw(domain_part):
+    """Fallback if tldextract is missing."""
+    if '.' not in domain_part:
+        return None
+    return domain_part.split('.')[-1]
+
+def consolidate_domains(rules, min_tld_count=MIN_TLD_COUNT):
+    """
+    Groups domains by their SLD+Subdomain (e.g. 'google' or 'ads.google') 
+    and consolidates TLDs (e.g. .com, .fr, .de) into a wildcard.
+    """
+    grouped = defaultdict(list)
+    others = set()
+
+    print("DEBUG: Consolidating domains...")
+    
+    for rule in rules:
+        # Pass through regex or non-standard rules
+        if not rule.startswith('||'):
+            others.add(rule)
+            continue
+
+        # Strip syntax: ||example.com^ -> example.com
+        clean_domain = rule[2:].rstrip('^')
+        
+        if HAS_TLDEXTRACT:
+            ext = tldextract.extract(clean_domain)
+            if not ext.domain:
+                others.add(rule)
+                continue
+            
+            # Key = "subdomain.domain" (e.g. "ads.google" or just "google")
+            key = f'{ext.subdomain}.{ext.domain}' if ext.subdomain else ext.domain
+        else:
+            # Fallback (less accurate)
+            parts = clean_domain.split('.')
+            if len(parts) < 2:
+                others.add(rule)
+                continue
+            key = parts[0] # Very rough approximation
+
+        grouped[key].append(rule)
+
+    consolidated = set(others)
+    
+    for key, variants in grouped.items():
+        if len(variants) >= min_tld_count:
+            # IMPORTANT: Use '.*^' to match any TLD safely.
+            # "||google.*^" matches google.com, google.co.uk
+            # "||google*^" would match googleplex.com (BAD)
+            consolidated.add(f'||{key}.*^')
+        else:
+            consolidated.update(variants)
+
+    return consolidated
 
 def filter_rules(rules, spam_rules_raw, nsfw_regex):
     filtered = set()
@@ -113,13 +158,14 @@ def filter_rules(rules, spam_rules_raw, nsfw_regex):
     blocked_tlds = set()
     for r in spam_rules_raw:
         clean_r = r.strip()
+        # Parse "||zip^" -> "zip"
         if clean_r.startswith('||') and clean_r.endswith('^'):
-            tld = clean_r[2:-1] # Remove || and ^
+            tld = clean_r[2:-1] 
             blocked_tlds.add(tld)
         else:
             blocked_tlds.add(clean_r)
 
-    print(f"DEBUG: Parsed {len(blocked_tlds)} blocked TLDs (e.g., {list(blocked_tlds)[:3]})")
+    print(f"DEBUG: Parsed {len(blocked_tlds)} blocked TLDs.")
 
     for rule in rules:
         # 2. Check NSFW keywords
@@ -127,99 +173,27 @@ def filter_rules(rules, spam_rules_raw, nsfw_regex):
             continue
             
         # 3. Check against Spam TLDs
-        rule_tld = extract_tld_from_rule(rule)
-        if rule_tld and rule_tld in blocked_tlds:
+        # Extract the TLD from the rule to check against blocked list
+        clean_r = rule.replace('||', '').replace('^', '')
+        
+        # Fast suffix check
+        # matches .zip or .zip^
+        is_spam_tld = False
+        for tld in blocked_tlds:
+             if clean_r.endswith(f".{tld}"):
+                 is_spam_tld = True
+                 break
+        
+        if is_spam_tld:
             continue
             
         filtered.add(rule)
         
     return filtered, blocked_tlds
 
-def prune_and_consolidate(rules):
-    """
-    1. Consolidate: specific variants -> wildcard (e.g., google.fr, google.de -> google.*)
-    2. Prune: remove subdomains if parent is blocked (e.g., ad.test.com -> test.com)
-    """
-    # --- Step 1: Wildcard Consolidation ---
-    # Group by the main label (e.g., 'google' from '||google.com^')
-    groups = defaultdict(list)
-    
-    # Regex to grab the first segment after ||
-    # Matches ||(segment).rest^
-    pattern = re.compile(r'^\|\|([a-z0-9-]+)\..+\^$')
-    
-    # We split rules into those we can group and those we can't (regexes, IPs, etc)
-    ungroupable = set()
-    
-    for rule in rules:
-        m = pattern.match(rule)
-        if m:
-            base = m.group(1)
-            # Safety: Don't wildcard short bases (avoids ||com.*^ if 'com.ua' exists)
-            if len(base) > 3:
-                groups[base].append(rule)
-            else:
-                ungroupable.add(rule)
-        else:
-            ungroupable.add(rule)
-            
-    final_rules = list(ungroupable)
-    
-    for base, variants in groups.items():
-        if len(variants) >= MIN_TLD_COUNT:
-            # Create wildcard rule
-            final_rules.append(f'||{base}.*^')
-        else:
-            # Keep original variants
-            final_rules.extend(variants)
-            
-    # --- Step 2: Subdomain Pruning ---
-    # Convert to set for O(1) lookups, but we need to iterate carefully
-    # Optimization: If ||example.com^ is present, we don't need ||ads.example.com^
-    
-    # Sort by length (shortest first) so we see '||example.com^' before '||ads.example.com^'
-    sorted_rules = sorted(final_rules, key=len)
-    optimized_set = set()
-    
-    for rule in sorted_rules:
-        # Check if this rule is redundant
-        is_redundant = False
-        
-        # Strip syntax to get raw domain "ads.example.com"
-        clean = rule.replace('||', '').replace('^', '')
-        
-        # Logic: iteratively strip subdomains and check if parent exists in optimized_set
-        # e.g., check "example.com", then "com" (though "com" won't be there usually)
-        parts = clean.split('.')
-        
-        # We check from root up. 
-        # If we have ||example.*^ (wildcard), we need to catch that too.
-        
-        # 1. Check against wildcards
-        # If 'example' is in our wildcard set (implied), we skip.
-        # Implementation: Check if `||{parts[0]}.*^` is in optimized_set
-        wildcard_check = f"||{parts[0]}.*^"
-        if wildcard_check in optimized_set:
-            continue # Redundant because of wildcard
-            
-        # 2. Check against parent domains
-        # For "a.b.c", check if "||b.c^" or "||c^" is in optimized_set
-        for i in range(1, len(parts)):
-            parent_domain = ".".join(parts[i:])
-            parent_rule = f"||{parent_domain}^"
-            if parent_rule in optimized_set:
-                is_redundant = True
-                break
-        
-        if not is_redundant:
-            optimized_set.add(rule)
-            
-    return optimized_set
-
 def main():
     print('DEBUG: Starting process...')
 
-    # 1. Fetch and Clean Core Rules
     raw_rules = set()
     for url in CORE_SOURCES:
         print(f"Fetching: {url}")
@@ -228,17 +202,15 @@ def main():
             if clean and is_dns_compatible(clean):
                 raw_rules.add(clean)
 
-    # 2. Fetch Spam TLDs (Keep raw for now)
     spam_lines = fetch_url(SPAM_TLD_URL)
     spam_rules_cleaned = [clean_line(l) for l in spam_lines if clean_line(l)]
 
-    # 3. Filter Core Rules (Remove NSFW + Redundant Spam TLDs)
+    # Filter
     filtered_rules, parsed_spam_tlds = filter_rules(raw_rules, spam_rules_cleaned, NSFW_REGEX)
     
-    # 4. Prune and Wildcard Consolidation
-    final_rules = prune_and_consolidate(filtered_rules)
+    # Consolidate
+    final_rules = consolidate_domains(filtered_rules)
 
-    # 5. Generate File
     now_str = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
 
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
