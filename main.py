@@ -47,7 +47,6 @@ FORCE_SAFE = """
 """
 
 OUTPUT_FILE = "blocklist.txt"
-MIN_TLD_COUNT = 3
 FETCH_TIMEOUT_SECONDS = 20
 MAX_FETCH_WORKERS = 6
 
@@ -104,7 +103,7 @@ def is_dns_compatible(rule):
     return True
 
 
-def consolidate_domains_tldaware(rules, min_tld_count=MIN_TLD_COUNT):
+def consolidate_domains_tldaware(rules):
     # Keep only strict duplicates removed (exact rule text), no tree or wildcard pruning.
     return set(rules)
 
