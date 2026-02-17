@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.ADGUARD_DESKTOP_DNS_FINAL"
+VERSION = "2026.02.16.SCORCHED_EARTH_FINAL"
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -20,16 +20,16 @@ CORE_SOURCES = [
 ]
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
-# Keywords & Enforcements
-# Added \b to prevent blocking safe words like "Sussex"
-NSFW_KEYWORDS = r"\b(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo)\b"
+# --- AGGRESSIVE REGEX (NO SAFETY) ---
+# No \b boundaries. No exceptions.
+# Matches "sex" inside "sussex", "porn" inside "foodporn", etc.
+NSFW_KEYWORDS = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
 NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
 NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
+
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
+OUTPUT_FILE = "adguard_scorched_earth.txt"
 
-OUTPUT_FILE = "adguard_dns_filter.txt"
-
-# Modifiers supported by AdGuard DNS engine
 DNS_VALID_MODIFIERS = ["$dnsrewrite", "$important", "$client", "$network", "$ctag", "$badfilter", "$denyallow"]
 
 def fetch_url(url):
@@ -44,8 +44,8 @@ def fetch_url(url):
 
 def main():
     blocked_tlds = set()
-    advanced_rules = set() # Rules with $dnsrewrite, etc.
-    simple_domains = set() # Standard ||domain^ rules
+    advanced_rules = set()
+    simple_domains = set()
     
     # Stats
     tld_nuke = 0
@@ -54,7 +54,7 @@ def main():
     syntax_nuke = 0
     
     start_time = datetime.now()
-    print(f"--- STARTING ADGUARD DESKTOP DNS SCRUB ({start_time.strftime('%H:%M:%S')}) ---")
+    print(f"--- STARTING SCORCHED EARTH SCRUB ({start_time.strftime('%H:%M:%S')}) ---")
 
     # 1. Build TLD Firewall
     print("Building TLD Firewall...")
@@ -78,33 +78,33 @@ def main():
         for future in concurrent.futures.as_completed(future_to_url):
             all_lines.extend(future.result())
 
-    # 3. Surgical Scrub (DNS-ONLY MODE)
-    print("Executing DNS Scrub (Removing Cosmetic & Browser Rules)...")
+    # 3. Processing Loop
+    print("Executing Aggressive Scrub...")
     for line in all_lines:
         line_clean = line.strip().lower()
-        # Strip comments
         line_clean = line_clean.split('!')[0].split(' #')[0].strip()
         
         if not line_clean or "adblock plus" in line_clean: continue
         
-        # A. COSMETIC / SCRIPTLET PURGE (##, #@#, #%#, #$#)
-        # DNS filters cannot use these. Delete them.
+        # --- PHASE 1: KEYWORD NUKE (THE PRIORITY KILLER) ---
+        # We check this FIRST so it steals the stats from TLD/Syntax nukes.
+        # We strip modifiers to check just the domain text.
+        domain_check = line_clean.replace("||", "").replace("^", "").split('$')[0]
+        
+        if NSFW_REGEX_COMP.search(domain_check):
+            keyword_nuke += 1
+            continue
+
+        # --- PHASE 2: COSMETIC & SYNTAX PURGE ---
         if any(x in line_clean for x in ["##", "#@#", "#?#", "#%#", "#$#"]):
             cosmetic_nuke += 1
             continue
 
-        # B. EXCEPTION PURGE (@@)
-        # We usually remove exceptions to keep the list "Nuclear"
-        if line_clean.startswith("@@"):
-            continue
+        if line_clean.startswith("@@"): continue
 
-        # C. TRIPLE-PIPE REPAIR (Crucial Fix for AdGuard)
-        # Fixes |||example.com -> ||example.com
         if line_clean.startswith("|"):
              line_clean = re.sub(r"^\|{2,}", "||", line_clean)
 
-        # D. BROWSER MODIFIER PURGE
-        # If it has $, check if it's a DNS modifier. If not (e.g. $image), delete it.
         if "$" in line_clean:
             is_valid_dns = any(mod in line_clean for mod in DNS_VALID_MODIFIERS)
             if not is_valid_dns:
@@ -114,52 +114,32 @@ def main():
                 advanced_rules.add(line_clean)
                 continue
 
-        # E. PATH & FILE PURGE
-        # DNS cannot block paths.
         if "/" in line_clean:
-            # Keep valid Regex rules (start/end with /)
             if line_clean.startswith("/") and line_clean.endswith("/"):
                 advanced_rules.add(line_clean)
                 continue
-            # Kill path blocks (||example.com/banner.php)
             if line_clean.startswith("||") and "/" in line_clean.replace("||", ""):
                  syntax_nuke += 1
                  continue
                  
-        # F. KEYWORD SCRUB (SAFE FOR DNS)
-        # Since we deleted cosmetic rules, we can safely delete domains matching "sex"
-        # because the global Regex will catch them.
-        if NSFW_REGEX_COMP.search(line_clean):
-            keyword_nuke += 1
-            continue
-        
-        # --- PREPARE DOMAIN PART FOR VALIDATION ---
-        # 1. Remove Anchors
-        domain_part = line_clean.replace("||", "").replace("^", "").strip()
-        
-        # 2. STRIP TRAILING DOTS (Fixes ||load.gtm.^ -> ||load.gtm^)
-        domain_part = domain_part.rstrip('.')
+        # --- PHASE 3: TLD & DOMAIN VALIDATION ---
+        domain_part = line_clean.replace("||", "").replace("^", "").strip().rstrip('.')
 
-        # G. TLD REDUNDANCY SCRUB
         if domain_part.endswith(blocked_tlds_tuple):
             tld_nuke += 1
             continue
 
-        # H. FINAL VALIDATION
-        # Nuke raw IP blocks (AdGuard DNS prefers domain blocks)
         if re.match(r"^\d{1,3}(\.\d{1,3}){3}$", domain_part):
             syntax_nuke += 1
             continue
             
-        # Nuke incomplete wildcards / Bad Domains
         if "." not in domain_part:
-            if domain_part.endswith("*"): # Valid wildcard
+            if domain_part.endswith("*"):
                  advanced_rules.add(line_clean)
             else:
                 syntax_nuke += 1
                 continue
         else:
-            # Valid Domain (e.g. load.gtm)
             simple_domains.add(domain_part)
 
     # 4. Tree-Pruning
@@ -184,31 +164,27 @@ def main():
     # 6. Write to File
     print(f"Writing {len(final_output):,} rules to file...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("! Title: Isaac's DNS-Only Nuclear List\n")
+        f.write("! Title: Isaac's Scorched Earth List\n")
         f.write(f"! Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
         f.write(f"! Revision: {VERSION}\n")
-        f.write("! Description: DNS-Only. No cosmetic rules. Optimized for AdGuard DNS Filter.\n\n")
+        f.write("! Description: Aggressive keyword filtering enabled. False positives expected.\n\n")
 
-        # Part 1: RAW TLD Firewall
         f.write("! --- SPAM TLDs ---\n")
         f.write("\n".join(spam_tlds_raw) + "\n\n")
 
-        # Part 2: Scrubbed Core
         f.write("! --- OPTIMIZED DNS CORE ---\n")
         f.write("\n".join(final_output) + "\n")
         
-        # Global Regex & YouTube
         f.write("\n! --- NUCLEAR REGEX ENFORCEMENT ---\n")
         f.write(f"{NSFW_REGEX_RAW}\n")
         f.write(f"{YOUTUBE_RULE}\n")
 
     # --- FINAL STATS PRINT ---
     elapsed = datetime.now() - start_time
-    print(f"\n--- DNS SCRUB COMPLETE in {elapsed.total_seconds():.2f}s ---")
-    print(f"Deleted {cosmetic_nuke:,} cosmetic rules (##, #%#).")
-    print(f"Deleted {syntax_nuke:,} browser-only rules ($image, paths, IPs).")
+    print(f"\n--- SCRUB COMPLETE in {elapsed.total_seconds():.2f}s ---")
+    print(f"Deleted {keyword_nuke:,} domains via Aggressive Regex.")
     print(f"Deleted {tld_nuke:,} TLD redundancies.")
-    print(f"Deleted {keyword_nuke:,} NSFW keyword matches (Covered by Regex).")
+    print(f"Deleted {cosmetic_nuke:,} cosmetic rules.")
     print(f"Final blocklist saved to {OUTPUT_FILE}")
 
 if __name__ == "__main__":
