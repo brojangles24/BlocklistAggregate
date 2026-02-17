@@ -28,11 +28,11 @@ NSFW_REGEX = re.compile(r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|b
 
 OUTPUT_FILE = "blocklist.txt"
 
-YOUTUBE_RULE = "||youtube.com^$dnsrewrite=restrictmoderate.youtube.com"
+YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 FORCE_SAFE = """
 ||edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
 ||www.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
-||search.brave.com^$dnsrewrite=NOERROR;CNAME;safesearch.brave.com
+||search.brave.com^$dnsrewrite=NOERROR;CNAME;safe.search.brave.com
 ||duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
 ||start.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
 ||www.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
