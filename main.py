@@ -4,7 +4,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 # --- CONFIGURATION ---
-VERSION = "2026.02.16.DEDUPE_ONLY_V1"
+VERSION = "2026.02.16.CLEAN_DEDUPE_V1"
 AZ_TZ = ZoneInfo("America/Phoenix") 
 
 CORE_SOURCES = [
@@ -18,6 +18,7 @@ CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
 ]
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
@@ -26,7 +27,6 @@ NSFW_REGEX_RAW = "/(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
 FORCE_SAFE = """
-! --- SEARCH ENGINE SAFESEARCH REWRITES ---
 ||edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
 ||www.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
 ||search.brave.com^$dnsrewrite=NOERROR;CNAME;safesearch.brave.com
@@ -38,12 +38,8 @@ FORCE_SAFE = """
 ||api.qwant.com^$dnsrewrite=NOERROR;CNAME;safeapi.qwant.com
 ||www.startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
 ||startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
-
-! --- GOOGLE SAFESEARCH (GLOBAL) ---
 ||google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
 ||www.google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
-
-! --- YANDEX FAMILY SEARCH ---
 ||yandex.com^$dnsrewrite=NOERROR;A;213.180.193.56
 ||yandex.ru^$dnsrewrite=NOERROR;A;213.180.193.56
 ||ya.ru^$dnsrewrite=NOERROR;A;213.180.193.56
@@ -69,20 +65,22 @@ def main():
     # 1. Fetch Core Sources
     print("Fetching core sources...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
-        # Include the Spam TLD URL in the general fetch now since we aren't parsing it specifically
         all_urls = CORE_SOURCES + [SPAM_TLD_URL]
         future_to_url = {executor.submit(fetch_url, url): url for url in all_urls}
         
         for future in concurrent.futures.as_completed(future_to_url):
             lines = future.result()
             for line in lines:
-                clean = line.strip()
-                # Only ignore comments and empty lines to keep the final file clean
+                # Remove inline comments and strip whitespace
+                # We split by ' !' or ' #' to avoid breaking rules that might contain '#' (like some CSS rules)
+                # unless there is a space before it, which usually indicates a comment.
+                clean = line.split(' !')[0].split(' #')[0].strip()
+                
+                # Filter out lines that are purely comments or empty
                 if clean and not clean.startswith(("!", "#", "[Adblock Plus")):
                     unique_rules.add(clean)
 
     # 2. Final Construction
-    # We convert set to list and sort for a consistent output file
     final_output = sorted(list(unique_rules))
     
     # 3. Write to File
@@ -90,19 +88,17 @@ def main():
     print(f"Writing {len(final_output):,} unique rules to file...")
     
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        f.write("! Title: Isaac's Deduplicated Ultimate List\n")
-        f.write("! Homepage: https://github.com/brojangles24/BlocklistAggregate\n")
-        f.write(f"! Last Updated: {now_az} (Arizona Time)\n")
-        f.write(f"! Revision: {VERSION}\n")
-        f.write("! Description: Combined list with exact-match deduplication only.\n\n")
+        # Header info (minimalist)
+        f.write(f"! Last Updated: {now_az} (AZ)\n")
+        f.write(f"! Unique Rules: {len(final_output):,}\n\n")
 
-        f.write("! --- DEDUPLICATED CORE RULES ---\n")
+        # The actual rules
         f.write("\n".join(final_output) + "\n\n")
         
-        f.write("! --- ENFORCEMENT RULES ---\n")
+        # Enforcement Rules
         f.write(f"{NSFW_REGEX_RAW}\n")
         f.write(f"{YOUTUBE_RULE}\n")
-        f.write(f"{FORCE_SAFE}\n")
+        f.write(f"{FORCE_SAFE.strip()}\n")
 
     elapsed = datetime.now(AZ_TZ) - start_time
     print(f"\n--- PROCESS COMPLETE in {elapsed.total_seconds():.2f}s ---")
