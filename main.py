@@ -28,7 +28,7 @@ NSFW_REGEX_COMP = re.compile(f"(?i){NSFW_KEYWORDS}")
 NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
 
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
-OUTPUT_FILE = "adguard_scorched_earth.txt"
+OUTPUT_FILE = "blocklist.txt"
 
 DNS_VALID_MODIFIERS = ["$dnsrewrite", "$important", "$client", "$network", "$ctag", "$badfilter", "$denyallow"]
 
