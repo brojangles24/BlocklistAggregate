@@ -80,7 +80,8 @@ def main():
     syntax_nuke = 0
     
     start_time = datetime.now(AZ_TZ)
-    print(f"--- STARTING SCORCHED EARTH V10 ({start_time.strftime('%H:%M:%S')} AZ) ---")
+    # FIXED INDENTATION BELOW
+    print(f"DEBUG: Script initialized at {start_time.strftime('%Y-%m-%d %I:%M %p')} AZ Time")
 
     # 1. Build TLD Firewall
     print("Building TLD Firewall...")
@@ -180,12 +181,12 @@ def main():
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.sort()
     
-    # 6. Write to File (Using Fixed AZ Timestamp)
-    now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %H:%M:%S')
+    # 6. Write to File (Using 12-hour AM/PM format)
+    now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %I:%M:%S %p')
     print(f"Writing {len(final_output):,} rules to file...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("! Title: Isaac's Scorched Earth Ultimate List\n")
-        f.write(f"! Last Updated: {now_az} (MST/Arizona)\n")
+        f.write(f"! Last Updated: {now_az} (Arizona Time)\n")
         f.write(f"! Revision: {VERSION}\n")
         f.write("! Description: Aggressive keyword filtering + Full SafeSearch Enforcement.\n\n")
 
