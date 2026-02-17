@@ -149,8 +149,11 @@ def main():
         f.write("\n".join(final_output) + "\n")
         
         f.write(f"\n{NSFW_REGEX_RAW}\n{YOUTUBE_RULE}\n")
-
-    print(f"Done. Deleted {exception_nuke} exceptions, {syntax_nuke} ghost rules, and {keyword_nuke} keywords.")
-
+        print(f"--- NUCLEAR SCRUB COMPLETE ---")
+        print(f"Deleted {syntax_nuke:,} ghost rules (incompatible syntax).")
+        print(f"Deleted {tld_nuke:,} TLD redundancies (already covered by Part 1).")
+        print(f"Deleted {keyword_nuke:,} NSFW keyword matches.")
+        print(f"Deleted {exception_nuke:,} 'Allow' rules (exceptions purged).")
+        print(f"Final blocklist saved to {OUTPUT_FILE}")
 if __name__ == "__main__":
     main()
