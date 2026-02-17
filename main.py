@@ -1,9 +1,9 @@
-import requests
 from datetime import datetime, timezone
 import re
 import textwrap
-from collections import defaultdict
-import tldextract
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from urllib import request
+from urllib.error import URLError, HTTPError
 
 # --- CONFIGURATION ---
 VERSION = "2026.02.16.CORE_CLEAN_TLD_RAW"
@@ -48,23 +48,44 @@ FORCE_SAFE = """
 
 OUTPUT_FILE = "blocklist.txt"
 MIN_TLD_COUNT = 3
+FETCH_TIMEOUT_SECONDS = 20
+MAX_FETCH_WORKERS = 6
 
 # --- FUNCTIONS ---
 
 def fetch_url(url):
     try:
-        r = requests.get(url, timeout=30)
-        r.raise_for_status()
-        r.encoding = 'utf-8'
-        return r.text.splitlines()
+        req = request.Request(url, headers={"User-Agent": "BlocklistAggregate/1.0"})
+        with request.urlopen(req, timeout=FETCH_TIMEOUT_SECONDS) as resp:
+            body = resp.read().decode('utf-8', errors='replace')
+        return body.splitlines()
+    except (HTTPError, URLError, TimeoutError) as e:
+        print(f"  !! Error fetching {url}: {e}")
+        return []
     except Exception as e:
         print(f"  !! Error fetching {url}: {e}")
         return []
 
 
+def fetch_all_sources(urls):
+    results = {}
+    with ThreadPoolExecutor(max_workers=min(MAX_FETCH_WORKERS, max(1, len(urls)))) as pool:
+        future_to_url = {pool.submit(fetch_url, url): url for url in urls}
+        for future in as_completed(future_to_url):
+            url = future_to_url[future]
+            try:
+                results[url] = future.result()
+            except Exception as e:
+                print(f"  !! Error fetching {url}: {e}")
+                results[url] = []
+
+    return [results.get(url, []) for url in urls]
+
+
+
 def clean_line(line):
     line = line.partition('!')[0].partition('#')[0].strip()
-    if not line or '@@' in line:
+    if not line or line.startswith('@@'):
         return None
     if line.startswith('||') and not line.endswith('^'):
         line += '^'
@@ -84,42 +105,63 @@ def is_dns_compatible(rule):
 
 
 def consolidate_domains_tldaware(rules, min_tld_count=MIN_TLD_COUNT):
-    grouped = defaultdict(list)
-    others = set()
+    # Keep only strict duplicates removed (exact rule text), no tree or wildcard pruning.
+    return set(rules)
 
-    for rule in rules:
-        if not rule.startswith('||'):
-            others.add(rule)
+
+def parse_spam_tld_patterns(spam_tlds):
+    patterns = []
+    for raw in spam_tlds:
+        line = raw.partition('!')[0].partition('#')[0].strip().lower().lstrip('.')
+        if not line:
             continue
-        domain = rule[2:].rstrip('^')
-        ext = tldextract.extract(domain)
-        if not ext.domain:
-            others.add(rule)
+        labels = tuple(part for part in line.split('.') if part)
+        if labels:
+            patterns.append(labels)
+    return patterns
+
+
+def rule_host(rule):
+    if not rule.startswith('||'):
+        return None
+    host = rule[2:].rstrip('^').lower().rstrip('.')
+    if not host:
+        return None
+    return host
+
+
+def host_matches_spam_tld(host, spam_tld_patterns):
+    labels = tuple(part for part in host.split('.') if part)
+    if not labels:
+        return False
+
+    for pattern in spam_tld_patterns:
+        if len(pattern) > len(labels):
             continue
-        key = f'{ext.subdomain}.{ext.domain}' if ext.subdomain else ext.domain
-        grouped[key].append(rule)
 
-    consolidated = set(others)
-    for key, variants in grouped.items():
-        if len(variants) >= min_tld_count:
-            consolidated.add(f'||{key}*^')
-        else:
-            consolidated.update(variants)
+        suffix = labels[-len(pattern):]
+        if all(p == '*' or h == '*' or p == h for p, h in zip(pattern, suffix)):
+            return True
 
-    return consolidated
+    return False
+
 
 
 def filter_keywords_and_tlds(rules, spam_tlds, nsfw_pattern):
     filtered = set()
-    tlds = [tld.strip() for tld in spam_tlds if tld.strip()]
-    tld_pattern = re.compile(r'(?:\.|\*\.)(' + '|'.join(re.escape(t) for t in tlds) + r')\^?$')
+    spam_tld_patterns = parse_spam_tld_patterns(spam_tlds)
+    nsfw_re = re.compile(nsfw_pattern)
 
     for rule in rules:
-        if re.search(nsfw_pattern, rule):
+        if nsfw_re.search(rule):
             continue
-        if tld_pattern.search(rule):
+
+        host = rule_host(rule)
+        if host and host_matches_spam_tld(host, spam_tld_patterns):
             continue
+
         filtered.add(rule)
+
     return filtered
 
 
@@ -127,8 +169,8 @@ def main():
     print('DEBUG: Starting process')
 
     raw_rules = set()
-    for url in CORE_SOURCES:
-        for line in fetch_url(url):
+    for lines in fetch_all_sources(CORE_SOURCES):
+        for line in lines:
             clean = clean_line(line)
             if clean:
                 raw_rules.add(clean)
