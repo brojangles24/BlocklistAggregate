@@ -27,6 +27,26 @@ SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock
 NSFW_REGEX = re.compile(r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)")
 
 OUTPUT_FILE = "blocklist.txt"
+
+YOUTUBE_RULE = "||youtube.com^$dnsrewrite=restrictmoderate.youtube.com"
+FORCE_SAFE = """
+||edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
+||www.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
+||search.brave.com^$dnsrewrite=NOERROR;CNAME;safesearch.brave.com
+||duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
+||start.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
+||www.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
+||www.ecosia.org^$dnsrewrite=NOERROR;CNAME;strict-safe-search.ecosia.org
+||pixabay.com^$dnsrewrite=NOERROR;CNAME;safesearch.pixabay.com
+||api.qwant.com^$dnsrewrite=NOERROR;CNAME;safeapi.qwant.com
+||www.startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
+||startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
+||google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
+||www.google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
+||yandex.com^$dnsrewrite=NOERROR;A;213.180.193.56
+||yandex.ru^$dnsrewrite=NOERROR;A;213.180.193.56
+||ya.ru^$dnsrewrite=NOERROR;A;213.180.193.56
+"""
 MIN_TLD_COUNT = 3
 
 # --- HELPERS ---
@@ -102,28 +122,12 @@ def filter_rules(rules, spam_patterns):
     return kept
 
 
+# NOTE: no consolidation or pruning beyond exact dedupe
+# DNS-only requirement: only remove spam-TLD matches and keyword matches
+
 def consolidate_domains(rules):
-    groups = defaultdict(list)
-    passthrough = set()
+    return set(rules)
 
-    for r in rules:
-        host = host_from_rule(r)
-        parts = host.split('.')
-        if len(parts) < 2:
-            passthrough.add(r)
-            continue
-        base = parts[0]
-        groups[base].append((r, parts))
-
-    result = set(passthrough)
-    for base, entries in groups.items():
-        tld_sets = {tuple(p[1:]) for _, p in entries}
-        if len(entries) >= MIN_TLD_COUNT and len(tld_sets) == len(entries):
-            result.add(f"||{base}*^")
-        else:
-            result.update(r for r, _ in entries)
-
-    return result
 
 
 # --- MAIN ---
@@ -141,7 +145,7 @@ def main():
 
     dns_rules = [r for r in raw if is_dns_compatible(r)]
     filtered = filter_rules(dns_rules, spam_patterns)
-    consolidated = consolidate_domains(filtered)
+    consolidated = set(filtered)
 
     now = datetime.now(AZ_TZ).strftime('%Y-%m-%d %H:%M:%S UTC')
 
@@ -150,7 +154,16 @@ def main():
         f.write(f"! Generated: {now}\n")
         f.write(f"! Version: {VERSION}\n")
         f.write(f"! Rules: {len(consolidated)}\n\n")
-        f.write("\n".join(sorted(consolidated)))
+        f.write("! --- DNS-COMPATIBLE CORE BLOCK RULES ---\n")
+        f.write("\n".join(sorted(consolidated)) + "\n\n")
+
+        f.write("! --- HAGEZI SPAM TLDs (RAW) ---\n")
+        f.write("\n".join(spam_tld_lines))
+        f.write("\n\n")
+
+        f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
+        f.write(YOUTUBE_RULE + "\n")
+        f.write(textwrap.dedent(FORCE_SAFE).strip() + "\n")
 
     print(f"SUCCESS: wrote {len(consolidated)} rules")
 
