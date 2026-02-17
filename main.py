@@ -2,9 +2,12 @@ import requests
 import concurrent.futures
 import re
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # --- CONFIGURATION ---
 VERSION = "2026.02.16.FINAL_BOSS_V10"
+AZ_TZ = ZoneInfo("America/Phoenix") # Forces Arizona Time (UTC-7)
+
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -28,7 +31,6 @@ NSFW_REGEX_RAW = f"/(?i){NSFW_KEYWORDS}/"
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
 # --- SAFE SEARCH REWRITES ---
-# Using consistent || syntax for broader coverage.
 FORCE_SAFE = """
 ! --- SEARCH ENGINE SAFESEARCH REWRITES ---
 ||edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
@@ -77,8 +79,8 @@ def main():
     cosmetic_nuke = 0
     syntax_nuke = 0
     
-    start_time = datetime.now()
-    print(f"--- STARTING SCORCHED EARTH V10 ({start_time.strftime('%H:%M:%S')}) ---")
+    start_time = datetime.now(AZ_TZ)
+    print(f"--- STARTING SCORCHED EARTH V10 ({start_time.strftime('%H:%M:%S')} AZ) ---")
 
     # 1. Build TLD Firewall
     print("Building TLD Firewall...")
@@ -109,7 +111,7 @@ def main():
         
         if not line_clean or "adblock plus" in line_clean: continue
         
-        # --- PHASE 1: KEYWORD NUKE (THE PRIORITY KILLER) ---
+        # --- PHASE 1: KEYWORD NUKE ---
         domain_check = line_clean.replace("||", "").replace("^", "").split('$')[0]
         if NSFW_REGEX_COMP.search(domain_check):
             keyword_nuke += 1
@@ -178,11 +180,12 @@ def main():
         final_output.append(f"||{'.'.join(rd.split('.')[::-1])}^")
     final_output.sort()
     
-    # 6. Write to File
+    # 6. Write to File (Using Fixed AZ Timestamp)
+    now_az = datetime.now(AZ_TZ).strftime('%Y-%m-%d %H:%M:%S')
     print(f"Writing {len(final_output):,} rules to file...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write("! Title: Isaac's Scorched Earth Ultimate List\n")
-        f.write(f"! Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"! Last Updated: {now_az} (MST/Arizona)\n")
         f.write(f"! Revision: {VERSION}\n")
         f.write("! Description: Aggressive keyword filtering + Full SafeSearch Enforcement.\n\n")
 
@@ -198,7 +201,7 @@ def main():
         f.write(f"{FORCE_SAFE}\n")
 
     # --- FINAL STATS PRINT ---
-    elapsed = datetime.now() - start_time
+    elapsed = datetime.now(AZ_TZ) - start_time
     print(f"\n--- SCRUB COMPLETE in {elapsed.total_seconds():.2f}s ---")
     print(f"Deleted {keyword_nuke:,} domains via Aggressive Regex.")
     print(f"Deleted {tld_nuke:,} TLD redundancies.")
