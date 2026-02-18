@@ -1,17 +1,15 @@
 import requests
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 import re
-import textwrap
-from collections import defaultdict
 
-# --- CONFIGURATION ---
+# Arizona is MST (UTC-7) year-round
+AZ_TZ = timezone(timedelta(hours=-7))
+
 VERSION = "2026.02.17.CORE_CLEAN_TLD_FIXED"
-AZ_TZ = timezone.utc
-
 CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.plus.txt",
     "https://big.oisd.nl",
     "https://nsfw.oisd.nl",
     "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt",
@@ -20,134 +18,59 @@ CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
 ]
-
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
-
 NSFW_REGEX = re.compile(r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)")
-
 OUTPUT_FILE = "blocklist.txt"
-
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 
-MIN_TLD_COUNT = 3
-
-# --- HELPERS ---
-
-def fetch_url(url):
+def fetch(url):
     try:
-        r = requests.get(url, timeout=30)
+        r = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=30)
         r.raise_for_status()
-        r.encoding = 'utf-8'
         return r.text.splitlines()
-    except Exception as e:
-        print(f"!! Error fetching {url}: {e}")
-        return []
+    except: return []
 
-
-def clean_line(line):
-    line = line.partition('!')[0].partition('#')[0].strip()
-    if not line or line.startswith('@@'):
-        return None
-    if line.startswith('||') and '^' not in line:
-        line += '^'
-    return line
-
-
-def is_dns_compatible(rule):
-    if not rule:
-        return False
-    if rule.startswith('@@') or '##' in rule or '#@#' in rule:
-        return False
-    if '$' in rule:
-        return False
-    return rule.startswith('||')
-
-
-def parse_spam_tld_patterns(lines):
+def parse_tld_patterns(lines):
     patterns = []
     for line in lines:
-        line = line.partition('!')[0].partition('#')[0].strip().lower()
-        if not line:
-            continue
-        line = line.lstrip('.')
-        parts = tuple(p for p in line.split('.') if p and p != '*')
-        if parts:
-            patterns.append(parts)
+        # Strip || and ^ from TLD list so they actually match against extracted hostnames
+        clean = line.split('!')[0].split('#')[0].strip().lower().replace('||', '').replace('^', '').lstrip('.')
+        if clean: patterns.append(tuple(clean.split('.')))
     return patterns
 
-
-def host_from_rule(rule):
-    host = rule[2:].split('^', 1)[0].lower().rstrip('.')
-    host = host.replace('*.', '')
-    return host
-
-
-def matches_spam_tld(host, patterns):
+def is_spam_tld(host, patterns):
     labels = tuple(host.split('.'))
     for pat in patterns:
-        if len(pat) > len(labels):
-            continue
-        if labels[-len(pat):] == pat:
+        if len(pat) <= len(labels) and labels[-len(pat):] == pat:
             return True
     return False
 
-
-def filter_rules(rules, spam_patterns):
-    kept = []
-    for r in rules:
-        host = host_from_rule(r)
-        if NSFW_REGEX.search(host):
-            continue
-        if matches_spam_tld(host, spam_patterns):
-            continue
-        kept.append(r)
-    return kept
-
-
-# NOTE: no consolidation or pruning beyond exact dedupe
-# DNS-only requirement: only remove spam-TLD matches and keyword matches
-
-def consolidate_domains(rules):
-    return set(rules)
-
-
-
-# --- MAIN ---
-
 def main():
-    raw = set()
+    spam_patterns = parse_tld_patterns(fetch(SPAM_TLD_URL))
+    final_rules = set()
+    
     for url in CORE_SOURCES:
-        for line in fetch_url(url):
-            cl = clean_line(line)
-            if cl:
-                raw.add(cl)
-
-    spam_tld_lines = fetch_url(SPAM_TLD_URL)
-    spam_patterns = parse_spam_tld_patterns(spam_tld_lines)
-
-    dns_rules = [r for r in raw if is_dns_compatible(r)]
-    filtered = filter_rules(dns_rules, spam_patterns)
-    consolidated = set(filtered)
-
-    now = datetime.now(AZ_TZ).strftime('%Y-%m-%d %H:%M:%S UTC')
+        for line in fetch(url):
+            line = line.split('!')[0].split('#')[0].strip()
+            # Strict DNS check: must start with ||, no cosmetic modifiers ($)
+            if not line.startswith('||') or '$' in line: continue
+            if '^' not in line: line += '^'
+            
+            host = line.replace('||', '').split('^')[0].lower().strip('.')
+            
+            # Scorched earth filtering
+            if NSFW_REGEX.search(host): continue
+            if is_spam_tld(host, spam_patterns): continue
+            
+            final_rules.add(line)
 
     with open(OUTPUT_FILE, 'w', encoding='utf-8') as f:
-        f.write(f"! Clean DNS Blocklist\n")
-        f.write(f"! Generated: {now}\n")
-        f.write(f"! Version: {VERSION}\n")
-        f.write(f"! Rules: {len(consolidated)}\n\n")
-        f.write("! --- DNS-COMPATIBLE CORE BLOCK RULES ---\n")
-        f.write("\n".join(sorted(consolidated)) + "\n\n")
+        f.write(f"! Clean DNS Blocklist\n! Generated: {datetime.now(AZ_TZ).strftime('%Y-%m-%d %H:%M:%S MST')}\n! Rules: {len(final_rules)}\n\n")
+        f.write("\n".join(sorted(final_rules)) + "\n\n")
+        f.write("! --- CUSTOM ---\n" + YOUTUBE_RULE + "\n\n")
+        f.write(f"! NSFW Regex Pattern: {NSFW_REGEX.pattern}\n")
 
-        f.write("! --- HAGEZI SPAM TLDs (RAW) ---\n")
-        f.write("\n".join(spam_tld_lines))
-        f.write("\n\n")
-
-        f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
-        f.write(YOUTUBE_RULE + "\n")
-
-    print(f"SUCCESS: wrote {len(consolidated)} rules")
-
+    print(f"SUCCESS: {len(final_rules)} rules.")
 
 if __name__ == '__main__':
     main()
