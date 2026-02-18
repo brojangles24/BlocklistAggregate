@@ -145,7 +145,6 @@ def main():
 
         f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
         f.write(YOUTUBE_RULE + "\n")
-        f.write(textwrap.dedent(FORCE_SAFE).strip() + "\n")
 
     print(f"SUCCESS: wrote {len(consolidated)} rules")
 
