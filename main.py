@@ -3,7 +3,6 @@ import re
 import time
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from collections import defaultdict
 
 # Arizona is MST (UTC-7) year-round
 AZ_TZ = timezone(timedelta(hours=-7))
@@ -25,16 +24,16 @@ CORE_SOURCES = [
 
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
-# Domains matching these keywords are counted but NOT removed —
-# we include NSFW sources on purpose. Toggle APPLY_NSFW_FILTER to True
-# if you want to actively drop them.
+# Domains matching these keywords are counted and optionally dropped.
+# APPLY_NSFW_FILTER=False means count only — useful since we include NSFW
+# sources deliberately and don't want to silently remove what we want blocked.
 NSFW_REGEX = re.compile(
     r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|"
     r"hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|"
     r"horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|"
     r"xnxx|xvideo|xxvideo|camgirl|nude|naked)"
 )
-APPLY_NSFW_FILTER = False  # set True to actively drop keyword-matched domains
+APPLY_NSFW_FILTER = False
 
 OUTPUT_FILE = "blocklist.txt"
 YOUTUBE_RULE = (
@@ -85,28 +84,65 @@ def fetch_all_parallel(urls, max_workers=6):
 
 def parse_tld_patterns(lines):
     """
-    Parse Hagezi spam TLD list into plain TLD strings.
-    Handles: ||*.xyz^  ||*.co.uk^  *.accountant
-    Returns list sorted longest-first so multi-part TLDs match before single-part.
+    Parse Hagezi spam TLD list into:
+      - tld_patterns: sorted list of bare TLD strings e.g. ['accountant', 'xyz', ...]
+      - denyallow_map: dict of {tld: set_of_whitelisted_hosts}
+
+    Hagezi format examples:
+      ||*.xyz^
+      ||*.wiki^$denyallow=minecraft.wiki|runescape.wiki|...
+      *.accountant   (no || prefix on some entries)
+
+    The $denyallow= value lists domains that are EXCEPTIONS and must NOT be blocked.
     """
-    patterns = set()
+    tld_patterns = []
+    denyallow_map = {}
+    seen = set()
+
     for line in lines:
         clean = line.split("!")[0].split("#")[0].strip().lower()
         if not clean:
             continue
-        clean = clean.replace("||", "").replace("^", "")
-        if clean.startswith("*."):
-            clean = clean[2:]
-        clean = clean.lstrip(".")
-        if clean:
-            patterns.add(clean)
-    return sorted(patterns, key=len, reverse=True)
+
+        # Split off modifiers ($denyallow=...) before stripping AdBlock syntax
+        denyallow_hosts = set()
+        if "$" in clean:
+            rule_part, _, modifiers = clean.partition("$")
+            for mod in modifiers.split(","):
+                if mod.startswith("denyallow="):
+                    denyallow_hosts = set(mod[len("denyallow="):].split("|"))
+        else:
+            rule_part = clean
+
+        # Strip AdBlock syntax to get bare TLD
+        rule_part = rule_part.replace("||", "").replace("^", "")
+        if rule_part.startswith("*."):
+            rule_part = rule_part[2:]
+        rule_part = rule_part.lstrip(".")
+
+        if not rule_part or rule_part in seen:
+            continue
+        seen.add(rule_part)
+
+        tld_patterns.append(rule_part)
+        if denyallow_hosts:
+            denyallow_map[rule_part] = denyallow_hosts
+
+    # Sort longest-first so multi-part TLDs (co.uk) match before single-part (uk)
+    tld_patterns.sort(key=len, reverse=True)
+    return tld_patterns, denyallow_map
 
 
-def get_matching_tld(host, patterns_sorted):
-    """Return the matching spam TLD if host ends with one, else None."""
+def get_matching_tld(host, patterns_sorted, denyallow_map):
+    """
+    Return the matching spam TLD if host ends with one AND is not whitelisted.
+    Returns the matched TLD string, or None if no match / whitelisted.
+    """
     for p in patterns_sorted:
         if host == p or host.endswith("." + p):
+            # Check if this specific host is whitelisted via denyallow
+            if p in denyallow_map and host in denyallow_map[p]:
+                return None  # whitelisted exception — do not block
             return p
     return None
 
@@ -170,14 +206,19 @@ def prune_subdomains(rules_set):
 def main():
     start_time = time.time()
     print(f"[*] DNS Blocklist Generator {VERSION}")
-    print(f"    NSFW keyword filter: {'ACTIVE (dropping matches)' if APPLY_NSFW_FILTER else 'OBSERVE ONLY (counting matches, not dropping)'}")
+    print(f"    NSFW keyword filter: {'ACTIVE (dropping matches)' if APPLY_NSFW_FILTER else 'OBSERVE ONLY (counting, not dropping)'}")
 
     # Spam TLD list
     print("\n[*] Fetching Hagezi Spam TLDs...")
     spam_tld_raw = fetch(SPAM_TLD_URL)
-    spam_patterns = parse_tld_patterns(spam_tld_raw)
+    spam_patterns, denyallow_map = parse_tld_patterns(spam_tld_raw)
     print(f"    -> {len(spam_patterns)} TLD patterns loaded")
-    print(f"    -> Sample patterns: {spam_patterns[:8]}")
+    print(f"    -> {len(denyallow_map)} TLDs have denyallow whitelists")
+    print(f"    -> Sample TLDs: {spam_patterns[:12]}")
+    if denyallow_map:
+        sample_tld = next(iter(denyallow_map))
+        sample_exceptions = list(denyallow_map[sample_tld])[:5]
+        print(f"    -> Sample denyallow ({sample_tld}): {sample_exceptions}")
 
     # Fetch all sources in parallel
     print(f"\n[*] Fetching {len(CORE_SOURCES)} sources in parallel...")
@@ -185,9 +226,9 @@ def main():
 
     # Process rules
     print("\n[*] Processing rules...\n")
-    col = f"    {'Source':<42} {'Lines':>8}  {'Added':>8}  {'Drop(TLD)':>10}  {'Drop(KW)':>10}"
-    print(col)
-    print("    " + "-" * (len(col) - 4))
+    header = f"    {'Source':<42} {'Lines':>8}  {'Added':>8}  {'Drop(TLD)':>10}  {'Drop(KW)':>10}"
+    print(header)
+    print("    " + "-" * (len(header) - 4))
 
     raw_rules = set()
     total_dropped_tld = 0
@@ -201,16 +242,16 @@ def main():
         dropped_kw = 0
 
         for rule, host in parse_rules(lines):
-            # Check spam TLD
-            if get_matching_tld(host, spam_patterns):
+            # Filter: spam TLD (respects denyallow whitelist)
+            if get_matching_tld(host, spam_patterns, denyallow_map):
                 dropped_tld += 1
                 continue
 
-            # Check NSFW keyword
+            # Filter: NSFW keyword
             if NSFW_REGEX.search(host):
                 dropped_kw += 1
                 if APPLY_NSFW_FILTER:
-                    continue  # actively drop if filter is on
+                    continue
 
             raw_rules.add(rule)
 
@@ -233,10 +274,10 @@ def main():
     # Write output
     elapsed = time.time() - start_time
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %H:%M:%S MST")
-    nsfw_filter_note = (
+    nsfw_note = (
         f"! NSFW keyword filter: ACTIVE — {total_dropped_kw:,} domains dropped\n"
         if APPLY_NSFW_FILTER
-        else f"! NSFW keyword filter: OBSERVE ONLY — {total_dropped_kw:,} keyword-matched domains were NOT dropped\n"
+        else f"! NSFW keyword filter: OBSERVE ONLY — {total_dropped_kw:,} keyword-matched domains kept\n"
     )
 
     print(f"\n[*] Writing {OUTPUT_FILE}...")
@@ -249,7 +290,7 @@ def main():
             f"! Rules: {len(final_rules):,}\n"
             f"! Dropped (spam TLD filter): {total_dropped_tld:,}\n"
             f"! Dropped (subdomain dedup): {removed_subdomains:,}\n"
-            + nsfw_filter_note + "\n"
+            + nsfw_note + "\n"
         )
         f.write("! --- DNS-COMPATIBLE CORE BLOCK RULES ---\n")
         f.write("\n".join(sorted(final_rules)))
@@ -259,11 +300,11 @@ def main():
         f.write("\n\n")
         f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
         f.write(YOUTUBE_RULE + "\n\n")
-        f.write(f"! NSFW Regex pattern: {NSFW_REGEX.pattern}\n")
+        f.write(f"! NSFW Regex (reference only): {NSFW_REGEX.pattern}\n")
 
     print(f"\n[+] SUCCESS — {len(final_rules):,} rules written to {OUTPUT_FILE}")
     print(f"    Spam TLD filter dropped:    {total_dropped_tld:,}")
-    print(f"    Keyword matches (NSFW):     {total_dropped_kw:,}  ({'dropped' if APPLY_NSFW_FILTER else 'observed only — set APPLY_NSFW_FILTER=True to drop'})")
+    print(f"    Keyword matches (NSFW):     {total_dropped_kw:,}  ({'dropped' if APPLY_NSFW_FILTER else 'observed only'})")
     print(f"    Subdomain dedup dropped:    {removed_subdomains:,}")
     print(f"    Build time:                 {elapsed:.1f}s")
 
