@@ -1,11 +1,25 @@
 ! Clean DNS Blocklist
 ! Version: 2026.02.17.CORE_CLEAN_ULTIMATE
-! Generated: 2026-02-17 22:38:06 MST
-! Build time: 101.3s
-! Rules: 943,092
-! Dropped (spam TLD filter): 357,930
+! Generated: 2026-02-17 22:51:59 MST
+! Build time: 100.6s
+! Rules: 943,141
+! Regex rules: 11
+! Dropped (spam TLD filter): 357,946
 ! Dropped (subdomain dedup): 27,911
-! NSFW keyword filter: ACTIVE — 161,154 domains dropped
+! NSFW keyword filter: ACTIVE — 161,224 domains dropped
+
+! --- REGEX RULES (DNS REBIND PROTECTION + OTHER) ---
+/^([a-z0-9\-]+\.)?(localhost|localdomain|ip6-localhost)$/
+/^0\.0\.0\.(?:\d{1,3})$/
+/^10\.(?:\d{1,3})\.(?:\d{1,3})\.(?:\d{1,3})$/
+/^127\.(?:\d{1,3})\.(?:\d{1,3})\.(?:\d{1,3})$/
+/^169\.254\.(?:\d{1,3})\.(?:\d{1,3})$/
+/^172\.(?:1[6-9]|2\d|3[0-1])\.(?:\d{1,3})\.(?:\d{1,3})$/
+/^192\.168\.(?:\d{1,3})\.(?:\d{1,3})$/
+/^::$/
+/^::1$/
+/^f[cd][0-9a-f]{2}:/
+/^fe80:/
 
 ! --- DNS-COMPATIBLE CORE BLOCK RULES ---
 ||0--0.info^
@@ -271676,6 +271690,7 @@
 ||delhientertainwithmale.blogspot.com^
 ||delhiescort.co.in^
 ||delhiescort.in.net^
+||delhiescort.net^
 ||delhiescort4u.com^
 ||delhiescort69.com^
 ||delhiescort69.in^
@@ -369887,6 +369902,7 @@
 ||fw-cdn.com^
 ||fw-dx.com^
 ||fw-dx.info^
+||fw-indigo-adults.com^
 ||fw-officesupport.com^
 ||fw.hu^
 ||fw.qq.com^
@@ -483459,6 +483475,7 @@
 ||kesemanys.com^
 ||keseruanwisnu123.com^
 ||kesevitamus.com^
+||kesgingayrimenkul.com^
 ||keshiweicy.com^
 ||keshtchin.com^
 ||kesiamobiliario.com^
@@ -568095,6 +568112,7 @@
 ||mmicrosofttonline.weebly.com^
 ||mmifoss.com^
 ||mmigeochem.com^
+||mmiillff.com^
 ||mmile.com^
 ||mmimarkets.com^
 ||mmimb.itzyritzy.com^
@@ -638600,6 +638618,7 @@
 ||peliculas4.org^
 ||peliculasdegays.com^
 ||peliculasgay.org^
+||peliculasgay.xyz^
 ||peliculasonline.gay^
 ||peliculasreproducidas.com^
 ||peliculasrojas.blogspot.com^
@@ -741090,6 +741109,7 @@
 ||shame4k.com^
 ||shameairport.xyz^
 ||shamectqfdjcdpd.com^
+||shamedbysluts.com^
 ||shamedslut.com^
 ||shamedsluts.com^
 ||shamefrog.xyz^
@@ -742322,6 +742342,7 @@
 ||shellfcuvip.com^
 ||shellfutureinvestment-platform.com^
 ||shelliebailey.blogspot.com^
+||shelligayebignall.com^
 ||shellistevens.com^
 ||shelljacket.us^
 ||shellke.com^
@@ -753987,6 +754008,7 @@
 ||slutqueens.com^
 ||slutr.com^
 ||slutradio.live^
+||slutrating.com^
 ||slutrepreneur.com^
 ||slutrolette.com^
 ||slutrouelette.com^
@@ -754078,6 +754100,8 @@
 ||slutsgallery.com^
 ||slutsgate.com^
 ||slutsgate.net^
+||slutshamehim.com^
+||slutshamer.com^
 ||slutshd.com^
 ||slutsim.com^
 ||slutsinchandigarh.blogspot.com^
@@ -754118,6 +754142,7 @@
 ||slutsregistry.com^
 ||slutsrus.com^
 ||slutsscholars.libsyn.com^
+||slutsshamehim.com^
 ||slutsswapcum.com^
 ||slutstacey.blogspot.com^
 ||slutstacie.blogspot.com^
@@ -754244,6 +754269,7 @@
 ||sluttyrussians.com^
 ||sluttysally.blogspot.com^
 ||sluttysammi.blogspot.com^
+||sluttysheilas.com^
 ||sluttysisters.com^
 ||sluttyskank.com^
 ||sluttysoles.com^
@@ -754269,6 +754295,7 @@
 ||sluttywivesondisplay.blogspot.com^
 ||sluttywrestlers.com^
 ||sluttywwedivas.blogspot.com^
+||sluttyyelp.com^
 ||sluttyyounggirls.com^
 ||sluttyzone.com^
 ||slutuniforms.com^
@@ -760323,6 +760350,7 @@
 ||smissimahs.com^
 ||smisudisse.pro^
 ||smitarana.com^
+||smitarana.in^
 ||smitdeals.de^
 ||smiteanimatedbeaker.com^
 ||smitegemsgiveaway.com^
@@ -773602,6 +773630,7 @@
 ||srinvaskrishnareddycharitabletrust.com^
 ||sriqqflv.com^
 ||srirachareligion.com^
+||srirachaslut.com^
 ||srirajeswarioilmills.com^
 ||sriretail.com^
 ||srisagargayakarakalavidasangh.com^
@@ -776878,6 +776907,7 @@
 ||starscams.com^
 ||starscaraudio.com^
 ||starscarlet.srpfalaska.com^
+||starscartoon.com^
 ||starscircles.com^
 ||starscollection.free.fr^
 ||starscope.social^
@@ -789641,6 +789671,7 @@
 ||steamrip.us.com^
 ||steamripzone.com^
 ||steamru.org^
+||steamrub.com^
 ||steamscommunity.ru^
 ||steamscomrmunity.com^
 ||steamsconmmunnity.com^
@@ -790865,6 +790896,7 @@
 ||stilgut-wien.at^
 ||stilhaus-mode.de^
 ||still-alive.app^
+||still-naughty.com^
 ||still.gay^
 ||stillawokeathwart.com^
 ||stillbloomingcircle.com^
@@ -795351,6 +795383,7 @@
 ||stuiop.com^
 ||stujaithoo.ru.com^
 ||stujophaji.pro^
+||stukanko.pl^
 ||stukcas.com^
 ||stuloeser-dot-yamm-track.appspot.com^
 ||stulophovedsy.net^
@@ -799534,6 +799567,7 @@
 ||supertop-100.com^
 ||supertop.ru^
 ||supertop100.com^
+||supertope.fans^
 ||supertoprecept.ru^
 ||supertorrents.org^
 ||supertracker.flashget.com^
@@ -801479,6 +801513,7 @@
 ||svet-erotiky.cz^
 ||svet-spanku.com^
 ||svetaci.info^
+||svetamodel.net^
 ||svetepoint.info^
 ||svetfilmu.com^
 ||svetilniki-optom.ru^
@@ -802729,6 +802764,7 @@
 ||sweetteentease.com^
 ||sweetteentube.net^
 ||sweetties.com^
+||sweettiesfamily.com^
 ||sweettiffany.net^
 ||sweettool.com^
 ||sweettooth.io^
@@ -802766,6 +802802,7 @@
 ||sweetypatel.net^
 ||sweetypestcontrol.com^
 ||sweetyplay.xyz^
+||sweetyreddy.com^
 ||sweetyroy.in^
 ||sweetyscent.xyz^
 ||sweetysharma.in^
@@ -814441,6 +814478,7 @@
 ||teen-lola.com^
 ||teen-models-teens.com^
 ||teen-mom.com^
+||teen-network.com^
 ||teen-nextdoor.com^
 ||teen-nudity-videos.blogspot.com^
 ||teen-pics.me^
@@ -814706,6 +814744,7 @@
 ||teendreamin.com^
 ||teendreams.com^
 ||teendreams.org^
+||teendreamsblog.com^
 ||teendreamslive.com^
 ||teendrillers.com^
 ||teendvdtube.com^
@@ -820055,6 +820094,7 @@
 ||tetona.tv^
 ||tetonas.com.es^
 ||tetonas.net^
+||tetonas.org^
 ||tetonas69.com^
 ||tetonascalientes.com^
 ||tetonasnaturales.blogspot.com^
@@ -820986,6 +821026,7 @@
 ||tgpcool.blogspot.com^
 ||tgpcounter.freethumbnailgalleries.com^
 ||tgpfreaks.com^
+||tgpfreetgp.com^
 ||tgpgay.free.fr^
 ||tgphoto.live^
 ||tgphunter.net^
@@ -821017,6 +821058,7 @@
 ||tgpxtreme.be^
 ||tgpxtreme.com^
 ||tgpxtreme.net^
+||tgpzoo.com^
 ||tgqf.xyz^
 ||tgqgw.bludot.com^
 ||tgracecosmetics.ru^
@@ -821535,6 +821577,7 @@
 ||thatkidfromlondon.co.uk^
 ||thatkidkennedycarter.com^
 ||thatkoreansite.com^
+||thatlinuxnerd.gay^
 ||thatmall.com^
 ||thatmonkeybites3.com^
 ||thatmood.com^
@@ -822124,6 +822167,7 @@
 ||theadultapp.com^
 ||theadultarea.co.uk^
 ||theadultarea.uk^
+||theadultautismgroupspringfield.org^
 ||theadultawards.com^
 ||theadultblog.com^
 ||theadultcafe.co.uk^
@@ -822144,6 +822188,7 @@
 ||theadultdatingnetwork.com^
 ||theadultdatingnetwork.net^
 ||theadultemoji.com^
+||theadultfiles.com^
 ||theadultfriendfinder.com^
 ||theadultgallery.blogspot.com^
 ||theadultgamemart.com^
@@ -822631,6 +822676,7 @@
 ||thebiggaymarket.com^
 ||thebiggaymarket.net^
 ||thebiggaymarket.org^
+||thebiggaymusical.com^
 ||thebiggayreview.com^
 ||thebiggayweddingdirectory.com^
 ||thebiggestfuture.com^
@@ -823124,6 +823170,7 @@
 ||thechroniclesofcourtneylee.blogspot.com^
 ||thechurchofcock.com^
 ||thechurchsiteproject.com^
+||thechurchygay.com^
 ||thecinemaru.ru^
 ||thecirioway.com^
 ||thecitydating.com^
@@ -823185,6 +823232,7 @@
 ||thecolonyoffices.com^
 ||thecolorofdye.com^
 ||thecoloroffice.com^
+||thecolosseumny.gay^
 ||thecolumbiastar.net^
 ||thecomeup.com^
 ||thecomicpress.com^
@@ -823429,6 +823477,7 @@
 ||thedavidsteinberg.com^
 ||thedavisflea.com^
 ||thedavisgroupincrei.com^
+||thedawnspot.com^
 ||thedawnwellnesscentre.com^
 ||thedayandthetime.blogspot.com^
 ||thedeadbiz.com^
@@ -823540,6 +823589,7 @@
 ||thedirtylittlesecretsclub.com^
 ||thedirtyload.com^
 ||thedirtyman.org^
+||thedirtymirrors.com^
 ||thedirtymouths.blogspot.com^
 ||thedirtynewz.com^
 ||thedirtynote.com^
@@ -827813,6 +827863,7 @@
 ||thingschange.net^
 ||thingsmadenavy.com^
 ||thingsmonitor.com^
+||thingsmyboyfriendsays.com^
 ||thingsmygirlfriendandihavearguedabout.com^
 ||thingsoftheinter.net^
 ||thingsolver.com^
@@ -837561,6 +837612,7 @@
 ||torontodominatrix.ca^
 ||torontodomme.com^
 ||torontoescort.me^
+||torontoescortgirls.com^
 ||torontoescorts.ca^
 ||torontoescorts411.com^
 ||torontofantasia.com^
@@ -854990,6 +855042,7 @@
 ||tubreveespacio.com^
 ||tubroaffs.org^
 ||tubrtb.com^
+||tubshd.com^
 ||tubsny.com^
 ||tubster.info^
 ||tubster.mobi^
@@ -855999,6 +856052,7 @@
 ||turkekonomi.net^
 ||turkelits.blogspot.com^
 ||turkerotikfilm.com^
+||turkerotikfilmizle.com^
 ||turkescort.net^
 ||turketidan.ge^
 ||turkey-company.com^
@@ -862206,6 +862260,7 @@
 ||ultrastreamsearch.com^
 ||ultrasyntrix-app.com^
 ||ultratechsphere.com^
+||ultrateengirls.com^
 ||ultrathongs.com^
 ||ultrathots.com^
 ||ultratime.info^
@@ -874088,6 +874143,7 @@
 ||vathesab.info^
 ||vathooshai.co.za^
 ||vathowo.ru^
+||vatican.gay^
 ||vatican.kids^
 ||vaticpeacing.com^
 ||vatikanskie-zapisi.ru^
@@ -874765,6 +874821,7 @@
 ||vdrhhyjky.blogspot.com^
 ||vdrn.redplum.com^
 ||vdsacez.com^
+||vdsblog.in^
 ||vdsclick.com^
 ||vdsg2fasz.appspot.com^
 ||vdsh567tsdz.appspot.com^
@@ -880093,6 +880150,7 @@
 ||videoavatars.com^
 ||videobaba.xyz^
 ||videobabes.com^
+||videobaise.com^
 ||videobbs.net^
 ||videobear.com^
 ||videobellen.be^
@@ -881229,6 +881287,7 @@
 ||viet69.com.mx^
 ||viet69.com^
 ||viet69.de^
+||viet69.film^
 ||viet69.garden^
 ||viet69.gay^
 ||viet69.gd^
@@ -881245,6 +881304,7 @@
 ||viet69.net^
 ||viet69.nu^
 ||viet69.org^
+||viet69.pe^
 ||viet69.ro^
 ||viet69.sb^
 ||viet69.se^
@@ -888365,6 +888425,7 @@
 ||voyeurchat.com^
 ||voyeurchat.de^
 ||voyeurchatcity.com^
+||voyeurchix.com^
 ||voyeurclass.com^
 ||voyeurclips.net^
 ||voyeurcountry.com^
@@ -890004,6 +890065,7 @@
 ||vulnerablepremonition.com^
 ||vulnfactory.org^
 ||vulofajeumcollective.digital^
+||vulpaw.gay^
 ||vulpine.us^
 ||vulpyx.com^
 ||vulslotss.xyz^
@@ -914984,6 +915046,7 @@
 ||x-jett.com^
 ||x-job.eu^
 ||x-journals.com^
+||x-jp.net^
 ||x-kabboul.com^
 ||x-kontakt.com^
 ||x-ledger.xyz^
