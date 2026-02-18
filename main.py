@@ -18,7 +18,6 @@ CORE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    "https://adguardteam.github.io/AdGuardSDNSFilter/Filters/filter.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
 ]
 
@@ -29,24 +28,7 @@ NSFW_REGEX = re.compile(r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|b
 OUTPUT_FILE = "blocklist.txt"
 
 YOUTUBE_RULE = "/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
-FORCE_SAFE = """
-||edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
-||www.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
-||search.brave.com^$dnsrewrite=NOERROR;CNAME;safe.search.brave.com
-||duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
-||start.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
-||www.duckduckgo.com^$dnsrewrite=NOERROR;CNAME;safe.duckduckgo.com
-||www.ecosia.org^$dnsrewrite=NOERROR;CNAME;strict-safe-search.ecosia.org
-||pixabay.com^$dnsrewrite=NOERROR;CNAME;safesearch.pixabay.com
-||api.qwant.com^$dnsrewrite=NOERROR;CNAME;safeapi.qwant.com
-||www.startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
-||startpage.com^$dnsrewrite=NOERROR;CNAME;safe.startpage.com
-||google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
-||www.google.*^$dnsrewrite=NOERROR;CNAME;forcesafesearch.google.com
-||yandex.com^$dnsrewrite=NOERROR;A;213.180.193.56
-||yandex.ru^$dnsrewrite=NOERROR;A;213.180.193.56
-||ya.ru^$dnsrewrite=NOERROR;A;213.180.193.56
-"""
+
 MIN_TLD_COUNT = 3
 
 # --- HELPERS ---
