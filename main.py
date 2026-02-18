@@ -33,7 +33,7 @@ NSFW_REGEX = re.compile(
     r"horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|"
     r"xnxx|xvideo|xxvideo|camgirl|nude|naked)"
 )
-APPLY_NSFW_FILTER = True
+APPLY_NSFW_FILTER = False
 
 OUTPUT_FILE = "blocklist.txt"
 YOUTUBE_RULE = (
@@ -152,18 +152,33 @@ def get_matching_tld(host, patterns_sorted, denyallow_map):
 # ---------------------------------------------------------------------------
 
 def parse_rules(lines):
-    """Extract valid DNS-compatible block rules. Returns list of (rule, host) tuples."""
-    rules = []
+    """
+    Extract valid rules from raw list lines. Returns:
+      - domain_rules: list of (rule, host) tuples for ||domain^ style rules
+      - regex_rules:  list of raw /regex/ AdGuard rules passed through as-is
+    """
+    domain_rules = []
+    regex_rules = []
     for line in lines:
         clean = line.split("!")[0].split("#")[0].strip()
+        if not clean:
+            continue
+
+        # AdGuard regex rules — pass through as-is (e.g. DNS rebind protection)
+        if clean.startswith("/") and clean.endswith("/"):
+            regex_rules.append(clean)
+            continue
+
+        # Standard DNS domain rules
         if not clean.startswith("||") or "$" in clean:
             continue
         if "^" not in clean:
             clean += "^"
         host = clean.replace("||", "").split("^")[0].lower().strip(".")
         if host:
-            rules.append((clean, host))
-    return rules
+            domain_rules.append((clean, host))
+
+    return domain_rules, regex_rules
 
 
 # ---------------------------------------------------------------------------
@@ -231,6 +246,7 @@ def main():
     print("    " + "-" * (len(header) - 4))
 
     raw_rules = set()
+    all_regex_rules = set()
     total_dropped_tld = 0
     total_dropped_kw = 0
 
@@ -241,7 +257,12 @@ def main():
         dropped_tld = 0
         dropped_kw = 0
 
-        for rule, host in parse_rules(lines):
+        domain_rules, regex_rules = parse_rules(lines)
+
+        # Regex rules pass through unfiltered
+        all_regex_rules.update(regex_rules)
+
+        for rule, host in domain_rules:
             # Filter: spam TLD (respects denyallow whitelist)
             if get_matching_tld(host, spam_patterns, denyallow_map):
                 dropped_tld += 1
@@ -263,6 +284,7 @@ def main():
         )
 
     print(f"\n    {'TOTAL':<42} {'':>8}  {len(raw_rules):>8,}  {total_dropped_tld:>10,}  {total_dropped_kw:>10,}")
+    print(f"    Regex rules collected: {len(all_regex_rules)}")
     print(f"\n[*] Raw rules after filters: {len(raw_rules):,}")
 
     # Subdomain deduplication
@@ -288,10 +310,14 @@ def main():
             f"! Generated: {now}\n"
             f"! Build time: {elapsed:.1f}s\n"
             f"! Rules: {len(final_rules):,}\n"
+            f"! Regex rules: {len(all_regex_rules)}\n"
             f"! Dropped (spam TLD filter): {total_dropped_tld:,}\n"
             f"! Dropped (subdomain dedup): {removed_subdomains:,}\n"
             + nsfw_note + "\n"
         )
+        f.write(f"! --- REGEX RULES (DNS REBIND PROTECTION + OTHER) ---\n")
+        f.write("\n".join(sorted(all_regex_rules)))
+        f.write("\n\n")
         f.write("! --- DNS-COMPATIBLE CORE BLOCK RULES ---\n")
         f.write("\n".join(sorted(final_rules)))
         f.write("\n\n")
@@ -303,7 +329,7 @@ def main():
         f.write(f"! --- NSFW REGEX RULE ---\n")
         f.write(f"/{NSFW_REGEX.pattern}/\n")
 
-    print(f"\n[+] SUCCESS — {len(final_rules):,} rules written to {OUTPUT_FILE}")
+    print(f"\n[+] SUCCESS — {len(final_rules):,} domain rules + {len(all_regex_rules)} regex rules written to {OUTPUT_FILE}")
     print(f"    Spam TLD filter dropped:    {total_dropped_tld:,}")
     print(f"    Keyword matches (NSFW):     {total_dropped_kw:,}  ({'dropped' if APPLY_NSFW_FILTER else 'observed only'})")
     print(f"    Subdomain dedup dropped:    {removed_subdomains:,}")
