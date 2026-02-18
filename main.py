@@ -33,7 +33,7 @@ NSFW_REGEX = re.compile(
     r"horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|"
     r"xnxx|xvideo|xxvideo|camgirl|nude|naked)"
 )
-APPLY_NSFW_FILTER = False
+APPLY_NSFW_FILTER = True
 
 OUTPUT_FILE = "blocklist.txt"
 YOUTUBE_RULE = (
