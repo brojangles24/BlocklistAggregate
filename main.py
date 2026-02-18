@@ -300,7 +300,8 @@ def main():
         f.write("\n\n")
         f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
         f.write(YOUTUBE_RULE + "\n\n")
-        f.write(f"! NSFW Regex (reference only): {NSFW_REGEX.pattern}\n")
+        f.write(f"! --- NSFW REGEX RULE ---\n")
+        f.write(f"/{NSFW_REGEX.pattern}/\n")
 
     print(f"\n[+] SUCCESS — {len(final_rules):,} rules written to {OUTPUT_FILE}")
     print(f"    Spam TLD filter dropped:    {total_dropped_tld:,}")
