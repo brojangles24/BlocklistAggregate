@@ -10,7 +10,7 @@ AZ_TZ = timezone(timedelta(hours=-7))
 VERSION = "2026.02.17.CORE_CLEAN_ULTIMATE"
 
 CORE_SOURCES = [
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     #"https://big.oisd.nl",
