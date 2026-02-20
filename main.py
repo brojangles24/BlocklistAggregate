@@ -11,15 +11,15 @@ VERSION = "2026.02.17.CORE_CLEAN_ULTIMATE"
 
 CORE_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     #"https://big.oisd.nl",
     #"https://nsfw.oisd.nl",
-    #"https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt",
+    "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
 ]
 
@@ -316,19 +316,19 @@ def main():
             f"! Dropped (subdomain dedup): {removed_subdomains:,}\n"
             + nsfw_note + "\n"
         )
-        #f.write(f"! --- REGEX RULES (DNS REBIND PROTECTION + OTHER) ---\n")
-        #f.write("\n".join(sorted(all_regex_rules)))
+        f.write(f"! --- REGEX RULES (DNS REBIND PROTECTION + OTHER) ---\n")
+        f.write("\n".join(sorted(all_regex_rules)))
         f.write("\n\n")
         f.write("! --- DNS-COMPATIBLE CORE BLOCK RULES ---\n")
         f.write("\n".join(sorted(final_rules)))
         f.write("\n\n")
-        #f.write("! --- HAGEZI SPAM TLDs (RAW) ---\n")
-        #f.write("\n".join(spam_tld_raw))
-        #f.write("\n\n")
-        #f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
-        #f.write(YOUTUBE_RULE + "\n\n")
-        #f.write(f"! --- NSFW REGEX RULE ---\n")
-        #f.write(f"/{NSFW_REGEX.pattern}/\n")
+        f.write("! --- HAGEZI SPAM TLDs (RAW) ---\n")
+        f.write("\n".join(spam_tld_raw))
+        f.write("\n\n")
+        f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
+        f.write(YOUTUBE_RULE + "\n\n")
+        f.write(f"! --- NSFW REGEX RULE ---\n")
+        f.write(f"/{NSFW_REGEX.pattern}/\n")
 
     print(f"\n[+] SUCCESS — {len(final_rules):,} domain rules + {len(all_regex_rules)} regex rules written to {OUTPUT_FILE}")
     print(f"    Spam TLD filter dropped:    {total_dropped_tld:,}")
