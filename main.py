@@ -15,7 +15,7 @@ CORE_SOURCES = [
     #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     #"https://big.oisd.nl",
-    "https://nsfw.oisd.nl",
+    #"https://nsfw.oisd.nl",
     #"https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
