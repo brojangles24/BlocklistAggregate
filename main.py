@@ -275,7 +275,7 @@ def main():
         f.write("! --- HAGEZI SPAM TLDs (RAW) ---\n")
         f.write("\n".join(spam_tld_raw) + "\n\n")
         f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
-        #f.write(YOUTUBE_RULE + "\n\n")
+        f.write(YOUTUBE_RULE + "\n\n")
         f.write(f"! --- NSFW REGEX RULE ---\n")
         f.write(f"/{NSFW_REGEX.pattern}/\n")
 
