@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # Arizona is MST (UTC-7) year-round
 AZ_TZ = timezone(timedelta(hours=-7))
 
-VERSION = "2026.02.22.ULTRA_FAST"
+VERSION = "2026.02.22.ULTRA_FAST_NO_PRUNE"
 
 CORE_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
@@ -159,35 +159,6 @@ def parse_rules(lines):
             yield ('domain', clean, host)
 
 # ---------------------------------------------------------------------------
-# Subdomain deduplication (Optimized to O(N log N))
-# ---------------------------------------------------------------------------
-
-def prune_subdomains(rules_dict):
-    """
-    Sorts domains lexicographically by reversed parts to do a single-pass prune.
-    e.g., ('com', 'example') catches ('com', 'example', 'sub') instantly.
-    """
-    items = []
-    for host, rule in rules_dict.items():
-        items.append((tuple(host.split('.')[::-1]), rule))
-    
-    items.sort()
-    
-    pruned = []
-    removed = 0
-    base_parts = None
-    
-    for parts, rule in items:
-        # If current domain starts with the base domain parts, it's a subdomain
-        if base_parts and len(parts) >= len(base_parts) and parts[:len(base_parts)] == base_parts:
-            removed += 1
-        else:
-            base_parts = parts
-            pruned.append(rule)
-            
-    return pruned, removed
-
-# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -244,8 +215,9 @@ def main():
 
     print(f"\n[*] Raw domains after filters: {len(raw_domain_rules):,}")
 
-    print("\n[*] Pruning redundant subdomain rules...")
-    final_rules, removed_subdomains = prune_subdomains(raw_domain_rules)
+    print("\n[*] Formatting final rules...")
+    final_rules = sorted(raw_domain_rules.values())
+    removed_subdomains = 0 # Kept for log compatibility
 
     elapsed = time.time() - start_time
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %H:%M:%S MST")
@@ -265,7 +237,7 @@ def main():
             f"! Rules: {len(final_rules):,}\n"
             f"! Regex rules: {len(all_regex_rules)}\n"
             f"! Dropped (spam TLD filter): {total_dropped_tld:,}\n"
-            f"! Dropped (subdomain dedup): {removed_subdomains:,}\n"
+            f"! Dropped (subdomain dedup): DISABLED\n"
             + nsfw_note + "\n"
         )
         f.write("! --- REGEX RULES (DNS REBIND PROTECTION + OTHER) ---\n")
@@ -275,7 +247,7 @@ def main():
         f.write("! --- HAGEZI SPAM TLDs (RAW) ---\n")
         f.write("\n".join(spam_tld_raw) + "\n\n")
         f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
-        f.write(YOUTUBE_RULE + "\n\n")
+        #f.write(YOUTUBE_RULE + "\n\n")
         f.write(f"! --- NSFW REGEX RULE ---\n")
         f.write(f"/{NSFW_REGEX.pattern}/\n")
 
