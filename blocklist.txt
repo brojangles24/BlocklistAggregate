@@ -1,12 +1,12 @@
 ! Clean DNS Blocklist
 ! Version: 2026.02.22.ULTRA_FAST
-! Generated: 2026-02-23 04:43:24 MST
-! Build time: 3.1s
-! Rules: 228,420
+! Generated: 2026-02-23 06:19:48 MST
+! Build time: 3.3s
+! Rules: 228,360
 ! Regex rules: 11
-! Dropped (spam TLD filter): 49,278
+! Dropped (spam TLD filter): 49,222
 ! Dropped (subdomain dedup): 1,733
-! NSFW keyword filter: ACTIVE — 25,314 domains dropped
+! NSFW keyword filter: ACTIVE — 25,306 domains dropped
 
 ! --- REGEX RULES (DNS REBIND PROTECTION + OTHER) ---
 /^([a-z0-9\-]+\.)?(localhost|localdomain|ip6-localhost)$/
@@ -17050,7 +17050,6 @@
 ||2838a86e6c.com^
 ||283cd9cf98fc123b.com^
 ||2843b4bf95.com^
-||284b81d8ae.com^
 ||28579dd0ba2741150e25a2e4d5d15ccc.com^
 ||286608243d.com^
 ||2878644238.com^
@@ -17138,7 +17137,6 @@
 ||2b2af277a0f85cf4.com^
 ||2b343c99f8639504.com^
 ||2b3ed6cff3c91818.com^
-||2b52448aec.com^
 ||2b638d92a38da6cb.com^
 ||2b6527020559c15e8f5895ed1508306a.com^
 ||2b717ea4a7c8e42b.com^
@@ -18058,7 +18056,6 @@
 ||3f5cc71e579b9b67.com^
 ||3f6a129aa2da483c.com^
 ||3f78d2c0aef5fccf.com^
-||3f8b0b3559.com^
 ||3f8f0870b761.com^
 ||3f9b37df0629ada1.com^
 ||3fa3d4c288.com^
@@ -19350,7 +19347,6 @@
 ||5e5fdd3233fbfee9.com^
 ||5e66d43135ba3169.com^
 ||5e75e3fe38d7ba4a04b750306441b77c.com^
-||5e80d21184.com^
 ||5e81791ee226db2f.com^
 ||5e9cb65c2c.com^
 ||1fe6b5ca5a.5ea748c035.com^
@@ -19933,7 +19929,6 @@
 ||6ef86136a7dbb901.com^
 ||6f102873ad657cfc.com^
 ||6f1b4c6d1a4696e0.com^
-||6f218410f7.com^
 ||6f315badf7741f14.com^
 ||6f33933ce4a5c0e1b32fea736a61351a.com^
 ||6f4983cc461cfc85.com^
@@ -20201,7 +20196,6 @@
 ||76359a95dd.com^
 ||763e31be573c087b.com^
 ||764024coinbase.com^
-||7642cfa09a.com^
 ||7649s7szsu.com^
 ||764bdff672c5.com^
 ||76529daafd953062.com^
@@ -22240,7 +22234,6 @@
 ||aayoqdsmvcf.com^
 ||ab-gay.com^
 ||ab03f4577b.com^
-||ab045d5856.com^
 ||ab0fbb66ba.com^
 ||ab1145b758c30.com^
 ||ab15034583624b92.com^
@@ -26401,7 +26394,6 @@
 ||aigrocerydelivery.com^
 ||load.analytics.aihello.com^
 ||aihuishou.com^
-||aiinvestv2.com^
 ||aiisgayandsoareyou.com^
 ||aiisgayjustlikeyou.com^
 ||aijszmooftto.com^
@@ -26997,7 +26989,6 @@
 ||alertgraph.com^
 ||alertlogsemployer.com^
 ||sh.alertlyrepound.com^
-||alertmapgps.com^
 ||alertpay.com^
 ||alertserve.com^
 ||alertsnotification.com^
@@ -33713,7 +33704,10 @@
 ||aztwrmsgn4.com^
 ||azulcw7.com^
 ||azulhistorico.com^
-||applicationinsights.azure.com^
+||aimon.applicationinsights.azure.com^
+||dc.applicationinsights.azure.com^
+||in.applicationinsights.azure.com^
+||live.applicationinsights.azure.com^
 ||centralus-ads.centralus.cloudapp.azure.com^
 ||clarity-ingest-eus-b-sc.eastus.cloudapp.azure.com^
 ||clarity-ingest-eus-c-sc.eastus.cloudapp.azure.com^
@@ -33974,7 +33968,6 @@
 ||b666a3e459c27b70.com^
 ||b6772da46d9a4f9e.com^
 ||b67f502d654b1e77.com^
-||b681514051.com^
 ||b684df9ccf89578f.com^
 ||b6896717eb18db4c9bd5c680468bdf20.com^
 ||b69b92742d.com^
@@ -38785,7 +38778,6 @@
 ||vlllv.boilove.com^
 ||vnqlgg.boilove.com^
 ||boilrivulet.com^
-||boimate.com^
 ||boingdragon.com^
 ||boinkstream.com^
 ||analytics.boironusa.com^
@@ -43864,7 +43856,6 @@
 ||tvuser-ch.cedock.com^
 ||cedricdelsaux.com^
 ||salmon.cedricreeves.com^
-||cedypan.com^
 ||cee332cc1f.com^
 ||ceecc7c206ca.com^
 ||ceeheesa.com^
@@ -45887,7 +45878,6 @@
 ||clavedesolinstrumentosmusicais.com^
 ||kc.clavusangioma.com^
 ||clawagentoffice.com^
-||clawaioffice.com^
 ||clawdbot-live.com^
 ||clawdbotatg.com^
 ||clawdevent.com^
@@ -46635,7 +46625,6 @@
 ||clubseventeen.com^
 ||clubshylastyles.com^
 ||clubsmokieflame.com^
-||clubsudouest.com^
 ||clubsweethearts.com^
 ||clubtug.com^
 ||clubwarp.com^
@@ -46786,7 +46775,6 @@
 ||cn-live-raygame.com^
 ||cn-live-tiantiankanqiu.com^
 ||cn-live-zhibo.com^
-||cn-qy7.com^
 ||cn-rtb.com^
 ||cn-wps-offices.com^
 ||cn6x.com^
@@ -48544,7 +48532,6 @@
 ||coocent.com^
 ||coochievideos.com^
 ||coochig.com^
-||coocpatjaco.com^
 ||coodleborstal.com^
 ||cooeapleu.com^
 ||cooeyeddarbs.com^
@@ -58535,7 +58522,6 @@
 ||synd.edgecdnc.com^
 ||edgechainedge.com^
 ||revive.edgeflyfishing.com^
-||edgegridnet.com^
 ||edgeio.com^
 ||ax.edgemanpotable.com^
 ||edgemeplease.com^
@@ -59126,7 +59112,6 @@
 ||elblogdelnarco.com^
 ||adserver.elboletin.com^
 ||elbrasombre.com^
-||elcalientemamma.com^
 ||elcanal.com^
 ||ads.elcarado.com^
 ||elcaramelito.com^
@@ -59379,7 +59364,6 @@
 ||ellieunlocked.com^
 ||elliotquarantineconductive.com^
 ||elliotretained.com^
-||elliottstevensonlawoffice.com^
 ||elliptical-schedule.com^
 ||ellipticalofficial.com^
 ||ellipticaltrack.com^
@@ -63544,6 +63528,7 @@
 ||faqtoids.com^
 ||far-bedroom.com^
 ||far-sugar.com^
+||sentry.farabixo.com^
 ||farakav.com^
 ||faramirfiction.com^
 ||farandulista.com^
@@ -63691,7 +63676,6 @@
 ||api.fastmoonclimbed.com^
 ||fastnativead.com^
 ||fastnetworkflow.com^
-||fastofficefix.com^
 ||fastorfar.com^
 ||fastprotectsolutions.com^
 ||fastresultstoday.com^
@@ -63708,7 +63692,6 @@
 ||fastvps-server.com^
 ||fastwavehilltop.com^
 ||fastwebtrends.com^
-||fastweeddelivery.com^
 ||fat-fly.com^
 ||fat-swimming.com^
 ||fat-tgp.com^
@@ -73459,7 +73442,6 @@
 ||gufadpqrac.com^
 ||fq.guffernewport.com^
 ||gufum.com^
-||guggenhelmpartners-offices.com^
 ||smetrics.guhl.com^
 ||guhokrapzru.com^
 ||guhtaqgt.com^
@@ -75154,7 +75136,6 @@
 ||heinax.com^
 ||heiressplane.com^
 ||heirserverrecruiting.com^
-||heisgay.com^
 ||heismanscholarship.com^
 ||heixbai.com^
 ||heixidor.com^
@@ -79967,7 +79948,6 @@
 ||inbrowserplay.com^
 ||f793.inc.com^
 ||sgtm.inc.com^
-||inc-strategy.com^
 ||incacas.com^
 ||incallup.com^
 ||incapabledespair.com^
@@ -97021,7 +97001,6 @@
 ||mobileboner.com^
 ||mobilecloud-dl-risk.com^
 ||mobilecore.com^
-||mobilecra2026app.com^
 ||mobiledevel.com^
 ||logs.mobiledevicemanagerplus.com^
 ||gtm.mobiledoggear.com^
@@ -97704,11 +97683,9 @@
 ||moonshot-approve.com^
 ||moonshot-gemlisting.com^
 ||moonshot-listed.com^
-||moonshot-listgem.com^
 ||moonshot-lists.com^
 ||moonshote-gemlist.com^
 ||moonshots-app.com^
-||moonshotx-gemlist.com^
 ||logserver.msdk.moontontech.com^
 ||moontrendings.com^
 ||moontrkr.com^
@@ -99471,7 +99448,6 @@
 ||mymusclevideo.com^
 ||mob2.mymusic2025.com^
 ||ssgtm.mymycatering.com^
-||mymyk-live.com^
 ||mynativeads.com^
 ||mynativeplatform.com^
 ||mynaughtyscotland.com^
@@ -108562,7 +108538,6 @@
 ||ads.partnerscreative.com^
 ||partnership75.com^
 ||partnersinprivate.com^
-||partnersripple.com^
 ||partnerstack.com^
 ||partooline.com^
 ||partplanes.com^
@@ -120675,7 +120650,6 @@
 ||sadspacekitty.com^
 ||sadvaluable.com^
 ||saecreative2020.com^
-||saekisr-office.com^
 ||safadasamadoras.com^
 ||safar-brons.com^
 ||safaricomcoke.com^
@@ -121809,7 +121783,6 @@
 ||homad-global-configs.schneevonmorgen.com^
 ||beacon-enterprise.schneidercorp.com^
 ||schneidermode.com^
-||schnelleckemodule.com^
 ||schnr.com^
 ||schochedueful.com^
 ||scholarloop.com^
@@ -124624,7 +124597,6 @@
 ||shticksyahuna.com^
 ||shtilnya.com^
 ||shtranssion.com^
-||shuaigay9.com^
 ||shuangfuqd.com^
 ||shuangyingjia.com^
 ||shubadubadlskjfkf.com^
@@ -125243,7 +125215,6 @@
 ||sipsdirtysodashop.com^
 ||sipstersdirtypops.com^
 ||sipthelemonslut.com^
-||siqnaturebackoffice.com^
 ||siraatskitchen.com^
 ||sirabe-office.com^
 ||stats.sirdata.com^
@@ -129807,7 +129778,6 @@
 ||studiohotline.com^
 ||studiostack.com^
 ||studiotecnicodms.com^
-||studiotwo70.com^
 ||studious-make.com^
 ||studiousenragereclaim.com^
 ||studiousspareinfinite.com^
@@ -133224,7 +133194,6 @@
 ||ads-v2.tezatags.com^
 ||gtm.tezenis.com^
 ||tezeoddo.com^
-||static-cache.tezfiles.com^
 ||telemetry.tezlabapp.com^
 ||tezydii.com^
 ||tf0-k.com^
@@ -141197,7 +141166,6 @@
 ||veertua.com^
 ||veeseo.com^
 ||qltuh.vegalyrae.com^
-||vegamb.com^
 ||vegamovics.com^
 ||vegamovied.com^
 ||matomo.vegan4dogs.com^
@@ -147524,7 +147492,6 @@
 ||wtburnett.com^
 ||wtcsurabaya.com^
 ||wtdcfsrvgv.com^
-||wtfismyip.com^
 ||wtflivegirls.com^
 ||wtfpass.com^
 ||wtfpeople.com^
@@ -148089,7 +148056,6 @@
 ||xe12310.com^
 ||xebecindia.com^
 ||xebecturcic.com^
-||xebeto.com^
 ||xebugu.com^
 ||xebut.com^
 ||xecce.com^
@@ -151283,7 +151249,6 @@
 ||zagrox.com^
 ||zagruzik.com^
 ||zagvee.com^
-||zahlungsmethodencasino.com^
 ||zahlungswissen.com^
 ||gtm.zaialaw.com^
 ||zaichoaphap.com^
@@ -151382,7 +151347,6 @@
 ||zapandmake.com^
 ||zapasizzard.com^
 ||zapdeliveryth.com^
-||zapepex.com^
 ||zapmeme.com^
 ||zapmeta.com^
 ||zapotezincky.com^
@@ -215229,7 +215193,6 @@
 ||sentry.live.mts.ru^
 ||sentry.obs.mts.ru^
 ||rtb.mts.ru^
-||mueprotonofchohos.ru^
 ||mukis.ru^
 ||multiclick.ru^
 ||multonly.ru^
@@ -225744,7 +225707,6 @@
 ||cc221002730.xyz^
 ||cc791019230.xyz^
 ||cctm.xyz^
-||ccytakllrmai.xyz^
 ||cd448995513a78a6e68b3f3535f9bf79.xyz^
 ||cdn1cloudflare.xyz^
 ||cdn.cdnhipter.xyz^
@@ -225818,22 +225780,6 @@
 ||cnbuzz.xyz^
 ||cnhub.xyz^
 ||cnia.xyz^
-||cnic-probe-aws-asia-tokyo-live-1771714801.xyz^
-||cnic-probe-aws-asia-tokyo-live-1771715701.xyz^
-||cnic-probe-aws-eu-frankfurt-live-1771713001.xyz^
-||cnic-probe-aws-eu-frankfurt-live-1771713301.xyz^
-||cnic-probe-aws-eu-frankfurt-live-1771714201.xyz^
-||cnic-probe-aws-eu-frankfurt-live-1771717201.xyz^
-||cnic-probe-aws-north-america-oregon-live-1771712701.xyz^
-||cnic-probe-aws-north-america-oregon-live-1771715101.xyz^
-||cnic-probe-aws-north-america-oregon-live-1771716001.xyz^
-||cnic-probe-aws-north-america-oregon-live-1771716301.xyz^
-||cnic-probe-aws-north-america-oregon-live-1771716601.xyz^
-||cnic-probe-aws-north-america-vir-live-1771713901.xyz^
-||cnic-probe-aws-north-america-vir-live-1771715401.xyz^
-||cnic-probe-aws-oceania-sydney-live-1771713601.xyz^
-||cnic-probe-aws-oceania-sydney-live-1771714501.xyz^
-||cnic-probe-aws-oceania-sydney-live-1771716901.xyz^
 ||coapheecoz.xyz^
 ||coastalbloom.xyz^
 ||codedai.xyz^
@@ -226217,7 +226163,6 @@
 ||f152a453a10af7a3938e8b08004e3f69.xyz^
 ||f19a14851124.xyz^
 ||f1dzpr7j.xyz^
-||f230e.xyz^
 ||f230i.xyz^
 ||f230p.xyz^
 ||f230u.xyz^
@@ -226341,7 +226286,6 @@
 ||fxtub.xyz^
 ||fynox.xyz^
 ||g67k.xyz^
-||g68r.xyz^
 ||g69d.xyz^
 ||g69j.xyz^
 ||api.gadgetgine.xyz^
@@ -226645,7 +226589,6 @@
 ||ifaircurr.xyz^
 ||iframedogecoin.xyz^
 ||igoognou.xyz^
-||ihdrurrvryppt.xyz^
 ||ihiptootchouds.xyz^
 ||ihytyt.xyz^
 ||ikanju.xyz^
@@ -227569,8 +227512,6 @@
 ||schuntermann.xyz^
 ||score-hyperliquid.xyz^
 ||scorelive-mantap168.xyz^
-||scorelive-okeplay777.xyz^
-||scorelive2-aladin138.xyz^
 ||scwojj.xyz^
 ||sdertjnbv.xyz^
 ||sdkjhcuh.xyz^
@@ -227904,7 +227845,6 @@
 ||uh5p93ia.xyz^
 ||uhi02121uik.xyz^
 ||uhi02130uik.xyz^
-||uhnrnjwey.xyz^
 ||uiigkcqac.xyz^
 ||ujsngfgoxv.xyz^
 ||ukrainebitcoin.xyz^
@@ -228456,8 +228396,8 @@
 ! Issues: https://github.com/hagezi/dns-blocklists/issues
 ! Disclaimer: https://github.com/hagezi/dns-blocklists/blob/main/README.md#disclaimer
 ! Expires: 1 day
-! Last modified: 22 Feb 2026 04:58 UTC
-! Version: 2026.0222.0458.52
+! Last modified: 23 Feb 2026 11:53 UTC
+! Version: 2026.0223.1153.23
 ! Syntax: AdGuard
 ! Number of latin TLDs: 283 - punycode TLDs: 151
 !
@@ -228581,7 +228521,7 @@
 ||*.guide^$denyallow=bedandbreakfast.guide|cfw.guide|discordjs.guide|goodtravel.guide|hacks.guide|homebrew.guide|opensource.guide|ripped.guide|site.guide|slowfood.guide|thebook.guide|wii.guide|wisely.guide|zig.guide
 ||*.guru^$denyallow=bahn.guru|base64.guru|crontab.guru|greenlight.guru|jav.guru|ludwig.guru|mags.guru|tilde.guru|watcher.guru|webcal.guru
 ||*.hair^
-||*.haus^
+||*.haus^$denyallow=lunar.haus
 ||*.health^$denyallow=sca.health
 ||*.healthcare^$denyallow=severance.healthcare
 ||*.help^$denyallow=crisp.help|fastmail.help|gorgias.help|kustomer.help|pixiv.help
@@ -228657,7 +228597,7 @@
 ||*.post^$denyallow=cypruspost.post
 ||*.prof^$denyallow=casey.prof
 ||*.promo^
-||*.pub^$denyallow=arc.pub|bierbaum.pub|infosec.pub|leaflet.pub|static.pub|wapo.pub
+||*.pub^$denyallow=arc.pub|bierbaum.pub|infosec.pub|leaflet.pub|lunar.pub|static.pub|wapo.pub
 ||*.pw^$denyallow=buttercup.pw|core.pw|darkcrystal.pw|dpc.pw|gopass.pw|palaugov.pw|petridish.pw|plutonium.pw|tabula-rasa.pw|xor.pw|zok.pw
 ||*.qpon^
 ||*.quest^$denyallow=dice.quest|epochal.quest|mhn.quest|mylegendary.quest|prometheus.quest|raccoon.quest
