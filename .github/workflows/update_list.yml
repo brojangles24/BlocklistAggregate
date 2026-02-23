@@ -1,7 +1,7 @@
 name: Update Blocklist
 on:
   schedule:
-    - cron: '0 * * * *'
+   #- cron: '0 * * * *'
   workflow_dispatch:
 permissions:
   contents: write
