@@ -223,7 +223,7 @@ def main():
     final_rules = sorted(raw_domain_rules.values())
 
     elapsed = time.time() - start_time
-    now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %H:%M:%S MST")
+    now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(
