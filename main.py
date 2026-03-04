@@ -230,7 +230,7 @@ def main():
     print(f"\n[*] Writing {OUTPUT_FILE}...")
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         f.write(
-            f"!Title: Jorgensen DNS Blocklist\n"
+            f"! Title: Jorgensen DNS Blocklist\n"
             f"! Version: {VERSION}\n"
             f"! Generated: {now}\n"
             f"! Build time: {elapsed:.1f}s\n"
