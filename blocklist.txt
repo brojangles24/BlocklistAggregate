@@ -1,12 +1,11 @@
-! Title: Jorgensen DNS Blocklist
-! Version: 2026.02.22.ULTRA_FAST_NO_PRUNE
-! Generated: 2026-03-04 16:36:39 MST
+! Clean DNS Blocklist
+! Version: 2026.03.04.OPTIMIZED
+! Generated: 2026-03-04 16:51:30 MST
 ! Build time: 3.3s
 ! Rules: 213,537
 ! Regex rules: 11
 ! Dropped (spam TLD filter): 49,908
-! Dropped (subdomain dedup): DISABLED
-! NSFW keyword filter: ACTIVE — 27,221 domains dropped
+! Dropped (NSFW filter): 27,221
 
 ! --- REGEX RULES (DNS REBIND PROTECTION + OTHER) ---
 /^([a-z0-9\-]+\.)?(localhost|localdomain|ip6-localhost)$/
