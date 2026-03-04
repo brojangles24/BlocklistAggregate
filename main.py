@@ -12,9 +12,9 @@ VERSION = "2026.02.22.ULTRA_FAST_NO_PRUNE"
 CORE_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
-    #"https://big.oisd.nl",
+    "https://big.oisd.nl",
     #"https://nsfw.oisd.nl",
     "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -194,19 +194,20 @@ def main():
         for rule_type, *data in parse_rules(lines):
             if rule_type == 'regex':
                 all_regex_rules.add(data[0])
+                continue # FIX APPLIED HERE
             elif rule_type == 'domain':
                 rule, host = data
 
-                if get_matching_tld(host, spam_patterns_set, denyallow_map):
-                    dropped_tld += 1
+            if get_matching_tld(host, spam_patterns_set, denyallow_map):
+                dropped_tld += 1
+                continue
+
+            if NSFW_REGEX.search(host):
+                dropped_kw += 1
+                if APPLY_NSFW_FILTER:
                     continue
 
-                if NSFW_REGEX.search(host):
-                    dropped_kw += 1
-                    if APPLY_NSFW_FILTER:
-                        continue
-
-                raw_domain_rules[host] = rule
+            raw_domain_rules[host] = rule
 
         added = len(raw_domain_rules) - before
         total_dropped_tld += dropped_tld
@@ -217,7 +218,6 @@ def main():
 
     print("\n[*] Formatting final rules...")
     final_rules = sorted(raw_domain_rules.values())
-    removed_subdomains = 0 # Kept for log compatibility
 
     elapsed = time.time() - start_time
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %H:%M:%S MST")
