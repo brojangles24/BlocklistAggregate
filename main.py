@@ -1,15 +1,16 @@
 import requests
 import re
 import time
+import argparse
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Arizona is MST (UTC-7) year-round
 AZ_TZ = timezone(timedelta(hours=-7))
 
-VERSION = "2026.02.22.ULTRA_FAST_NO_PRUNE"
+VERSION = "2026.03.04.OPTIMIZED"
 
-CORE_SOURCES = [
+DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
@@ -28,6 +29,11 @@ CORE_SOURCES = [
 
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
+YOUTUBE_RULE = (
+    "/^(www\\.|m\\.|youtubei\\.|youtube\\.)?(youtube(-nocookie)?\\.com|"
+    "googleapis\\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
+)
+
 NSFW_REGEX = re.compile(
     r"(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|"
     r"hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|"
@@ -35,27 +41,21 @@ NSFW_REGEX = re.compile(
     r"xnxx|xvideo|xxvideo|camgirl|nude|naked)"
 )
 
-YOUTUBE_RULE = (
-    "/^(www\\.|m\\.|youtubei\\.|youtube\\.)?(youtube(-nocookie)?\\.com|"
-    "googleapis\\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
-)
 APPLY_NSFW_FILTER = True
-
-OUTPUT_FILE = "blocklist.txt"
-
 MAX_RETRIES = 3
 RETRY_DELAY = 3
 
 # ---------------------------------------------------------------------------
-# Fetch helpers
+# Fetch helpers (Optimized with Connection Pooling & Streaming)
 # ---------------------------------------------------------------------------
 
-def fetch(url, retries=MAX_RETRIES):
+def fetch_stream(url, session, retries=MAX_RETRIES):
     for attempt in range(1, retries + 1):
         try:
-            r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=(5, 30))
+            r = session.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=(5, 30), stream=True)
             r.raise_for_status()
-            return r.text.splitlines()
+            # iter_lines prevents loading a massive single string into memory
+            return [line for line in r.iter_lines(decode_unicode=True) if line]
         except Exception as e:
             if attempt < retries:
                 print(f"  [!] Attempt {attempt}/{retries} failed for {url}: {e} — retrying in {RETRY_DELAY}s")
@@ -66,11 +66,12 @@ def fetch(url, retries=MAX_RETRIES):
 
 def fetch_all_parallel(urls, max_workers=6):
     results = {}
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_url = {executor.submit(fetch, url): url for url in urls}
-        for future in as_completed(future_to_url):
-            url = future_to_url[future]
-            results[url] = future.result()
+    with requests.Session() as session:
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            future_to_url = {executor.submit(fetch_stream, url, session): url for url in urls}
+            for future in as_completed(future_to_url):
+                url = future_to_url[future]
+                results[url] = future.result()
     return results
 
 # ---------------------------------------------------------------------------
@@ -111,12 +112,11 @@ def parse_tld_patterns(lines):
 
 def get_matching_tld(host, spam_set, denyallow_map):
     parts = host.split('.')
-    # Check suffixes from longest (whole domain) to shortest (TLD)
     for i in range(len(parts)):
         candidate = ".".join(parts[i:])
         if candidate in spam_set:
             if candidate in denyallow_map and host in denyallow_map[candidate]:
-                return None # Whitelisted exception
+                return None 
             return candidate
     return None
 
@@ -130,12 +130,10 @@ def parse_rules(lines):
         if not clean:
             continue
 
-        # Regex rules
         if clean.startswith("/") and clean.endswith("/"):
             yield ('regex', clean)
             continue
 
-        # Hosts format (0.0.0.0 or 127.0.0.1)
         if clean.startswith("0.0.0.0 ") or clean.startswith("127.0.0.1 "):
             parts = clean.split()
             if len(parts) >= 2:
@@ -144,14 +142,12 @@ def parse_rules(lines):
                     yield ('domain', f"||{host}^", host)
             continue
 
-        # Plain domain format
         if not clean.startswith("||") and " " not in clean and "*" not in clean and "/" not in clean:
             host = clean.lower().strip(".")
             if host:
                 yield ('domain', f"||{host}^", host)
             continue
 
-        # Standard AdGuard DNS rules
         if not clean.startswith("||") or "$" in clean:
             continue
         if "^" not in clean:
@@ -165,28 +161,33 @@ def parse_rules(lines):
 # ---------------------------------------------------------------------------
 
 def main():
+    parser = argparse.ArgumentParser(description="DNS Blocklist Generator")
+    parser.add_argument("-o", "--output", default="blocklist.txt", help="Output filename")
+    args = parser.parse_args()
+
     start_time = time.time()
     print(f"[*] DNS Blocklist Generator {VERSION}")
-    print(f"    NSFW keyword filter: {'ACTIVE (dropping matches)' if APPLY_NSFW_FILTER else 'OBSERVE ONLY (counting, not dropping)'}")
+    print(f"    NSFW filter: {'ACTIVE' if APPLY_NSFW_FILTER else 'OBSERVE ONLY'}")
 
     print("\n[*] Fetching Hagezi Spam TLDs...")
-    spam_tld_raw = fetch(SPAM_TLD_URL)
+    with requests.Session() as session:
+        spam_tld_raw = fetch_stream(SPAM_TLD_URL, session)
     spam_patterns_set, denyallow_map = parse_tld_patterns(spam_tld_raw)
     
-    print(f"\n[*] Fetching {len(CORE_SOURCES)} sources in parallel...")
-    fetched = fetch_all_parallel(CORE_SOURCES)
+    print(f"\n[*] Fetching {len(DEFAULT_SOURCES)} sources in parallel...")
+    fetched = fetch_all_parallel(DEFAULT_SOURCES)
 
     print("\n[*] Processing rules...\n")
     header = f"    {'Source':<42} {'Lines':>8}  {'Added':>8}  {'Drop(TLD)':>10}  {'Drop(KW)':>10}"
     print(header)
     print("    " + "-" * (len(header) - 4))
 
-    raw_domain_rules = {} # Dictionary inherently deduplicates exact host matches
+    raw_domain_rules = {} 
     all_regex_rules = set()
     total_dropped_tld = 0
     total_dropped_kw = 0
 
-    for url in CORE_SOURCES:
+    for url in DEFAULT_SOURCES:
         lines = fetched.get(url, [])
         source_name = url.split("/")[-1] or url.split("/")[-2]
         before = len(raw_domain_rules)
@@ -196,7 +197,7 @@ def main():
         for rule_type, *data in parse_rules(lines):
             if rule_type == 'regex':
                 all_regex_rules.add(data[0])
-                continue # FIX APPLIED HERE
+                continue
             elif rule_type == 'domain':
                 rule, host = data
 
@@ -218,42 +219,42 @@ def main():
 
     print(f"\n[*] Raw domains after filters: {len(raw_domain_rules):,}")
 
-    print("\n[*] Formatting final rules...")
+    print(f"\n[*] Writing {args.output} (Memory-efficient write)...")
     final_rules = sorted(raw_domain_rules.values())
 
     elapsed = time.time() - start_time
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %H:%M:%S MST")
-    nsfw_note = (
-        f"! NSFW keyword filter: ACTIVE — {total_dropped_kw:,} domains dropped\n"
-        if APPLY_NSFW_FILTER
-        else f"! NSFW keyword filter: OBSERVE ONLY — {total_dropped_kw:,} keyword-matched domains kept\n"
-    )
-
-    print(f"\n[*] Writing {OUTPUT_FILE}...")
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
+    
+    with open(args.output, "w", encoding="utf-8") as f:
         f.write(
-            f"! Title: Jorgensen DNS Blocklist\n"
+            f"! Clean DNS Blocklist\n"
             f"! Version: {VERSION}\n"
             f"! Generated: {now}\n"
             f"! Build time: {elapsed:.1f}s\n"
             f"! Rules: {len(final_rules):,}\n"
             f"! Regex rules: {len(all_regex_rules)}\n"
             f"! Dropped (spam TLD filter): {total_dropped_tld:,}\n"
-            f"! Dropped (subdomain dedup): DISABLED\n"
-            + nsfw_note + "\n"
+            f"! Dropped (NSFW filter): {total_dropped_kw:,}\n\n"
         )
+        
         f.write("! --- REGEX RULES (DNS REBIND PROTECTION + OTHER) ---\n")
-        f.write("\n".join(sorted(all_regex_rules)) + "\n\n")
-        f.write("! --- DNS-COMPATIBLE CORE BLOCK RULES ---\n")
-        f.write("\n".join(final_rules) + "\n\n")
-        f.write("! --- HAGEZI SPAM TLDs (RAW) ---\n")
-        f.write("\n".join(spam_tld_raw) + "\n\n")
-        f.write("! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
+        for rule in sorted(all_regex_rules):
+            f.write(f"{rule}\n")
+            
+        f.write("\n! --- DNS-COMPATIBLE CORE BLOCK RULES ---\n")
+        for rule in final_rules:
+            f.write(f"{rule}\n")
+            
+        f.write("\n! --- HAGEZI SPAM TLDs (RAW) ---\n")
+        for rule in spam_tld_raw:
+            f.write(f"{rule}\n")
+            
+        f.write("\n! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
         #f.write(YOUTUBE_RULE + "\n\n")
         f.write(f"! --- NSFW REGEX RULE ---\n")
         f.write(f"/{NSFW_REGEX.pattern}/\n")
 
-    print(f"\n[+] SUCCESS — {len(final_rules):,} domain rules written to {OUTPUT_FILE} in {elapsed:.1f}s")
+    print(f"\n[+] SUCCESS — {len(final_rules):,} domain rules written to {args.output} in {elapsed:.1f}s")
 
 if __name__ == "__main__":
     main()
