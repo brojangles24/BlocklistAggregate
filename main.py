@@ -11,15 +11,15 @@ AZ_TZ = timezone(timedelta(hours=-7))
 VERSION = "2026.03.04.OPTIMIZED"
 
 DEFAULT_SOURCES = [
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
-    #"https://big.oisd.nl",
-    #"https://nsfw.oisd.nl",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # Threat Intel Full ~ 600k
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt", # Threat Intel Medium ~ 300k
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", # Threat Intel Mini ~ 150k
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt", # Hagezi Ultimate ~ 300k
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt", # Hagezi Pro++ ~ 250k
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # Hagezi Pro ~ 200k
+    "https://badmojr.github.io/1Hosts/Lite/adblock.txt", # 1Hosts Lite ~ 95k
+    #"https://big.oisd.nl", # OISD Full ~ 300k
+    #"https://nsfw.oisd.nl", # OISD NSFW Full ~ 300k
     "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
