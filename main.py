@@ -32,8 +32,8 @@ DEFAULT_SOURCES = [
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
 YOUTUBE_RULE = (
-    "/^(www\\.|m\\.|youtubei\\.|youtube\\.)?(youtube(-nocookie)?\\.com|"
-    "googleapis\\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
+    r"/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|"
+    r"googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com"
 )
 
 NSFW_REGEX = re.compile(
