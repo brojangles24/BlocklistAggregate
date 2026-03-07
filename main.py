@@ -20,7 +20,7 @@ DEFAULT_SOURCES = [
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt", # 1Hosts Lite ~ 95k
     #"https://big.oisd.nl", # OISD Full ~ 300k
     #"https://nsfw.oisd.nl", # OISD NSFW Full ~ 300k
-    "https://nsfw-small.oisd.nl", #OISD NSFW Small ~ 80k
+    "https://nsfw-small.oisd.nl", #OISD NSFW Small ~ 25k
     "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
