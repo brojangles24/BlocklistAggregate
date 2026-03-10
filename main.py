@@ -15,8 +15,8 @@ DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt", # Threat Intel Medium ~ 300k
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", # Threat Intel Mini ~ 150k
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt", # Hagezi Ultimate ~ 300k
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt", # Hagezi Pro++ ~ 250k
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # Hagezi Pro ~ 200k
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt", # Hagezi Pro++ ~ 250k
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # Hagezi Pro ~ 200k
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt", # 1Hosts Lite ~ 95k
     #"https://big.oisd.nl", # OISD Full ~ 300k
     #"https://nsfw.oisd.nl", # OISD NSFW Full ~ 300k
@@ -252,7 +252,7 @@ def main():
             f.write(f"{rule}\n")
             
         f.write("\n! --- CUSTOM ENFORCEMENT & SAFESEARCH ---\n")
-        #f.write(YOUTUBE_RULE + "\n\n")
+        f.write(YOUTUBE_RULE + "\n\n")
         f.write(f"! --- NSFW REGEX RULE ---\n")
         f.write(f"/{NSFW_REGEX.pattern}/\n")
 
