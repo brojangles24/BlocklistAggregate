@@ -1,6 +1,6 @@
 ! Title: Jorgensen DNS Blocklist
 ! Version: 2026.03.04.OPTIMIZED
-! Generated: 2026-03-11 11:43:28 AM MST
+! Generated: 2026-03-11 12:37:25 PM MST
 ! Build time: 3.4s
 ! Rules: 218,570
 ! Regex rules: 11
@@ -219046,7 +219046,5 @@
 ||*.xn--zfr164b^
 
 ! --- CUSTOM ENFORCEMENT & SAFESEARCH ---
-/^(www\.|m\.|youtubei\.|youtube\.)?(youtube(-nocookie)?\.com|googleapis\.com)$/$dnsrewrite=restrictmoderate.youtube.com
-
 ! --- NSFW REGEX RULE ---
 /(?i)(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)/
