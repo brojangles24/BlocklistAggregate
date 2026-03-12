@@ -18,7 +18,7 @@ DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt", # Hagezi Pro++ ~ 250k
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # Hagezi Pro ~ 200k
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt", #Hagezi Ultimate Mini ~ 110k
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt", # 1Hosts Lite ~ 95k
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt", # 1Hosts Lite ~ 95k
     #"https://big.oisd.nl", # OISD Full ~ 300k
     #"https://nsfw.oisd.nl", # OISD NSFW Full ~ 300k
     #"https://nsfw-small.oisd.nl", #OISD NSFW Small ~ 25k
