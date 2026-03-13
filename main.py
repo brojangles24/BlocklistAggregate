@@ -10,35 +10,16 @@ import gc
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
+# --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.12.UNIVERSAL_FILTER"
+VERSION = "2026.03.13.MAX_SIGNAL"
 
-# Raw string 'r' prefix prevents SyntaxWarnings on backslashes in Python 3.12+
-STATIC_REBIND_RULES = r"""
-! --- DNS REBIND PROTECTION (REGEX) ---
-! IPv4
-! Private
-/^10\.(?:\d{1,3})\.(?:\d{1,3})\.(?:\d{1,3})$/
-/^172\.(?:1[6-9]|2\d|3[0-1])\.(?:\d{1,3})\.(?:\d{1,3})$/
-/^192\.168\.(?:\d{1,3})\.(?:\d{1,3})$/
-! Link-Local
-/^169\.254\.(?:\d{1,3})\.(?:\d{1,3})$/
-! Loopback
-/^127\.(?:\d{1,3})\.(?:\d{1,3})\.(?:\d{1,3})$/
-! Unspecified
-/^0\.0\.0\.(?:\d{1,3})$/
-! IPv6
-! Unique Local Address (ULA)
-/^f[cd][0-9a-f]{2}:/
-! Link-Local
-/^fe80:/
-! Loopback
-/^::1$/
-! Unspecified
-/^::$/
-! Host
-/^([a-z0-9\-]+\.)?(localhost|localdomain|ip6-localhost)$/
-"""
+# Dynamic Logic Sources (Fetched raw, appended to footer)
+REBIND_URL = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt"
+ADGUARD_SAFESEARCH_URLS = [
+    "https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt",
+    "https://adguardteam.github.io/HostlistsRegistry/assets/youtube_safe_search.txt"
+]
 
 DEFAULT_SOURCES = [
     # --- HAGEZI THREAT INTEL ---
@@ -48,8 +29,8 @@ DEFAULT_SOURCES = [
 
     # --- HAGEZI MAIN LISTS ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
+   # "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+   # "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
 
     # --- 1HOSTS ---
@@ -57,10 +38,10 @@ DEFAULT_SOURCES = [
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
 
     # --- OISD ---
-    "https://big.oisd.nl",
-    "https://nsfw.oisd.nl",
-    #"https://small.oisd.nl",
-    #"https://nsfw-small.oisd.nl",
+    #"https://big.oisd.nl",
+    #"https://nsfw.oisd.nl",
+    "https://small.oisd.nl",
+    "https://nsfw-small.oisd.nl",
 
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -72,6 +53,7 @@ DEFAULT_SOURCES = [
 
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
+# Included all Top Lists, including Domcop
 TOP_LISTS = [
     ("https://tranco-list.eu/top-1m.csv.zip", 1, False, "zip"),
     ("http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip", 1, False, "zip"),
@@ -157,9 +139,7 @@ def main():
     parser.add_argument("-o", "--output", default="blocklist.txt")
     args = parser.parse_args()
 
-    start_time = time.time()
     active_sources = [s for s in DEFAULT_SOURCES if not s.startswith("#")]
-
     final_domains = []
     seen_domains = set()
     
@@ -168,7 +148,7 @@ def main():
     dropped_tld = 0
     dropped_dupes = 0
 
-    print(f"[*] Starting parallel downloads ({len(active_sources)} sources + {len(TOP_LISTS)} Top Lists)...")
+    print(f"[*] Starting build with {len(active_sources)} sources and Domcop (10M)...")
 
     with requests.Session() as session:
         with ThreadPoolExecutor(max_workers=4) as executor:
@@ -176,18 +156,31 @@ def main():
             future_spam = executor.submit(fetch_stream, SPAM_TLD_URL, session)
             future_to_url = {executor.submit(fetch_stream, url, session): url for url in active_sources}
 
+            # 1. Master Allowlist
             master_allowlist = set()
             for future in as_completed(top_futures):
                 master_allowlist.update(future.result())
             
-            if len(master_allowlist) < 500000:
-                print("[FATAL] Top Domain lists failed. Aborting.")
+            # Threshold raised for Domcop inclusion
+            if len(master_allowlist) < 3000000:
+                print(f"[FATAL] Master Allowlist too small ({len(master_allowlist)}). Check Domcop.")
                 sys.exit(1)
             
             print(f"[*] Master Allowlist created with {len(master_allowlist)} unique domains.")
-            del top_futures
-            gc.collect()
 
+            # 2. Fetch Dynamic Logic (SafeSearch & Rebind)
+            dynamic_logic = []
+            
+            rebind_lines = fetch_stream(REBIND_URL, session)
+            dynamic_logic.append("\n! --- HAGEZI DYNAMIC REBIND PROTECTION ---")
+            dynamic_logic.extend([l for l in rebind_lines if l.strip() and not l.startswith(('!', '#'))])
+            
+            dynamic_logic.append("\n! --- ADGUARD DYNAMIC SAFESEARCH REWRITES ---")
+            for url in ADGUARD_SAFESEARCH_URLS:
+                ss_lines = fetch_stream(url, session)
+                dynamic_logic.extend([l for l in ss_lines if l.strip() and not l.startswith(('!', '#'))])
+
+            # 3. Process Blocklists
             spam_tld_raw = future_spam.result()
             spam_patterns_set = set()
             for line in spam_tld_raw:
@@ -195,7 +188,7 @@ def main():
                 if clean:
                     spam_patterns_set.add(clean.replace("||", "").replace("^", "").lstrip("*").lstrip("."))
 
-            print("[*] Processing blocklists (UNIVERSAL FILTER ACTIVE)...")
+            print("[*] Filtering domain sources...")
             for future in as_completed(future_to_url):
                 for line in future.result():
                     clean = line.strip()
@@ -205,8 +198,6 @@ def main():
                     if clean.startswith(("0.0.0.0 ", "127.0.0.1 ")):
                         parts = clean.split(None, 1)
                         if len(parts) == 2: host = parts[1].lower().strip(".")
-                    elif clean.startswith("||") and clean.endswith("^"):
-                        host = clean[2:-1].lower().strip(".")
                     elif clean.startswith("||") and "^" in clean:
                         host = clean[2:clean.find("^")].lower().strip(".")
                     elif "/" not in clean and "*" not in clean and " " not in clean:
@@ -218,8 +209,6 @@ def main():
 
                     if host.startswith("www."): host = host[4:]
 
-                    # --- UNIVERSAL RELEVANCE CHECK ---
-                    # Every single list must match the Top Domain sets to be included.
                     if not has_suffix_match(host, master_allowlist):
                         dropped_irrelevant += 1
                         continue
@@ -235,31 +224,32 @@ def main():
                     seen_domains.add(host)
                     final_domains.append(host)
 
-            del master_allowlist
-            del seen_domains
-            gc.collect()
-
-    print("[*] Alphabetizing...")
+    print("[*] Sorting...")
     final_domains.sort()
-
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen High-Signal Blocklist | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
-        f.write(f"! UNIVERSAL RELEVANCE FILTER APPLIED TO ALL SOURCES\n")
-        f.write(f"! Stats -> Irrelevant: {dropped_irrelevant} | Dupes: {dropped_dupes} | TLD Redundancy: {dropped_tld} | NSFW Keywords: {dropped_kw}\n\n")
+        f.write(f"! Stats -> Kept: {len(final_domains)} | Irrelevant: {dropped_irrelevant} | Dupes: {dropped_dupes}\n\n")
         
+        # Write Blocklist
         for dom in final_domains:
             f.write(f"||{dom}^\n")
         
-        f.write(STATIC_REBIND_RULES)
+        # Write Spam TLDs
         f.write("\n! --- HAGEZI SPAM TLDS ---\n")
         for line in spam_tld_raw: f.write(f"{line}\n")
+        
+        # Write NSFW Regex
         f.write("\n! --- NSFW REGEX BLOCK ---\n")
         f.write(f"/{NSFW_PATTERN}/\n")
+
+        # Write Logic (Rebind + SafeSearch) at the bottom
+        for rule in dynamic_logic:
+            f.write(f"{rule}\n")
         
-    print(f"\n[+] Success. All sources filtered. Kept {len(final_domains)} domains.")
+    print(f"\n[+] Success. Kept {len(final_domains)} domains. Logic rules appended.")
 
 if __name__ == "__main__":
     main()
