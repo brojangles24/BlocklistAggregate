@@ -8,19 +8,19 @@ from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.12.COMPLETE"
+VERSION = "2026.03.12.10M_LIST"
 
 DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
-    "https://big.oisd.nl",
-    "https://nsfw.oisd.nl",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    #"https://big.oisd.nl",
+    #"https://nsfw.oisd.nl",
     #"https://nsfw-small.oisd.nl",
     "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -31,9 +31,8 @@ DEFAULT_SOURCES = [
 ]
 
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
-TRANCO_URL = "https://tranco-list.eu/top-1m.csv.zip"
+TOP_10M_URL = "https://www.domcop.com/files/top/top10milliondomains.csv.zip"
 
-# Split pattern from regex compile for easier Adblock formatting later
 NSFW_PATTERN = (
     r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|"
     r"hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|"
@@ -46,17 +45,28 @@ NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
 # Helpers
 # ---------------------------------------------------------------------------
 
-def fetch_tranco_set():
-    print("[*] Downloading Tranco Top 1 Million list...")
+def fetch_top_10m_set():
+    print("[*] Downloading DomCop Top 10 Million list (this may take a minute)...")
     try:
-        r = requests.get(TRANCO_URL, timeout=30)
+        # Increased timeout because this is a massive file
+        r = requests.get(TOP_10M_URL, timeout=60)
         r.raise_for_status()
         with zipfile.ZipFile(io.BytesIO(r.content)) as z:
-            with z.open('top-1m.csv') as f:
-                # Optimized byte-level split before decoding
-                return set(line.split(b',')[1].decode('utf-8').strip().lower() for line in f if b',' in line)
+            # Safely grab the first file in the zip
+            filename = z.namelist()[0]
+            with z.open(filename) as f:
+                domains = set()
+                for line in f:
+                    if b',' in line:
+                        parts = line.split(b',')
+                        if len(parts) >= 2:
+                            dom = parts[1].decode('utf-8').strip().lower()
+                            # Skip the header row if it exists
+                            if dom and dom != "domain":
+                                domains.add(dom)
+                return domains
     except requests.RequestException as e:
-        print(f"[!] Tranco fetch failed: {e}. All domains will be included.")
+        print(f"[!] Top 10M fetch failed: {e}. All domains will be included.")
         return None
 
 def fetch_stream(url, session):
@@ -106,15 +116,15 @@ def main():
     dropped_kw = 0
     dropped_tld = 0
 
-    print(f"[*] Starting parallel downloads ({len(active_sources)} sources + Tranco + Spam TLDs)...")
+    print(f"[*] Starting parallel downloads ({len(active_sources)} sources + Top 10M + Spam TLDs)...")
 
     with requests.Session() as session:
         with ThreadPoolExecutor(max_workers=8) as executor:
-            future_tranco = executor.submit(fetch_tranco_set)
+            future_top10m = executor.submit(fetch_top_10m_set)
             future_spam = executor.submit(fetch_stream, SPAM_TLD_URL, session)
             future_to_url = {executor.submit(fetch_stream, url, session): url for url in active_sources}
 
-            tranco_relevant = future_tranco.result()
+            top_10m_relevant = future_top10m.result()
             spam_tld_raw = future_spam.result()
             spam_patterns_set, denyallow_map = parse_tld_patterns(spam_tld_raw)
 
@@ -143,18 +153,17 @@ def main():
                     if host in seen_domains:
                         continue
 
-                    # 1. Drop NSFW keywords (will be caught by regex block at bottom)
                     if NSFW_REGEX.search(host):
                         dropped_kw += 1
                         continue
 
-                    # 2. Drop Spam TLDs (will be caught by TLD block at bottom)
                     if get_matching_tld(host, spam_patterns_set, denyallow_map):
                         dropped_tld += 1
                         continue
 
-                    # 3. Drop domains not in Tranco 1M
-                    if tranco_relevant and host not in tranco_relevant:
+                    # Bypass Top 10M check for IP/CIDR rules
+                    is_ip_or_cidr = re.match(r'^[\d\.:/]+$', host)
+                    if top_10m_relevant and host not in top_10m_relevant and not is_ip_or_cidr:
                         dropped_irrelevant += 1
                         continue
 
@@ -172,12 +181,10 @@ def main():
         for line in final_output:
             f.write(f"{line}\n")
         
-        # Append master TLD blocks
         f.write("\n! --- HAGEZI SPAM TLDS ---\n")
         for line in spam_tld_raw:
             f.write(f"{line}\n")
 
-        # Append master Regex block
         f.write("\n! --- NSFW REGEX BLOCK ---\n")
         f.write(f"/{NSFW_PATTERN}/\n")
 
@@ -185,7 +192,7 @@ def main():
     print(f"    Rules Kept: {len(seen_domains)}")
     print(f"    Dropped (NSFW Keywords): {dropped_kw}")
     print(f"    Dropped (Spam TLD Redundancy): {dropped_tld}")
-    print(f"    Dropped (Not in Tranco 1M): {dropped_irrelevant}")
+    print(f"    Dropped (Not in Top 10M): {dropped_irrelevant}")
 
 if __name__ == "__main__":
     main()
