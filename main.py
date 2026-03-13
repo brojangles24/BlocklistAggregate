@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.12.HEAVY_SOURCES"
+VERSION = "2026.03.12.FINAL_CLEAN_FULL"
 
 DEFAULT_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
@@ -19,8 +19,8 @@ DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
-    #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    "https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     "https://big.oisd.nl",
     "https://nsfw.oisd.nl",
     #"https://nsfw-small.oisd.nl",
@@ -59,7 +59,6 @@ def process_line(line, col_idx, domains):
         dom = parts[col_idx].strip().lower()
         if dom.startswith("http"):
             dom = dom.replace("https://", "").replace("http://", "").split('/')[0]
-        
         if dom and dom not in ("domain", "origin", "rank"):
             domains.add(dom)
 
@@ -68,7 +67,6 @@ def fetch_top_list(url, col_idx, skip_header, compression):
     try:
         r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=60)
         r.raise_for_status()
-        
         if compression == "zip":
             with zipfile.ZipFile(io.BytesIO(r.content)) as z:
                 filename = z.namelist()[0]
@@ -76,19 +74,16 @@ def fetch_top_list(url, col_idx, skip_header, compression):
                     for i, line in enumerate(f):
                         if skip_header and i == 0: continue
                         process_line(line, col_idx, domains)
-                        
         elif compression == "gzip":
             with gzip.GzipFile(fileobj=io.BytesIO(r.content)) as gz:
                 with io.TextIOWrapper(gz, encoding='utf-8', errors='ignore') as f:
                     for i, line in enumerate(f):
                         if skip_header and i == 0: continue
                         process_line(line, col_idx, domains)
-                        
         else:
             for i, line in enumerate(r.text.splitlines()):
                 if skip_header and i == 0: continue
                 process_line(line, col_idx, domains)
-                
         print(f"[+] Loaded {len(domains)} from {url.split('/')[-1]}")
     except Exception as e:
         print(f"[!] Fetch failed for {url}: {e}")
@@ -99,8 +94,8 @@ def fetch_stream(url, session):
         r = session.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=(5, 30))
         r.raise_for_status()
         return r.text.splitlines()
-    except requests.RequestException as e:
-        print(f"[!] Blocklist fetch failed: {url.split('/')[-1]} - {e}")
+    except Exception as e:
+        print(f"[!] Blocklist fetch failed: {url} - {e}")
         return []
 
 def parse_tld_patterns(lines):
@@ -136,13 +131,15 @@ def main():
     start_time = time.time()
     active_sources = [s for s in DEFAULT_SOURCES if not s.startswith("#")]
 
-    final_output = []
+    final_domains = []
     seen_domains = set()
+    
     dropped_irrelevant = 0
     dropped_kw = 0
     dropped_tld = 0
+    dropped_dupes = 0
 
-    print(f"[*] Starting parallel downloads ({len(active_sources)} sources + {len(TOP_LISTS)} Top Lists + Spam TLDs)...")
+    print(f"[*] Starting parallel downloads ({len(active_sources)} sources + {len(TOP_LISTS)} Top Lists)...")
 
     with requests.Session() as session:
         with ThreadPoolExecutor(max_workers=12) as executor:
@@ -164,8 +161,8 @@ def main():
                 for line in future.result():
                     clean = line.strip()
                     
+                    # 1. Strip all source-list metadata/comments
                     if not clean or clean.startswith(('!', '#', '[', ' ')):
-                        final_output.append(line)
                         continue
 
                     host = None
@@ -178,50 +175,61 @@ def main():
                         host = clean.lower().strip(".")
 
                     if not host:
-                        final_output.append(line)
                         continue
 
+                    # 2. Duplicate Check
                     if host in seen_domains:
+                        dropped_dupes += 1
                         continue
 
+                    # 3. Keyword Check (Drop if matches regex)
                     if NSFW_REGEX.search(host):
                         dropped_kw += 1
                         continue
 
+                    # 4. Spam TLD Check (Drop if matches TLD)
                     if get_matching_tld(host, spam_patterns_set, denyallow_map):
                         dropped_tld += 1
                         continue
 
+                    # 5. Master Allowlist Check (with subdomain walk)
                     is_ip_or_cidr = re.match(r'^[\d\.:/]+$', host)
-                    
                     if master_allowlist and not is_ip_or_cidr:
                         is_relevant = False
-                        host_parts = host.split('.')
-                        for i in range(len(host_parts)):
-                            candidate = ".".join(host_parts[i:])
-                            if candidate in master_allowlist:
+                        h_parts = host.split('.')
+                        for i in range(len(h_parts)):
+                            if ".".join(h_parts[i:]) in master_allowlist:
                                 is_relevant = True
                                 break
-                        
                         if not is_relevant:
                             dropped_irrelevant += 1
                             continue
 
                     seen_domains.add(host)
-                    final_output.append(line)
+                    final_domains.append(host)
+
+    # 6. Alphabetical Sort
+    print("[*] Alphabetizing final rules...")
+    final_domains.sort()
 
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     
     print("[*] Writing final blocklist...")
     with open(args.output, "w", encoding="utf-8") as f:
+        # Custom Header
         f.write(f"! Jorgensen High-Signal Blocklist | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
         f.write(f"! Master Allowlist Size: {len(master_allowlist)}\n")
-        f.write(f"! Stats -> Irrelevant Dropped: {dropped_irrelevant} | Spam TLD Redundancy: {dropped_tld} | NSFW Dropped: {dropped_kw}\n\n")
+        f.write(f"! Stats -> Irrelevant: {dropped_irrelevant} | Dupes: {dropped_dupes} | TLD Redundancy: {dropped_tld} | NSFW Keywords: {dropped_kw}\n\n")
         
-        for line in final_output:
-            f.write(f"{line}\n")
+        # Deduplicated, Alphabetized Domains
+        for dom in final_domains:
+            if re.match(r'^[\d\.:/]+$', dom):
+                f.write(f"{dom}\n")
+            else:
+                f.write(f"||{dom}^\n")
         
+        # Aggressive Master Blocks
         f.write("\n! --- HAGEZI SPAM TLDS ---\n")
         for line in spam_tld_raw:
             f.write(f"{line}\n")
@@ -229,11 +237,7 @@ def main():
         f.write("\n! --- NSFW REGEX BLOCK ---\n")
         f.write(f"/{NSFW_PATTERN}/\n")
 
-    print(f"\n[+] Done in {time.time() - start_time:.2f}s.")
-    print(f"    Rules Kept: {len(seen_domains)}")
-    print(f"    Dropped (NSFW Keywords): {dropped_kw}")
-    print(f"    Dropped (Spam TLD Redundancy): {dropped_tld}")
-    print(f"    Dropped (Not in Master Allowlist): {dropped_irrelevant}")
+    print(f"\n[+] Success. Kept: {len(final_domains)} | Dupes: {dropped_dupes} | Irrelevant: {dropped_irrelevant}")
 
 if __name__ == "__main__":
     main()
