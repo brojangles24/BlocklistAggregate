@@ -42,7 +42,7 @@ STATIC_REBIND_RULES = r"""
 
 DEFAULT_SOURCES = [
     # --- HAGEZI THREAT INTEL ---
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
 
@@ -53,13 +53,13 @@ DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
 
     # --- 1HOSTS ---
-    "https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
+    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
 
     # --- OISD ---
-    "https://big.oisd.nl",
-    "https://nsfw.oisd.nl",
-    #"https://nsfw-small.oisd.nl",
+    #"https://big.oisd.nl",
+    #"https://nsfw.oisd.nl",
+    "https://nsfw-small.oisd.nl",
 
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
