@@ -75,7 +75,7 @@ SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock
 TOP_LISTS = [
     ("https://tranco-list.eu/top-1m.csv.zip", 1, False, "zip"),
     ("http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip", 1, False, "zip"),
-    ("https://www.domcop.com/files/top/top10milliondomains.csv.zip", 1, True, "zip"),
+    #("https://www.domcop.com/files/top/top10milliondomains.csv.zip", 1, True, "zip"),
     ("https://raw.githubusercontent.com/zakird/crux-top-lists/main/data/global/current.csv.gz", 0, True, "gzip"),
     ("https://downloads.majestic.com/majestic_million.csv", 2, True, "raw"),
 ]
