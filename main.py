@@ -229,7 +229,10 @@ def main():
         
         f.write("\n! --- NSFW REGEX BLOCK ---\n")
         f.write(f"/{NSFW_PATTERN}/\n")
-
+        f.write("\n! --- SPAM TLDs ---\n")
+        for tld in sorted(spam_patterns): 
+            f.write(f"||{tld}^\n")
+            
     print(f"[+] Final count: {len(final_domains)} domains.")
 
 if __name__ == "__main__":
