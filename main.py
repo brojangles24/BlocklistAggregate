@@ -58,8 +58,9 @@ DEFAULT_SOURCES = [
 
     # --- OISD ---
     #"https://big.oisd.nl",
-    "https://nsfw.oisd.nl",
-    #"https://nsfw-small.oisd.nl",
+    #"https://nsfw.oisd.nl",
+    "https://small.oisd.nl",
+    "https://nsfw-small.oisd.nl",
 
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
