@@ -3,7 +3,7 @@ name: Update Blocklist
 on:
   schedule:
     # Runs at 02:00 UTC every day (Adjust as needed, but avoid hourly)
-    - cron: '0 2 * * *'
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions:
