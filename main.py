@@ -57,9 +57,9 @@ DEFAULT_SOURCES = [
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
 
     # --- OISD ---
-    #"https://big.oisd.nl",
-    #"https://nsfw.oisd.nl",
-    "https://nsfw-small.oisd.nl",
+    "https://big.oisd.nl",
+    "https://nsfw.oisd.nl",
+    #"https://nsfw-small.oisd.nl",
 
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
