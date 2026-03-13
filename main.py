@@ -27,9 +27,9 @@ DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
 
     # --- HAGEZI MAIN LISTS ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
 
     # --- 1HOSTS ---
@@ -161,21 +161,19 @@ def main():
             spam_req.raise_for_status()
             raw_spam_text = spam_req.text  # Keep exact raw text for output
 
-            # Extract pure TLDs for fast Python tuple filtering
-            spam_patterns = set()
+            # Extract pure TLDs into a set for exact matching
+            spam_tlds = set()
             for line in raw_spam_text.splitlines():
                 clean_line = line.strip()
                 if clean_line and not clean_line.startswith(('!', '#')):
                     # Strip adguard modifiers to get raw tld
                     tld = clean_line.split('^')[0].split('$')[0].replace('||', '').strip()
                     if tld:
-                        spam_patterns.add("." + tld)
-                        spam_patterns.add(tld)
-            spam_tuple = tuple(spam_patterns)
+                        spam_tlds.add(tld)
         except Exception as e:
             print(f"[!] Failed to fetch Spam TLDs: {e}")
             raw_spam_text = ""
-            spam_tuple = ()
+            spam_tlds = set()
 
         # 3. Fetch Blocklist Sources
         print(f"[*] Filtering {len(active_sources)} active sources...")
@@ -203,8 +201,8 @@ def main():
                     stats["irrelevant"] += 1
                     continue
                 
-                # Fast tuple check
-                if host.endswith(spam_tuple) or host in spam_tuple:
+                # Exact TLD check
+                if host.split('.')[-1] in spam_tlds:
                     stats["tld"] += 1
                     continue
 
