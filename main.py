@@ -4,11 +4,12 @@ import time
 import argparse
 import io
 import zipfile
+import gzip
 from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.12.10M_LIST"
+VERSION = "2026.03.12.MASTER_ALLOWLIST_CRUX"
 
 DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
@@ -31,7 +32,15 @@ DEFAULT_SOURCES = [
 ]
 
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
-TOP_10M_URL = "https://www.domcop.com/files/top/top10milliondomains.csv.zip"
+
+# Definitions for Top Lists: (URL, col_idx, skip_header, compression_type)
+TOP_LISTS = [
+    ("https://tranco-list.eu/top-1m.csv.zip", 1, False, "zip"),
+    ("http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip", 1, False, "zip"),
+    ("https://www.domcop.com/files/top/top10milliondomains.csv.zip", 1, True, "zip"),
+    ("https://raw.githubusercontent.com/PeterDaveHello/top-1m-domains/master/cloudflare.csv", 0, False, "none"),
+    ("https://raw.githubusercontent.com/zakird/crux-top-lists/main/data/global/current.csv.gz", 0, True, "gzip"),
+]
 
 NSFW_PATTERN = (
     r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|"
@@ -45,29 +54,47 @@ NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
 # Helpers
 # ---------------------------------------------------------------------------
 
-def fetch_top_10m_set():
-    print("[*] Downloading DomCop Top 10 Million list (this may take a minute)...")
+def process_line(line, col_idx, domains):
+    parts = line.split(',')
+    if len(parts) > col_idx:
+        dom = parts[col_idx].strip().lower()
+        # Clean up Google CrUX format (e.g., https://www.google.com -> www.google.com)
+        if dom.startswith("http"):
+            dom = dom.replace("https://", "").replace("http://", "").split('/')[0]
+        
+        if dom and dom not in ("domain", "origin", "rank"):
+            domains.add(dom)
+
+def fetch_top_list(url, col_idx, skip_header, compression):
+    domains = set()
     try:
-        # Increased timeout because this is a massive file
-        r = requests.get(TOP_10M_URL, timeout=60)
+        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=60)
         r.raise_for_status()
-        with zipfile.ZipFile(io.BytesIO(r.content)) as z:
-            # Safely grab the first file in the zip
-            filename = z.namelist()[0]
-            with z.open(filename) as f:
-                domains = set()
-                for line in f:
-                    if b',' in line:
-                        parts = line.split(b',')
-                        if len(parts) >= 2:
-                            dom = parts[1].decode('utf-8').strip().lower()
-                            # Skip the header row if it exists
-                            if dom and dom != "domain":
-                                domains.add(dom)
-                return domains
-    except requests.RequestException as e:
-        print(f"[!] Top 10M fetch failed: {e}. All domains will be included.")
-        return None
+        
+        if compression == "zip":
+            with zipfile.ZipFile(io.BytesIO(r.content)) as z:
+                filename = z.namelist()[0]
+                with io.TextIOWrapper(z.open(filename), encoding='utf-8', errors='ignore') as f:
+                    for i, line in enumerate(f):
+                        if skip_header and i == 0: continue
+                        process_line(line, col_idx, domains)
+                        
+        elif compression == "gzip":
+            with gzip.GzipFile(fileobj=io.BytesIO(r.content)) as gz:
+                with io.TextIOWrapper(gz, encoding='utf-8', errors='ignore') as f:
+                    for i, line in enumerate(f):
+                        if skip_header and i == 0: continue
+                        process_line(line, col_idx, domains)
+                        
+        else:
+            for i, line in enumerate(r.text.splitlines()):
+                if skip_header and i == 0: continue
+                process_line(line, col_idx, domains)
+                
+        print(f"[+] Loaded {len(domains)} from {url.split('/')[-1]}")
+    except Exception as e:
+        print(f"[!] Fetch failed for {url}: {e}")
+    return domains
 
 def fetch_stream(url, session):
     try:
@@ -116,19 +143,24 @@ def main():
     dropped_kw = 0
     dropped_tld = 0
 
-    print(f"[*] Starting parallel downloads ({len(active_sources)} sources + Top 10M + Spam TLDs)...")
+    print(f"[*] Starting parallel downloads ({len(active_sources)} sources + {len(TOP_LISTS)} Top Lists + Spam TLDs)...")
 
     with requests.Session() as session:
-        with ThreadPoolExecutor(max_workers=8) as executor:
-            future_top10m = executor.submit(fetch_top_10m_set)
+        with ThreadPoolExecutor(max_workers=12) as executor:
+            top_futures = [executor.submit(fetch_top_list, url, idx, skip, comp) for url, idx, skip, comp in TOP_LISTS]
             future_spam = executor.submit(fetch_stream, SPAM_TLD_URL, session)
             future_to_url = {executor.submit(fetch_stream, url, session): url for url in active_sources}
 
-            top_10m_relevant = future_top10m.result()
+            master_allowlist = set()
+            for future in as_completed(top_futures):
+                master_allowlist.update(future.result())
+            
+            print(f"[*] Master Allowlist created with {len(master_allowlist)} unique domains.")
+
             spam_tld_raw = future_spam.result()
             spam_patterns_set, denyallow_map = parse_tld_patterns(spam_tld_raw)
 
-            print("[*] Processing lists as they download...")
+            print("[*] Processing blocklists...")
             for future in as_completed(future_to_url):
                 for line in future.result():
                     clean = line.strip()
@@ -161,9 +193,8 @@ def main():
                         dropped_tld += 1
                         continue
 
-                    # Bypass Top 10M check for IP/CIDR rules
                     is_ip_or_cidr = re.match(r'^[\d\.:/]+$', host)
-                    if top_10m_relevant and host not in top_10m_relevant and not is_ip_or_cidr:
+                    if master_allowlist and host not in master_allowlist and not is_ip_or_cidr:
                         dropped_irrelevant += 1
                         continue
 
@@ -176,7 +207,8 @@ def main():
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen High-Signal Blocklist | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
-        f.write(f"! Stats -> Irrelevant Dropped: {dropped_irrelevant} | Spam TLD Redundancy Dropped: {dropped_tld} | NSFW Dropped: {dropped_kw}\n\n")
+        f.write(f"! Master Allowlist Size: {len(master_allowlist)}\n")
+        f.write(f"! Stats -> Irrelevant Dropped: {dropped_irrelevant} | Spam TLD Redundancy: {dropped_tld} | NSFW Dropped: {dropped_kw}\n\n")
         
         for line in final_output:
             f.write(f"{line}\n")
@@ -192,7 +224,7 @@ def main():
     print(f"    Rules Kept: {len(seen_domains)}")
     print(f"    Dropped (NSFW Keywords): {dropped_kw}")
     print(f"    Dropped (Spam TLD Redundancy): {dropped_tld}")
-    print(f"    Dropped (Not in Top 10M): {dropped_irrelevant}")
+    print(f"    Dropped (Not in Master Allowlist): {dropped_irrelevant}")
 
 if __name__ == "__main__":
     main()
