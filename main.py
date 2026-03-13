@@ -12,7 +12,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.13.GA_UNIVERSAL"
+VERSION = "2026.03.13.GA_ULTIMATE"
 
 # Dynamic Logic Sources (Parsed but not suffix-filtered)
 REBIND_URL = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt"
@@ -74,10 +74,11 @@ NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
 # ---------------------------------------------------------------------------
 
 def has_suffix_match(host, lookup_set):
-    """Part-by-part suffix matching to catch .tld and subdomains."""
+    """Accurate suffix matching for TLDs and Subdomains."""
     if host in lookup_set: return True
     parts = host.split('.')
     for i in range(len(parts) - 1, 0, -1):
+        # Creates '.top', then '.domain.top' etc to check against set
         suffix = "." + ".".join(parts[i:])
         if suffix in lookup_set:
             return True
@@ -115,6 +116,7 @@ def fetch_top_list(url, col_idx, skip_header, compression):
                 if len(parts) > col_idx:
                     dom = parts[col_idx].strip().lower().strip('"')
                     if dom and dom not in ("domain", "origin", "rank"): domains.add(dom)
+        print(f"[+] Loaded {len(domains)} from {url.split('/')[-1]}")
     except Exception as e:
         print(f"[!] Fetch failed for {url}: {e}")
     return domains
@@ -133,7 +135,7 @@ def main():
     seen_domains = set()
     dropped_stats = {"irrelevant": 0, "kw": 0, "tld": 0, "dupes": 0}
 
-    print(f"[*] GitHub Actions: Processing High-Signal Filter...")
+    print(f"[*] Starting GitHub Actions Filter...")
 
     with requests.Session() as session:
         with ThreadPoolExecutor(max_workers=4) as executor:
@@ -143,15 +145,15 @@ def main():
             for future in as_completed(top_futures):
                 master_allowlist.update(future.result())
             
-            # Fatal check (adjusted threshold for no Domcop)
+            # Threshold Check
             if len(master_allowlist) < 3000000:
                 print(f"[FATAL] Master Allowlist too small ({len(master_allowlist)}). Aborting.")
                 sys.exit(1)
             
-            print(f"[*] Master Allowlist: {len(master_allowlist)} domains.")
+            print(f"[*] Master Allowlist: {len(master_allowlist)} unique domains.")
             gc.collect()
 
-            # 2. Fetch Logic (Rebind/SafeSearch)
+            # 2. Fetch Logic (SafeSearch/Rebind)
             dynamic_logic = []
             rebind_req = session.get(REBIND_URL, timeout=30)
             dynamic_logic.append("\n! --- HAGEZI DYNAMIC REBIND PROTECTION ---")
@@ -173,7 +175,7 @@ def main():
                     if not p.startswith("."): p = "." + p
                     spam_patterns.add(p)
 
-            # 4. Processing Sources
+            # 4. Processing Domain Blocklists
             print("[*] Filtering domain sources...")
             future_to_url = {executor.submit(lambda u: session.get(u, timeout=30).text.splitlines(), url): url for url in active_sources}
             
@@ -211,7 +213,7 @@ def main():
                     seen_domains.add(host)
                     final_domains.append(host)
 
-    print("[*] Sorting and generating output...")
+    print("[*] Sorting and writing...")
     final_domains.sort()
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     
@@ -232,13 +234,9 @@ def main():
         for rule in dynamic_logic:
             f.write(f"{rule}\n")
         
-    print(f"\n[+] FINISHED. Stats:")
-    print(f"    - Kept: {len(final_domains)} domains")
-    print(f"    - Dropped for Keywords: {dropped_stats['kw']}")
-    print(f"    - Dropped for TLD Match: {dropped_stats['tld']}")
-    
+    print(f"\n[+] FINISHED. Final count: {len(final_domains)} domains.")
     if len(final_domains) > 530000:
-        print(f"\n[!] WARNING: Final rule count ({len(final_domains)}) exceeds iOS limit (~530k).")
+        print(f"[!] WARNING: List is too large for iOS stability ({len(final_domains)} rules).")
 
 if __name__ == "__main__":
     main()
