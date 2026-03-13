@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.12.MASTER_ALLOWLIST_CRUX"
+VERSION = "2026.03.12.MASTER_ALLOWLIST_FIXED"
 
 DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
@@ -23,7 +23,7 @@ DEFAULT_SOURCES = [
     #"https://big.oisd.nl",
     #"https://nsfw.oisd.nl",
     #"https://nsfw-small.oisd.nl",
-    "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adguard/dns-rebind-protection.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
@@ -33,12 +33,10 @@ DEFAULT_SOURCES = [
 
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 
-# Definitions for Top Lists: (URL, col_idx, skip_header, compression_type)
 TOP_LISTS = [
     ("https://tranco-list.eu/top-1m.csv.zip", 1, False, "zip"),
     ("http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip", 1, False, "zip"),
     ("https://www.domcop.com/files/top/top10milliondomains.csv.zip", 1, True, "zip"),
-    ("https://raw.githubusercontent.com/PeterDaveHello/top-1m-domains/master/cloudflare.csv", 0, False, "none"),
     ("https://raw.githubusercontent.com/zakird/crux-top-lists/main/data/global/current.csv.gz", 0, True, "gzip"),
 ]
 
@@ -58,7 +56,6 @@ def process_line(line, col_idx, domains):
     parts = line.split(',')
     if len(parts) > col_idx:
         dom = parts[col_idx].strip().lower()
-        # Clean up Google CrUX format (e.g., https://www.google.com -> www.google.com)
         if dom.startswith("http"):
             dom = dom.replace("https://", "").replace("http://", "").split('/')[0]
         
@@ -101,7 +98,9 @@ def fetch_stream(url, session):
         r = session.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=(5, 30))
         r.raise_for_status()
         return r.text.splitlines()
-    except requests.RequestException:
+    except requests.RequestException as e:
+        # Added error logging here so failed downloads aren't swallowed silently
+        print(f"[!] Blocklist fetch failed: {url.split('/')[-1]} - {e}")
         return []
 
 def parse_tld_patterns(lines):
