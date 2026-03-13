@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.12.MASTER_ALLOWLIST_FIXED"
+VERSION = "2026.03.12.HEAVY_SOURCES"
 
 DEFAULT_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
@@ -19,7 +19,8 @@ DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    "https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     "https://big.oisd.nl",
     "https://nsfw.oisd.nl",
     #"https://nsfw-small.oisd.nl",
@@ -99,7 +100,6 @@ def fetch_stream(url, session):
         r.raise_for_status()
         return r.text.splitlines()
     except requests.RequestException as e:
-        # Added error logging here so failed downloads aren't swallowed silently
         print(f"[!] Blocklist fetch failed: {url.split('/')[-1]} - {e}")
         return []
 
@@ -193,9 +193,19 @@ def main():
                         continue
 
                     is_ip_or_cidr = re.match(r'^[\d\.:/]+$', host)
-                    if master_allowlist and host not in master_allowlist and not is_ip_or_cidr:
-                        dropped_irrelevant += 1
-                        continue
+                    
+                    if master_allowlist and not is_ip_or_cidr:
+                        is_relevant = False
+                        host_parts = host.split('.')
+                        for i in range(len(host_parts)):
+                            candidate = ".".join(host_parts[i:])
+                            if candidate in master_allowlist:
+                                is_relevant = True
+                                break
+                        
+                        if not is_relevant:
+                            dropped_irrelevant += 1
+                            continue
 
                     seen_domains.add(host)
                     final_output.append(line)
