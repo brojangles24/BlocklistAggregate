@@ -197,17 +197,19 @@ def main():
                 if host.startswith("www."): host = host[4:]
 
                 # --- THE BALANCED FILTER CHAIN ---
-                if not has_suffix_match(host, master_allowlist):
-                    stats["irrelevant"] += 1
-                    continue
-                
-                # Exact TLD check
+                # 1. Exact TLD check
                 if host.split('.')[-1] in spam_tlds:
                     stats["tld"] += 1
                     continue
 
+                # 2. NSFW Keyword check
                 if NSFW_REGEX.search(host):
                     stats["kw"] += 1
+                    continue
+
+                # 3. Irrelevant check (Allowlist)
+                if not has_suffix_match(host, master_allowlist):
+                    stats["irrelevant"] += 1
                     continue
 
                 final_domains.add(host)
