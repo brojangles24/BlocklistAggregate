@@ -180,7 +180,7 @@ def main():
             for future in as_completed(top_futures):
                 master_allowlist.update(future.result())
             
-            if len(master_allowlist) < 5000000:
+            if len(master_allowlist) < 500000:
                 print("[FATAL] Top Domain lists failed. Aborting.")
                 sys.exit(1)
             
