@@ -1,10 +1,14 @@
 name: Update Blocklist
+
 on:
   schedule:
-   - cron: '0 * * * *'
+    # Runs at 02:00 UTC every day (Adjust as needed, but avoid hourly)
+    - cron: '0 2 * * *'
   workflow_dispatch:
+
 permissions:
   contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -15,7 +19,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12' # Upgraded for performance
+          cache: 'pip'           # Speeds up dependency installation
 
       - name: Install dependencies
         run: pip install requests
@@ -28,5 +33,11 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add blocklist.txt
-          git commit -m "Auto-update blocklist" || exit 0
-          git push
+          
+          # Only commit if there are actual changes to avoid empty commits
+          if ! git diff --staged --quiet; then
+            git commit -m "Auto-update blocklist: $(date -u +'%Y-%m-%d %H:%M UTC')"
+            git push
+          else
+            echo "No changes detected. Skipping commit."
+          fi
