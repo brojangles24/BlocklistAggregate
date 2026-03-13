@@ -57,7 +57,7 @@ DEFAULT_SOURCES = [
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
 
     # --- OISD ---
-    #"https://big.oisd.nl",
+    "https://big.oisd.nl",
     "https://nsfw.oisd.nl",
     #"https://small.oisd.nl",
     #"https://nsfw-small.oisd.nl",
