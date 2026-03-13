@@ -1,6 +1,5 @@
 import requests
 import re
-import time
 import argparse
 import io
 import zipfile
@@ -34,14 +33,14 @@ DEFAULT_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
 
     # --- 1HOSTS ---
-    #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    "https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
 
     # --- OISD ---
-    #"https://big.oisd.nl",
-    #"https://nsfw.oisd.nl",
-    "https://small.oisd.nl",
-    "https://nsfw-small.oisd.nl",
+    "https://big.oisd.nl",
+    "https://nsfw.oisd.nl",
+    #"https://small.oisd.nl",
+    #"https://nsfw-small.oisd.nl",
 
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -80,7 +79,7 @@ def has_suffix_match(host, lookup_set):
 def fetch_top_list(url, col_idx, skip_header, compression):
     domains = set()
     try:
-        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=60)
+        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=90)
         r.raise_for_status()
         content = r.content
         if compression == "zip":
@@ -115,9 +114,16 @@ def fetch_top_list(url, col_idx, skip_header, compression):
 
 def fetch_source_lines(url):
     try:
-        r = requests.get(url, timeout=30)
+        # stream=True prevents loading massive files fully into RAM
+        r = requests.get(url, stream=True, timeout=60)
         r.raise_for_status()
-        return r.text.splitlines()
+        lines = []
+        for line in r.iter_lines(decode_unicode=True):
+            if line:
+                clean = line.strip()
+                if clean and not clean.startswith(('!', '#', '[', ' ')):
+                    lines.append(clean)
+        return lines
     except Exception as e:
         print(f"[!] Failed to fetch {url}: {e}")
         return []
@@ -134,8 +140,7 @@ def main():
     active_sources = [s for s in DEFAULT_SOURCES if not s.startswith(("#", "//"))]
     active_top_lists = [t for t in TOP_LISTS if isinstance(t, tuple)]
 
-    final_domains = []
-    seen_domains = set()
+    final_domains = set()  # Using a set to merge seen/final and save memory
     stats = {"irrelevant": 0, "kw": 0, "tld": 0, "dupes": 0}
 
     with ThreadPoolExecutor(max_workers=4) as executor:
@@ -146,26 +151,38 @@ def main():
             master_allowlist.update(future.result())
         gc.collect()
 
+        # Safety Threshold for GitHub Actions
+        if len(master_allowlist) < 1000000:
+            sys.exit(f"[!] CRITICAL: Master allowlist too small ({len(master_allowlist)}). Aborting to prevent blank blocklist.")
+
         # 2. Fetch Spam TLDs
         try:
             spam_req = requests.get(SPAM_TLD_URL, timeout=30)
             spam_req.raise_for_status()
-            spam_patterns = {line.split("!")[0].split("#")[0].strip().lower().replace("||", "").replace("^", "").lstrip("*").lstrip(".") for line in spam_req.text.splitlines() if line.strip()}
-            spam_patterns.discard('')
+            raw_spam_text = spam_req.text  # Keep exact raw text for output
+
+            # Extract pure TLDs for fast Python tuple filtering
+            spam_patterns = set()
+            for line in raw_spam_text.splitlines():
+                clean_line = line.strip()
+                if clean_line and not clean_line.startswith(('!', '#')):
+                    # Strip adguard modifiers to get raw tld
+                    tld = clean_line.split('^')[0].split('$')[0].replace('||', '').strip()
+                    if tld:
+                        spam_patterns.add("." + tld)
+                        spam_patterns.add(tld)
+            spam_tuple = tuple(spam_patterns)
         except Exception as e:
             print(f"[!] Failed to fetch Spam TLDs: {e}")
-            spam_patterns = set()
+            raw_spam_text = ""
+            spam_tuple = ()
 
         # 3. Fetch Blocklist Sources
         print(f"[*] Filtering {len(active_sources)} active sources...")
         future_to_url = {executor.submit(fetch_source_lines, url): url for url in active_sources}
         
         for future in as_completed(future_to_url):
-            lines = future.result()
-            for line in lines:
-                clean = line.strip()
-                if not clean or clean.startswith(('!', '#', '[', ' ')): continue
-
+            for clean in future.result():
                 host = None
                 if clean.startswith(("0.0.0.0 ", "127.0.0.1 ")):
                     parts = clean.split(None, 1)
@@ -175,7 +192,7 @@ def main():
                 elif "/" not in clean and "*" not in clean and " " not in clean:
                     host = clean.lower().strip(".")
 
-                if not host or host in seen_domains:
+                if not host or host in final_domains:
                     if host: stats["dupes"] += 1
                     continue
 
@@ -186,7 +203,8 @@ def main():
                     stats["irrelevant"] += 1
                     continue
                 
-                if any(host.endswith("." + tld) or host == tld for tld in spam_patterns):
+                # Fast tuple check
+                if host.endswith(spam_tuple) or host in spam_tuple:
                     stats["tld"] += 1
                     continue
 
@@ -194,8 +212,7 @@ def main():
                     stats["kw"] += 1
                     continue
 
-                seen_domains.add(host)
-                final_domains.append(host)
+                final_domains.add(host)
 
     # 4. Fetch Dynamic Logic (SafeSearch/Rebind)
     print("[*] Fetching dynamic footers...")
@@ -212,14 +229,14 @@ def main():
             pass
 
     # 5. Write Output
-    final_domains.sort()
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     with open(args.output, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen High-Signal Blocklist | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
         f.write(f"! Stats: Kept {len(final_domains)} | Irrelevant {stats['irrelevant']} | TLD {stats['tld']} | NSFW {stats['kw']}\n\n")
         
-        for dom in final_domains: f.write(f"||{dom}^\n")
+        for dom in sorted(final_domains): 
+            f.write(f"||{dom}^\n")
         
         f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n")
         if rebind_text: f.write(rebind_text)
@@ -229,10 +246,10 @@ def main():
         
         f.write("\n! --- NSFW REGEX BLOCK ---\n")
         f.write(f"/{NSFW_PATTERN}/\n")
+
         f.write("\n! --- SPAM TLDs ---\n")
-        for tld in sorted(spam_patterns): 
-            f.write(f"||{tld}^\n")
-            
+        if raw_spam_text: f.write(raw_spam_text + "\n")
+
     print(f"[+] Final count: {len(final_domains)} domains.")
 
 if __name__ == "__main__":
