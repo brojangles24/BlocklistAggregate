@@ -81,7 +81,6 @@ NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
 def has_suffix_match(host, lookup_set):
     if host in lookup_set: return True
     parts = host.split('.')
-    # Optimized loop to reduce unnecessary slicing
     for i in range(1, len(parts)):
         if ".".join(parts[i:]) in lookup_set: return True
     return False
@@ -116,7 +115,8 @@ def fetch_top_list(url, col_idx, skip_header, compression):
                 if len(parts) > col_idx:
                     dom = parts[col_idx].strip().lower().strip('"')
                     if dom and "." in dom: domains.add(dom)
-    except: pass
+    except Exception as e:
+        print(f"[-] Failed to fetch top list {url}: {e}")
     return domains
 
 def fetch_source_lines(url):
@@ -139,7 +139,6 @@ def parse_tld_patterns(lines):
                     denyallow_hosts = set(mod[len("denyallow="):].split("|"))
         else: rule_part = clean
         
-        # Strips out AdGuard syntax and wildcards
         rule_part = rule_part.replace("||", "").replace("^", "").replace("*", "").lstrip(".")
         if rule_part:
             tld_patterns.add(rule_part)
@@ -156,12 +155,14 @@ def get_matching_tld(host, spam_set, denyallow_map):
     return None
 
 def extract_host(clean):
+    if "*" in clean or "/" in clean:
+        return None
     if clean.startswith(("0.0.0.0 ", "127.0.0.1 ")):
         parts = clean.split(None, 1)
         return parts[1].lower().strip(".") if len(parts) == 2 else None
     elif clean.startswith("||") and "^" in clean:
         return clean[2:clean.find("^")].lower().strip(".")
-    elif "/" not in clean and "*" not in clean and " " not in clean:
+    elif " " not in clean:
         return clean.lower().strip(".")
     return None
 
