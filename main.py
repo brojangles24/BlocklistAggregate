@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.14.TLD_FIXED"
+VERSION = "2026.03.14.MAINTAINED_STATUS"
 
 # ---------------------------------------------------------------------------
 # MAIN LIST SELECTION
@@ -49,6 +49,7 @@ MAIN_SOURCES = [
 # MOBILE LIST SELECTION
 # ---------------------------------------------------------------------------
 MOBILE_SOURCES = [
+    # Pick lighter versions for mobile performance
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -76,6 +77,14 @@ NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
+def has_suffix_match(host, lookup_set):
+    if host in lookup_set: return True
+    parts = host.split('.')
+    for i in range(len(parts) - 1):
+        parent = ".".join(parts[i+1:])
+        if parent in lookup_set: return True
+    return False
 
 def fetch_top_list(url, col_idx, skip_header, compression):
     domains = set()
@@ -144,14 +153,6 @@ def get_matching_tld(host, spam_set, denyallow_map):
             return candidate
     return None
 
-def has_suffix_match(host, lookup_set):
-    if host in lookup_set: return True
-    parts = host.split('.')
-    for i in range(len(parts) - 1):
-        parent = ".".join(parts[i+1:])
-        if parent in lookup_set: return True
-    return False
-
 def extract_host(clean):
     if clean.startswith(("0.0.0.0 ", "127.0.0.1 ")):
         parts = clean.split(None, 1)
@@ -177,7 +178,6 @@ def main():
         top_futures = [executor.submit(fetch_top_list, *t) for t in TOP_LISTS]
         
         spam_req = requests.get(SPAM_TLD_URL, timeout=30)
-        # CRITICAL: These must be available to the build_dataset function
         spam_patterns_set, denyallow_map = parse_tld_patterns(spam_req.text.splitlines())
 
         print(f"[*] Downloading {len(all_unique_urls)} source files...")
@@ -191,31 +191,29 @@ def main():
         for future in as_completed(fetch_futures):
             source_data[fetch_futures[future]] = future.result()
 
-    # Pass the TLD sets into the build function so they actually work
-    def build_dataset(urls, spam_set, d_map, allowlist):
+    # Pass everything explicitly to the build function to ensure TLD logic works
+    def build_dataset(urls, s_set, d_map, a_list):
         found = set()
-        l_stats = {"irrelevant": 0, "kw": 0, "tld": 0}
+        stats = {"irrelevant": 0, "kw": 0, "tld": 0}
         for url in urls:
             for line in source_data.get(url, []):
                 host = extract_host(line)
                 if not host or host in found: continue
                 if host.startswith("www."): host = host[4:]
                 
-                # Check TLD Matching (Fixed)
-                if get_matching_tld(host, spam_set, d_map):
-                    l_stats["tld"] += 1
+                # Check TLD matching
+                if get_matching_tld(host, s_set, d_map):
+                    stats["tld"] += 1
                     continue
-                # Check Keywords
                 if NSFW_REGEX.search(host):
-                    l_stats["kw"] += 1
+                    stats["kw"] += 1
                     continue
-                # Check Allowlist
-                if not has_suffix_match(host, allowlist):
-                    l_stats["irrelevant"] += 1
+                if not has_suffix_match(host, a_list):
+                    stats["irrelevant"] += 1
                     continue
                 
                 found.add(host)
-        return found, l_stats
+        return found, stats
 
     print("[*] Generating Main List...")
     main_set, main_stats = build_dataset(active_main, spam_patterns_set, denyallow_map, master_allowlist)
