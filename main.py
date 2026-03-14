@@ -11,12 +11,16 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.14.MAINTAINED_STATUS"
+VERSION = "2026.03.13.MAINTAINED_STATUS"
 
-# ---------------------------------------------------------------------------
-# MAIN LIST SELECTION
-# ---------------------------------------------------------------------------
-MAIN_SOURCES = [
+# Dynamic Logic Sources
+REBIND_URL = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt"
+ADGUARD_SAFESEARCH_URLS = [
+    "https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt",
+    #"https://adguardteam.github.io/HostlistsRegistry/assets/youtube_safe_search.txt"
+]
+
+DEFAULT_SOURCES = [
     # --- HAGEZI THREAT INTEL ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
@@ -42,27 +46,12 @@ MAIN_SOURCES = [
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
+    #"https://raw.githubusercontent.com/laylavish/uBlockOrigin-HUGE-AI-Blocklist/refs/heads/main/noai_hosts.txt",
 ]
 
-# ---------------------------------------------------------------------------
-# MOBILE LIST SELECTION
-# ---------------------------------------------------------------------------
-MOBILE_SOURCES = [
-    # Pick lighter versions for mobile performance
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-]
-
-# Shared Core Resources
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
-REBIND_URL = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt"
-ADGUARD_SAFESEARCH_URLS = ["https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt"]
 
 TOP_LISTS = [
     ("https://tranco-list.eu/top-1m.csv.zip", 1, False, "zip"),
@@ -83,7 +72,8 @@ def has_suffix_match(host, lookup_set):
     parts = host.split('.')
     for i in range(len(parts) - 1):
         parent = ".".join(parts[i+1:])
-        if parent in lookup_set: return True
+        if parent in lookup_set:
+            return True
     return False
 
 def fetch_top_list(url, col_idx, skip_header, compression):
@@ -91,8 +81,9 @@ def fetch_top_list(url, col_idx, skip_header, compression):
     try:
         r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=90)
         r.raise_for_status()
+        content = r.content
         if compression == "zip":
-            with zipfile.ZipFile(io.BytesIO(r.content)) as z:
+            with zipfile.ZipFile(io.BytesIO(content)) as z:
                 with io.TextIOWrapper(z.open(z.namelist()[0]), encoding='utf-8', errors='ignore') as f:
                     for i, line in enumerate(f):
                         if skip_header and i == 0: continue
@@ -101,7 +92,7 @@ def fetch_top_list(url, col_idx, skip_header, compression):
                             dom = parts[col_idx].strip().lower().strip('"')
                             if dom and "." in dom: domains.add(dom)
         elif compression == "gzip":
-            with gzip.GzipFile(fileobj=io.BytesIO(r.content)) as gz:
+            with gzip.GzipFile(fileobj=io.BytesIO(content)) as gz:
                 with io.TextIOWrapper(gz, encoding='utf-8', errors='ignore') as f:
                     for i, line in enumerate(f):
                         if skip_header and i == 0: continue
@@ -116,32 +107,56 @@ def fetch_top_list(url, col_idx, skip_header, compression):
                 if len(parts) > col_idx:
                     dom = parts[col_idx].strip().lower().strip('"')
                     if dom and "." in dom: domains.add(dom)
-    except: pass
+        print(f"[+] Loaded {len(domains)} from {url.split('/')[-1]}")
+    except Exception as e:
+        print(f"[!] Top list failed: {url} - {e}")
     return domains
 
 def fetch_source_lines(url):
     try:
         r = requests.get(url, stream=True, timeout=60)
         r.raise_for_status()
-        return [l.strip() for l in r.iter_lines(decode_unicode=True) if l and not l.strip().startswith(('!', '#', '[', ' '))]
-    except: return []
+        lines = []
+        for line in r.iter_lines(decode_unicode=True):
+            if line:
+                clean = line.strip()
+                if clean and not clean.startswith(('!', '#', '[', ' ')):
+                    lines.append(clean)
+        return lines
+    except Exception as e:
+        print(f"[!] Failed to fetch {url}: {e}")
+        return []
 
 def parse_tld_patterns(lines):
-    tld_patterns, denyallow_map = set(), {}
+    tld_patterns = set()
+    denyallow_map = {}
+
     for line in lines:
         clean = line.split("!")[0].split("#")[0].strip().lower()
-        if not clean: continue
+        if not clean:
+            continue
+
         denyallow_hosts = set()
         if "$" in clean:
             rule_part, _, modifiers = clean.partition("$")
             for mod in modifiers.split(","):
                 if mod.startswith("denyallow="):
                     denyallow_hosts = set(mod[len("denyallow="):].split("|"))
-        else: rule_part = clean
-        rule_part = rule_part.replace("||", "").replace("^", "").lstrip(".")
-        if rule_part:
-            tld_patterns.add(rule_part)
-            if denyallow_hosts: denyallow_map[rule_part] = denyallow_hosts
+        else:
+            rule_part = clean
+
+        rule_part = rule_part.replace("||", "").replace("^", "")
+        if rule_part.startswith("*."):
+            rule_part = rule_part[2:]
+        rule_part = rule_part.lstrip(".")
+
+        if not rule_part:
+            continue
+
+        tld_patterns.add(rule_part)
+        if denyallow_hosts:
+            denyallow_map[rule_part] = denyallow_hosts
+
     return tld_patterns, denyallow_map
 
 def get_matching_tld(host, spam_set, denyallow_map):
@@ -149,104 +164,132 @@ def get_matching_tld(host, spam_set, denyallow_map):
     for i in range(len(parts)):
         candidate = ".".join(parts[i:])
         if candidate in spam_set:
-            if candidate in denyallow_map and host in denyallow_map[candidate]: return None
+            if candidate in denyallow_map and host in denyallow_map[candidate]:
+                return None 
             return candidate
     return None
 
-def extract_host(clean):
-    if clean.startswith(("0.0.0.0 ", "127.0.0.1 ")):
-        parts = clean.split(None, 1)
-        return parts[1].lower().strip(".") if len(parts) == 2 else None
-    elif clean.startswith("||") and "^" in clean:
-        return clean[2:clean.find("^")].lower().strip(".")
-    elif "/" not in clean and "*" not in clean and " " not in clean:
-        return clean.lower().strip(".")
-    return None
+# ---------------------------------------------------------------------------
+# Execution
+# ---------------------------------------------------------------------------
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--output", default="blocklist.txt")
-    parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
     args = parser.parse_args()
 
-    active_main = [s for s in MAIN_SOURCES if s and not s.startswith(("#", "//"))]
-    active_mobile = [s for s in MOBILE_SOURCES if s and not s.startswith(("#", "//"))]
-    all_unique_urls = list(set(active_main + active_mobile))
+    active_sources = [s for s in DEFAULT_SOURCES if not s.startswith(("#", "//"))]
+    active_top_lists = [t for t in TOP_LISTS if isinstance(t, tuple)]
+
+    final_domains = set() 
+    stats = {"irrelevant": 0, "kw": 0, "tld": 0, "dupes": 0}
 
     with ThreadPoolExecutor(max_workers=4) as executor:
-        print("[*] Loading master logic (Allowlists/TLDs)...")
-        top_futures = [executor.submit(fetch_top_list, *t) for t in TOP_LISTS]
-        
-        spam_req = requests.get(SPAM_TLD_URL, timeout=30)
-        spam_patterns_set, denyallow_map = parse_tld_patterns(spam_req.text.splitlines())
-
-        print(f"[*] Downloading {len(all_unique_urls)} source files...")
-        source_data = {}
-        fetch_futures = {executor.submit(fetch_source_lines, url): url for url in all_unique_urls}
-        
+        # 1. Fetch Allowlist
+        top_futures = [executor.submit(fetch_top_list, *t) for t in active_top_lists]
         master_allowlist = set()
         for future in as_completed(top_futures):
             master_allowlist.update(future.result())
+        gc.collect()
 
-        for future in as_completed(fetch_futures):
-            source_data[fetch_futures[future]] = future.result()
+        if len(master_allowlist) < 1000000:
+            sys.exit(f"[!] CRITICAL: Master allowlist too small ({len(master_allowlist)}). Aborting.")
 
-    # Pass everything explicitly to the build function to ensure TLD logic works
-    def build_dataset(urls, s_set, d_map, a_list):
-        found = set()
-        stats = {"irrelevant": 0, "kw": 0, "tld": 0}
-        for url in urls:
-            for line in source_data.get(url, []):
-                host = extract_host(line)
-                if not host or host in found: continue
+        # 2. Fetch Spam TLDs
+        try:
+            spam_req = requests.get(SPAM_TLD_URL, timeout=30)
+            spam_req.raise_for_status()
+            raw_spam_text = spam_req.text  
+
+            # Use robust parsing
+            spam_patterns_set, denyallow_map = parse_tld_patterns(raw_spam_text.splitlines())
+        except Exception as e:
+            print(f"[!] Failed to fetch Spam TLDs: {e}")
+            raw_spam_text = ""
+            spam_patterns_set = set()
+            denyallow_map = {}
+
+        # 3. Fetch Blocklist Sources
+        print(f"[*] Filtering {len(active_sources)} active sources...")
+        future_to_url = {executor.submit(fetch_source_lines, url): url for url in active_sources}
+        
+        for future in as_completed(future_to_url):
+            for clean in future.result():
+                host = None
+                if clean.startswith(("0.0.0.0 ", "127.0.0.1 ")):
+                    parts = clean.split(None, 1)
+                    if len(parts) == 2: host = parts[1].lower().strip(".")
+                elif clean.startswith("||") and "^" in clean:
+                    host = clean[2:clean.find("^")].lower().strip(".")
+                elif "/" not in clean and "*" not in clean and " " not in clean:
+                    host = clean.lower().strip(".")
+
+                if not host or host in final_domains:
+                    if host: stats["dupes"] += 1
+                    continue
+
                 if host.startswith("www."): host = host[4:]
-                
-                # Check TLD matching
-                if get_matching_tld(host, s_set, d_map):
+
+                # --- THE BALANCED FILTER CHAIN ---
+                # 1. Exact TLD / Subdomain check with exceptions
+                if get_matching_tld(host, spam_patterns_set, denyallow_map):
                     stats["tld"] += 1
                     continue
+
+                # 2. NSFW Keyword check
                 if NSFW_REGEX.search(host):
                     stats["kw"] += 1
                     continue
-                if not has_suffix_match(host, a_list):
+
+                # 3. Irrelevant check (Allowlist)
+                if not has_suffix_match(host, master_allowlist):
                     stats["irrelevant"] += 1
                     continue
-                
-                found.add(host)
-        return found, stats
 
-    print("[*] Generating Main List...")
-    main_set, main_stats = build_dataset(active_main, spam_patterns_set, denyallow_map, master_allowlist)
-    print("[*] Generating Mobile List...")
-    mobile_set, mobile_stats = build_dataset(active_mobile, spam_patterns_set, denyallow_map, master_allowlist)
+                final_domains.add(host)
 
-    print("[*] Fetching Dynamic Footers...")
-    rebind_text = requests.get(REBIND_URL, timeout=30).text if REBIND_URL else ""
+    # 4. Fetch Dynamic Logic (SafeSearch/Rebind)
+    print("[*] Fetching dynamic footers...")
+    try:
+        r_rebind = requests.get(REBIND_URL, timeout=30)
+        r_rebind.raise_for_status()
+        rebind_text = r_rebind.text
+    except Exception as e:
+        print(f"[!] Rebind fetch failed: {e}")
+        rebind_text = ""
+
     ss_rules = []
     for url in ADGUARD_SAFESEARCH_URLS:
         try:
-            r = requests.get(url, timeout=30)
-            ss_rules.extend([l for l in r.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
-        except: pass
+            r_ss = requests.get(url, timeout=30)
+            r_ss.raise_for_status()
+            ss_rules.extend([l for l in r_ss.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
+        except Exception as e:
+            print(f"[!] SafeSearch fetch failed: {e}")
 
+    # 5. Write Output
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
-    
-    # Write both lists
-    for filename, dataset, s, label in [(args.output, main_set, main_stats, "MAIN"), (args.mobile, mobile_set, mobile_stats, "MOBILE")]:
-        with open(filename, "w", encoding="utf-8") as f:
-            f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
-            f.write(f"! Generated: {now}\n")
-            f.write(f"! Stats: Kept {len(dataset)} | Irrelevant {s['irrelevant']} | TLD {s['tld']} | NSFW {s['kw']}\n\n")
-            
-            for dom in sorted(dataset): f.write(f"||{dom}^\n")
-            
-            f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text)
-            f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
-            for rule in ss_rules: f.write(f"{rule}\n")
-            f.write("\n! --- NSFW REGEX ---\n/" + NSFW_PATTERN + "/\n")
-            f.write("\n! --- SPAM TLDs ---\n" + spam_req.text)
+    with open(args.output, "w", encoding="utf-8") as f:
+        f.write(f"! Jorgensen High-Signal Blocklist | Version: {VERSION}\n")
+        f.write(f"! Generated: {now}\n")
+        f.write(f"! Stats: Kept {len(final_domains)} | Irrelevant {stats['irrelevant']} | TLD {stats['tld']} | NSFW {stats['kw']}\n\n")
+        
+        for dom in sorted(final_domains): 
+            f.write(f"||{dom}^\n")
+        
+        f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n")
+        if rebind_text: f.write(rebind_text)
+        
+        f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
+        for rule in ss_rules: f.write(f"{rule}\n")
+        
+        f.write("\n! --- NSFW REGEX BLOCK ---\n")
+        f.write(f"/{NSFW_PATTERN}/\n")
 
-    print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)}")
+        f.write("\n! --- SPAM TLDs ---\n")
+        if raw_spam_text: f.write(raw_spam_text + "\n")
+
+    print(f"[+] Final count: {len(final_domains)} domains.")
 
 if __name__ == "__main__":
     main()
