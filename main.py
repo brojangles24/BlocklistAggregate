@@ -17,7 +17,7 @@ VERSION = "2026.03.13.MAINTAINED_STATUS"
 REBIND_URL = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt"
 ADGUARD_SAFESEARCH_URLS = [
     "https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt",
-    "https://adguardteam.github.io/HostlistsRegistry/assets/youtube_safe_search.txt"
+    #"https://adguardteam.github.io/HostlistsRegistry/assets/youtube_safe_search.txt"
 ]
 
 DEFAULT_SOURCES = [
