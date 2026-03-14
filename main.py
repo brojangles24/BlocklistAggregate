@@ -209,12 +209,17 @@ def main():
 
     def build_dataset(urls, s_set, d_map, a_list):
         found = set()
-        stats = {"irrelevant": 0, "kw": 0, "tld": 0}
+        stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0}
         for url in urls:
             for line in source_data.get(url, []):
                 host = extract_host(line)
-                if not host or host in found: continue
+                if not host: continue
                 if host.startswith("www."): host = host[4:]
+                
+                # Check duplicates first
+                if host in found:
+                    stats["duplicate"] += 1
+                    continue
                 
                 # Check TLD matching
                 if get_matching_tld(host, s_set, d_map):
@@ -262,7 +267,7 @@ def main():
         with open(filename, "w", encoding="utf-8") as f:
             f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
             f.write(f"! Generated: {now}\n")
-            f.write(f"! Stats: Kept {len(dataset)} | Irrelevant {s['irrelevant']} | TLD {s['tld']} | NSFW {s['kw']}\n\n")
+            f.write(f"! Stats: Kept {len(dataset)} | Duplicates {s['duplicate']} | Irrelevant {s['irrelevant']} | TLD {s['tld']} | NSFW {s['kw']}\n\n")
             
             for dom in sorted(dataset): f.write(f"||{dom}^\n")
             
