@@ -11,11 +11,10 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.14.FLAT_TOGGLE"
+VERSION = "2026.03.14.TLD_FIXED"
 
 # ---------------------------------------------------------------------------
 # MAIN LIST SELECTION
-# Comment/Uncomment any URL below to enable or disable it for the MAIN list.
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
     # --- HAGEZI THREAT INTEL ---
@@ -48,10 +47,8 @@ MAIN_SOURCES = [
 
 # ---------------------------------------------------------------------------
 # MOBILE LIST SELECTION
-# Comment/Uncomment any URL below to enable or disable it for the MOBILE list.
 # ---------------------------------------------------------------------------
 MOBILE_SOURCES = [
-    # Pick lighter versions for mobile performance
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
@@ -180,6 +177,7 @@ def main():
         top_futures = [executor.submit(fetch_top_list, *t) for t in TOP_LISTS]
         
         spam_req = requests.get(SPAM_TLD_URL, timeout=30)
+        # CRITICAL: These must be available to the build_dataset function
         spam_patterns_set, denyallow_map = parse_tld_patterns(spam_req.text.splitlines())
 
         print(f"[*] Downloading {len(all_unique_urls)} source files...")
@@ -193,9 +191,9 @@ def main():
         for future in as_completed(fetch_futures):
             source_data[fetch_futures[future]] = future.result()
 
-    def build_dataset(urls):
+    # Pass the TLD sets into the build function so they actually work
+    def build_dataset(urls, spam_set, d_map, allowlist):
         found = set()
-        # Initialize stats locally for this specific list
         l_stats = {"irrelevant": 0, "kw": 0, "tld": 0}
         for url in urls:
             for line in source_data.get(url, []):
@@ -203,16 +201,16 @@ def main():
                 if not host or host in found: continue
                 if host.startswith("www."): host = host[4:]
                 
-                # Check TLD
-                if get_matching_tld(host, spam_patterns_set, denyallow_map):
+                # Check TLD Matching (Fixed)
+                if get_matching_tld(host, spam_set, d_map):
                     l_stats["tld"] += 1
                     continue
-                # Check Keyword
+                # Check Keywords
                 if NSFW_REGEX.search(host):
                     l_stats["kw"] += 1
                     continue
-                # Check Suffix Match (Allowlist)
-                if not has_suffix_match(host, master_allowlist):
+                # Check Allowlist
+                if not has_suffix_match(host, allowlist):
                     l_stats["irrelevant"] += 1
                     continue
                 
@@ -220,9 +218,9 @@ def main():
         return found, l_stats
 
     print("[*] Generating Main List...")
-    main_set, main_stats = build_dataset(active_main)
+    main_set, main_stats = build_dataset(active_main, spam_patterns_set, denyallow_map, master_allowlist)
     print("[*] Generating Mobile List...")
-    mobile_set, mobile_stats = build_dataset(active_mobile)
+    mobile_set, mobile_stats = build_dataset(active_mobile, spam_patterns_set, denyallow_map, master_allowlist)
 
     print("[*] Fetching Dynamic Footers...")
     rebind_text = requests.get(REBIND_URL, timeout=30).text if REBIND_URL else ""
@@ -235,20 +233,14 @@ def main():
 
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     
-    # Process writing for both
-    job_configs = [
-        (args.output, main_set, main_stats, "MAIN"),
-        (args.mobile, mobile_set, mobile_stats, "MOBILE")
-    ]
-
-    for filename, dataset, s, label in job_configs:
+    # Write both lists
+    for filename, dataset, s, label in [(args.output, main_set, main_stats, "MAIN"), (args.mobile, mobile_set, mobile_stats, "MOBILE")]:
         with open(filename, "w", encoding="utf-8") as f:
             f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
             f.write(f"! Generated: {now}\n")
             f.write(f"! Stats: Kept {len(dataset)} | Irrelevant {s['irrelevant']} | TLD {s['tld']} | NSFW {s['kw']}\n\n")
             
-            for dom in sorted(dataset): 
-                f.write(f"||{dom}^\n")
+            for dom in sorted(dataset): f.write(f"||{dom}^\n")
             
             f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text)
             f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
