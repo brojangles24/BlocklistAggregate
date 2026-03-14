@@ -250,16 +250,21 @@ def main():
     # 4. Fetch Dynamic Logic (SafeSearch/Rebind)
     print("[*] Fetching dynamic footers...")
     try:
-        rebind_text = requests.get(REBIND_URL, timeout=30).text
-    except Exception:
+        r_rebind = requests.get(REBIND_URL, timeout=30)
+        r_rebind.raise_for_status()
+        rebind_text = r_rebind.text
+    except Exception as e:
+        print(f"[!] Rebind fetch failed: {e}")
         rebind_text = ""
 
     ss_rules = []
     for url in ADGUARD_SAFESEARCH_URLS:
         try:
-            ss_rules.extend([l for l in requests.get(url, timeout=30).text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
-        except Exception:
-            pass
+            r_ss = requests.get(url, timeout=30)
+            r_ss.raise_for_status()
+            ss_rules.extend([l for l in r_ss.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
+        except Exception as e:
+            print(f"[!] SafeSearch fetch failed: {e}")
 
     # 5. Write Output
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
