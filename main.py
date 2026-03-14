@@ -171,7 +171,6 @@ def main():
     parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
     args = parser.parse_args()
 
-    # Get only active (uncommented) URLs
     active_main = [s for s in MAIN_SOURCES if s and not s.startswith(("#", "//"))]
     active_mobile = [s for s in MOBILE_SOURCES if s and not s.startswith(("#", "//"))]
     all_unique_urls = list(set(active_main + active_mobile))
@@ -196,40 +195,61 @@ def main():
 
     def build_dataset(urls):
         found = set()
+        # Initialize stats locally for this specific list
+        l_stats = {"irrelevant": 0, "kw": 0, "tld": 0}
         for url in urls:
             for line in source_data.get(url, []):
                 host = extract_host(line)
-                if not host: continue
+                if not host or host in found: continue
                 if host.startswith("www."): host = host[4:]
-                if get_matching_tld(host, spam_patterns_set, denyallow_map): continue
-                if NSFW_REGEX.search(host): continue
-                if not has_suffix_match(host, master_allowlist): continue
+                
+                # Check TLD
+                if get_matching_tld(host, spam_patterns_set, denyallow_map):
+                    l_stats["tld"] += 1
+                    continue
+                # Check Keyword
+                if NSFW_REGEX.search(host):
+                    l_stats["kw"] += 1
+                    continue
+                # Check Suffix Match (Allowlist)
+                if not has_suffix_match(host, master_allowlist):
+                    l_stats["irrelevant"] += 1
+                    continue
+                
                 found.add(host)
-        return found
+        return found, l_stats
 
     print("[*] Generating Main List...")
-    main_set = build_dataset(active_main)
+    main_set, main_stats = build_dataset(active_main)
     print("[*] Generating Mobile List...")
-    mobile_set = build_dataset(active_mobile)
+    mobile_set, mobile_stats = build_dataset(active_mobile)
 
-    # Dynamic Footer Logic
     print("[*] Fetching Dynamic Footers...")
     rebind_text = requests.get(REBIND_URL, timeout=30).text if REBIND_URL else ""
     ss_rules = []
     for url in ADGUARD_SAFESEARCH_URLS:
-        r = requests.get(url, timeout=30)
-        ss_rules.extend([l for l in r.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
+        try:
+            r = requests.get(url, timeout=30)
+            ss_rules.extend([l for l in r.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
+        except: pass
 
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     
-    # Write Files
-    for filename, dataset, is_mobile in [(args.output, main_set, False), (args.mobile, mobile_set, True)]:
+    # Process writing for both
+    job_configs = [
+        (args.output, main_set, main_stats, "MAIN"),
+        (args.mobile, mobile_set, mobile_stats, "MOBILE")
+    ]
+
+    for filename, dataset, s, label in job_configs:
         with open(filename, "w", encoding="utf-8") as f:
-            f.write(f"! Jorgensen {'MOBILE' if is_mobile else 'MAIN'} List | Version: {VERSION}\n")
-            f.write(f"! Generated: {now} | Count: {len(dataset)}\n\n")
-            for dom in sorted(dataset): f.write(f"||{dom}^\n")
+            f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
+            f.write(f"! Generated: {now}\n")
+            f.write(f"! Stats: Kept {len(dataset)} | Irrelevant {s['irrelevant']} | TLD {s['tld']} | NSFW {s['kw']}\n\n")
             
-            # Append Dynamic Logic to BOTH lists (standard practice for high-signal)
+            for dom in sorted(dataset): 
+                f.write(f"||{dom}^\n")
+            
             f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text)
             f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
             for rule in ss_rules: f.write(f"{rule}\n")
