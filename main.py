@@ -55,7 +55,6 @@ SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock
 TOP_LISTS = [
     ("https://tranco-list.eu/top-1m.csv.zip", 1, False, "zip"),
     ("http://s3-us-west-1.amazonaws.com/umbrella-static/top-1m.csv.zip", 1, False, "zip"),
-    #("https://www.domcop.com/files/top/top10milliondomains.csv.zip", 1, True, "zip"),
     ("https://raw.githubusercontent.com/zakird/crux-top-lists/main/data/global/current.csv.gz", 0, True, "gzip"),
     ("https://downloads.majestic.com/majestic_million.csv", 2, True, "raw"),
 ]
@@ -114,7 +113,6 @@ def fetch_top_list(url, col_idx, skip_header, compression):
 
 def fetch_source_lines(url):
     try:
-        # stream=True prevents loading massive files fully into RAM
         r = requests.get(url, stream=True, timeout=60)
         r.raise_for_status()
         lines = []
@@ -128,6 +126,48 @@ def fetch_source_lines(url):
         print(f"[!] Failed to fetch {url}: {e}")
         return []
 
+def parse_tld_patterns(lines):
+    tld_patterns = set()
+    denyallow_map = {}
+
+    for line in lines:
+        clean = line.split("!")[0].split("#")[0].strip().lower()
+        if not clean:
+            continue
+
+        denyallow_hosts = set()
+        if "$" in clean:
+            rule_part, _, modifiers = clean.partition("$")
+            for mod in modifiers.split(","):
+                if mod.startswith("denyallow="):
+                    denyallow_hosts = set(mod[len("denyallow="):].split("|"))
+        else:
+            rule_part = clean
+
+        rule_part = rule_part.replace("||", "").replace("^", "")
+        if rule_part.startswith("*."):
+            rule_part = rule_part[2:]
+        rule_part = rule_part.lstrip(".")
+
+        if not rule_part:
+            continue
+
+        tld_patterns.add(rule_part)
+        if denyallow_hosts:
+            denyallow_map[rule_part] = denyallow_hosts
+
+    return tld_patterns, denyallow_map
+
+def get_matching_tld(host, spam_set, denyallow_map):
+    parts = host.split('.')
+    for i in range(len(parts)):
+        candidate = ".".join(parts[i:])
+        if candidate in spam_set:
+            if candidate in denyallow_map and host in denyallow_map[candidate]:
+                return None 
+            return candidate
+    return None
+
 # ---------------------------------------------------------------------------
 # Execution
 # ---------------------------------------------------------------------------
@@ -140,7 +180,7 @@ def main():
     active_sources = [s for s in DEFAULT_SOURCES if not s.startswith(("#", "//"))]
     active_top_lists = [t for t in TOP_LISTS if isinstance(t, tuple)]
 
-    final_domains = set()  # Using a set to merge seen/final and save memory
+    final_domains = set() 
     stats = {"irrelevant": 0, "kw": 0, "tld": 0, "dupes": 0}
 
     with ThreadPoolExecutor(max_workers=4) as executor:
@@ -151,29 +191,22 @@ def main():
             master_allowlist.update(future.result())
         gc.collect()
 
-        # Safety Threshold for GitHub Actions
         if len(master_allowlist) < 1000000:
-            sys.exit(f"[!] CRITICAL: Master allowlist too small ({len(master_allowlist)}). Aborting to prevent blank blocklist.")
+            sys.exit(f"[!] CRITICAL: Master allowlist too small ({len(master_allowlist)}). Aborting.")
 
         # 2. Fetch Spam TLDs
         try:
             spam_req = requests.get(SPAM_TLD_URL, timeout=30)
             spam_req.raise_for_status()
-            raw_spam_text = spam_req.text  # Keep exact raw text for output
+            raw_spam_text = spam_req.text  
 
-            # Extract pure TLDs into a set for exact matching
-            spam_tlds = set()
-            for line in raw_spam_text.splitlines():
-                clean_line = line.strip()
-                if clean_line and not clean_line.startswith(('!', '#')):
-                    # Strip adguard modifiers to get raw tld
-                    tld = clean_line.split('^')[0].split('$')[0].replace('||', '').strip()
-                    if tld:
-                        spam_tlds.add(tld)
+            # Use robust parsing
+            spam_patterns_set, denyallow_map = parse_tld_patterns(raw_spam_text.splitlines())
         except Exception as e:
             print(f"[!] Failed to fetch Spam TLDs: {e}")
             raw_spam_text = ""
-            spam_tlds = set()
+            spam_patterns_set = set()
+            denyallow_map = {}
 
         # 3. Fetch Blocklist Sources
         print(f"[*] Filtering {len(active_sources)} active sources...")
@@ -197,8 +230,8 @@ def main():
                 if host.startswith("www."): host = host[4:]
 
                 # --- THE BALANCED FILTER CHAIN ---
-                # 1. Exact TLD check
-                if host.split('.')[-1] in spam_tlds:
+                # 1. Exact TLD / Subdomain check with exceptions
+                if get_matching_tld(host, spam_patterns_set, denyallow_map):
                     stats["tld"] += 1
                     continue
 
