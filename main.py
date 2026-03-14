@@ -1,4 +1,6 @@
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 import re
 import argparse
 import io
@@ -78,6 +80,13 @@ NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
 # Helpers
 # ---------------------------------------------------------------------------
 
+def get_retry_session():
+    session = requests.Session()
+    retries = Retry(total=3, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
+    session.mount('http://', HTTPAdapter(max_retries=retries))
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+    return session
+
 def has_suffix_match(host, lookup_set):
     if host in lookup_set: return True
     parts = host.split('.')
@@ -85,46 +94,44 @@ def has_suffix_match(host, lookup_set):
         if ".".join(parts[i:]) in lookup_set: return True
     return False
 
-def fetch_top_list(url, col_idx, skip_header, compression):
+def _parse_csv_lines(iterable, col_idx, skip_header):
     domains = set()
+    for i, line in enumerate(iterable):
+        if skip_header and i == 0: continue
+        parts = line.split(',')
+        if len(parts) > col_idx:
+            dom = parts[col_idx].strip().lower().strip('"')
+            if dom and "." in dom: domains.add(dom)
+    return domains
+
+def fetch_top_list(url, col_idx, skip_header, compression):
     try:
-        r = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=90)
+        session = get_retry_session()
+        r = session.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=90)
         r.raise_for_status()
         if compression == "zip":
             with zipfile.ZipFile(io.BytesIO(r.content)) as z:
                 with io.TextIOWrapper(z.open(z.namelist()[0]), encoding='utf-8', errors='ignore') as f:
-                    for i, line in enumerate(f):
-                        if skip_header and i == 0: continue
-                        parts = line.split(',')
-                        if len(parts) > col_idx:
-                            dom = parts[col_idx].strip().lower().strip('"')
-                            if dom and "." in dom: domains.add(dom)
+                    return _parse_csv_lines(f, col_idx, skip_header)
         elif compression == "gzip":
             with gzip.GzipFile(fileobj=io.BytesIO(r.content)) as gz:
                 with io.TextIOWrapper(gz, encoding='utf-8', errors='ignore') as f:
-                    for i, line in enumerate(f):
-                        if skip_header and i == 0: continue
-                        parts = line.split(',')
-                        if len(parts) > col_idx:
-                            dom = parts[col_idx].strip().lower().strip('"')
-                            if dom and "." in dom: domains.add(dom)
+                    return _parse_csv_lines(f, col_idx, skip_header)
         else:
-            for i, line in enumerate(r.text.splitlines()):
-                if skip_header and i == 0: continue
-                parts = line.split(',')
-                if len(parts) > col_idx:
-                    dom = parts[col_idx].strip().lower().strip('"')
-                    if dom and "." in dom: domains.add(dom)
+            return _parse_csv_lines(r.text.splitlines(), col_idx, skip_header)
     except Exception as e:
         print(f"[-] Failed to fetch top list {url}: {e}")
-    return domains
+        return set()
 
 def fetch_source_lines(url):
     try:
-        r = requests.get(url, stream=True, timeout=60)
+        session = get_retry_session()
+        r = session.get(url, stream=True, timeout=60)
         r.raise_for_status()
         return [l.strip() for l in r.iter_lines(decode_unicode=True) if l and not l.strip().startswith(('!', '#', '[', ' '))]
-    except: return []
+    except Exception as e:
+        print(f"[-] Failed to fetch source {url}: {e}")
+        return []
 
 def parse_tld_patterns(lines):
     tld_patterns, denyallow_map = set(), {}
@@ -180,8 +187,14 @@ def main():
         print("[*] Loading master logic (Allowlists/TLDs)...")
         top_futures = [executor.submit(fetch_top_list, *t) for t in TOP_LISTS]
         
-        spam_req = requests.get(SPAM_TLD_URL, timeout=30)
-        spam_patterns_set, denyallow_map = parse_tld_patterns(spam_req.text.splitlines())
+        session = get_retry_session()
+        try:
+            spam_req = session.get(SPAM_TLD_URL, timeout=30)
+            spam_req.raise_for_status()
+            spam_patterns_set, denyallow_map = parse_tld_patterns(spam_req.text.splitlines())
+        except Exception as e:
+            print(f"[-] Failed to fetch SPAM TLDs: {e}")
+            spam_patterns_set, denyallow_map = set(), {}
 
         print(f"[*] Downloading {len(all_unique_urls)} source files...")
         source_data = {}
@@ -222,14 +235,25 @@ def main():
     print("[*] Generating Mobile List...")
     mobile_set, mobile_stats = build_dataset(active_mobile, spam_patterns_set, denyallow_map, master_allowlist)
 
+    # Free memory before final processing and file writing
+    del source_data
+    gc.collect()
+
     print("[*] Fetching Dynamic Footers...")
-    rebind_text = requests.get(REBIND_URL, timeout=30).text if REBIND_URL else ""
+    try:
+        rebind_text = session.get(REBIND_URL, timeout=30).text if REBIND_URL else ""
+    except Exception as e:
+        print(f"[-] Failed to fetch Rebind rules: {e}")
+        rebind_text = ""
+        
     ss_rules = []
     for url in ADGUARD_SAFESEARCH_URLS:
         try:
-            r = requests.get(url, timeout=30)
+            r = session.get(url, timeout=30)
+            r.raise_for_status()
             ss_rules.extend([l for l in r.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
-        except: pass
+        except Exception as e:
+            print(f"[-] Failed to fetch SafeSearch rules from {url}: {e}")
 
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     
@@ -246,7 +270,9 @@ def main():
             f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
             for rule in ss_rules: f.write(f"{rule}\n")
             f.write("\n! --- NSFW REGEX ---\n/" + NSFW_PATTERN + "/\n")
-            f.write("\n! --- SPAM TLDs ---\n" + spam_req.text)
+            
+            if 'spam_req' in locals() and hasattr(spam_req, 'text'):
+                f.write("\n! --- SPAM TLDs ---\n" + spam_req.text)
 
     print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)}")
 
