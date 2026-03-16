@@ -226,21 +226,22 @@ def main():
         for future in as_completed(top_futures):
             master_allowlist.update(future.result())
 
-        # Load manual whitelist
+        # Load manual whitelist separately
         try:
             with open(args.whitelist, 'r') as wf:
                 manual_whitelist = set(line.strip().lower() for line in wf if line.strip() and not line.strip().startswith(('#', '!')))
-                master_allowlist.update(manual_whitelist)
                 print(f"[*] Loaded {len(manual_whitelist)} domains from {args.whitelist}")
         except FileNotFoundError:
+            manual_whitelist = set()
             print(f"[*] Manual whitelist '{args.whitelist}' not found. Skipping.")
 
         for future in as_completed(fetch_futures):
             source_data[fetch_futures[future]] = future.result()
 
-    def build_dataset(urls, s_set, d_map, a_list):
+    # Pass manual_whitelist as w_list
+    def build_dataset(urls, s_set, d_map, a_list, w_list):
         found = set()
-        stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0}
+        stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0, "whitelisted": 0}
         for url in urls:
             for line in source_data.get(url, []):
                 host = extract_host(line)
@@ -257,6 +258,13 @@ def main():
                 if NSFW_REGEX.search(host):
                     stats["kw"] += 1
                     continue
+                
+                # Check whitelist FIRST
+                if has_suffix_match(host, w_list):
+                    stats["whitelisted"] += 1
+                    continue
+                
+                # Check top 1m relevance
                 if not has_suffix_match(host, a_list):
                     stats["irrelevant"] += 1
                     continue
@@ -265,9 +273,9 @@ def main():
         return found, stats
 
     print("[*] Generating Main List...")
-    main_set, main_stats = build_dataset(active_main, spam_patterns_set, denyallow_map, master_allowlist)
+    main_set, main_stats = build_dataset(active_main, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist)
     print("[*] Generating Mobile List...")
-    mobile_set, mobile_stats = build_dataset(active_mobile, spam_patterns_set, denyallow_map, master_allowlist)
+    mobile_set, mobile_stats = build_dataset(active_mobile, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist)
 
     del source_data
     gc.collect()
@@ -294,7 +302,7 @@ def main():
         with open(filename, "w", encoding="utf-8") as f:
             f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
             f.write(f"! Generated: {now}\n")
-            f.write(f"! Stats: Kept {len(dataset)} | Duplicates {s['duplicate']} | Irrelevant {s['irrelevant']} | TLD {s['tld']} | NSFW {s['kw']}\n\n")
+            f.write(f"! Stats: Kept {len(dataset)} | Duplicates {s['duplicate']} | Irrelevant {s['irrelevant']} | TLD {s['tld']} | NSFW {s['kw']} | Whitelisted {s['whitelisted']}\n\n")
             
             for dom in sorted(dataset): f.write(f"||{dom}^\n")
             
