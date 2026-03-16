@@ -1,4 +1,3 @@
-```python
 #!/usr/bin/env python3
 """
 Blocklist builder — preserves original source list formatting and commented status.
@@ -108,8 +107,9 @@ MOBILE_SOURCES = [
 # Shared Core Resources
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 REBIND_URL = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt"
-ADGUARD_SAFESEARCH_URLS = ["https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt", 
-                           #"https://adguardteam.github.io/HostlistsRegistry/assets/youtube_safe_search.txt",
+ADGUARD_SAFESEARCH_URLS = [
+    "https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt",
+    #"https://adguardteam.github.io/HostlistsRegistry/assets/youtube_safe_search.txt",
 ]
 
 TOP_LISTS = [
@@ -455,4 +455,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-```
