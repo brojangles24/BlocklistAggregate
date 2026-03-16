@@ -13,14 +13,15 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.16.OPTIMIZED"
+VERSION = "2026.03.16.HOSTER"
 
 # ---------------------------------------------------------------------------
 # MAIN LIST SELECTION
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
-    # --- HAGEZI THREAT INTEL ---
+    # --- HAGEZI THREAT INTEL & HOSTER ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
 
@@ -52,10 +53,11 @@ MAIN_SOURCES = [
 # ---------------------------------------------------------------------------
 MOBILE_SOURCES = [
     # Pick lighter versions for mobile performance
-    # --- HAGEZI THREAT INTEL ---
+    # --- HAGEZI THREAT INTEL & HOSTER ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
 
     # --- HAGEZI MAIN LISTS ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
