@@ -1,17 +1,4 @@
 #!/usr/bin/env python3
-"""
-Blocklist builder — preserves original source list formatting and commented status.
-
-Behavior:
-- Keeps MAIN_SOURCES and MOBILE_SOURCES exactly as you wrote (including commented lines).
-- Fetches only active (non-commented) sources.
-- Writes the output file with a "Source Contributions (Pre-Pruning)" block that reproduces
-  each configured entry exactly as it appears in the source lists (commented entries remain
-  commented and show a contribution of 0).
-- Uses a permissive `extract_host` to handle hosts, ABP, dnsmasq, bind, and plain URLs.
-- Optional CI debug sample dumps via DEBUG_SAMPLES env var (set DEBUG_SAMPLES=1).
-"""
-
 from __future__ import annotations
 import requests
 from requests.adapters import HTTPAdapter
@@ -425,7 +412,7 @@ def main():
         with open(filename, "w", encoding="utf-8") as f:
             f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
             f.write(f"! Generated: {now}\n")
-            f.write(f"! Stats: Kept {len(dataset)} | Hoster-Pruned {s['pruned_by_hoster']} | General-Pruned {s['pruned']} | Whitelisted {s['whitelisted']} | Irrelevant {s['irrelevant']} | Duplicates {s['duplicate']} | TLD {s['tld']} | NSFW {s['kw']}\n")
+            f.write(f"! Stats: Kept {len(dataset)} | Badware-Pruned {s['pruned_by_hoster']} | General-Pruned {s['pruned']} | Whitelisted {s['whitelisted']} | Irrelevant {s['irrelevant']} | Duplicates {s['duplicate']} | TLD {s['tld']} | NSFW {s['kw']}\n")
 
             # Preserve original formatting and commented status in the contributions block
             write_source_contributions_preserve(f, literal_list, src_stats)
