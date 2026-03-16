@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.16.HOSTER"
+VERSION = "2026.03.16.HOSTER_TRACKED"
 
 # ---------------------------------------------------------------------------
 # MAIN LIST SELECTION
@@ -111,10 +111,13 @@ def get_retry_session():
     return session
 
 def has_suffix_match(host, lookup_set):
-    if host in lookup_set: return True
-    parts = host.split('.')
-    for i in range(1, len(parts)):
-        if ".".join(parts[i:]) in lookup_set: return True
+    if host in lookup_set: 
+        return True
+    idx = host.find('.')
+    while idx != -1:
+        if host[idx+1:] in lookup_set: 
+            return True
+        idx = host.find('.', idx + 1)
     return False
 
 def optimize_domains(domains: set[str]) -> list[str]:
@@ -240,7 +243,6 @@ def main():
         for future in as_completed(top_futures):
             master_allowlist.update(future.result())
 
-        # Load manual whitelist separately
         try:
             with open(args.whitelist, 'r') as wf:
                 manual_whitelist = set(line.strip().lower() for line in wf if line.strip() and not line.strip().startswith(('#', '!')))
@@ -254,8 +256,18 @@ def main():
 
     def build_dataset(urls, s_set, d_map, a_list, w_list):
         found = set()
-        stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0, "whitelisted": 0, "pruned": 0}
-        for url in urls:
+        stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0, "whitelisted": 0, "pruned": 0, "pruned_by_hoster": 0}
+        source_stats = {}
+        hoster_active = set()
+        
+        # Ensure hoster.txt is processed FIRST so we can use its domains to prune others
+        urls_sorted = sorted(urls, key=lambda u: 0 if "hoster.txt" in u else 1)
+        
+        for url in urls_sorted:
+            source_name = "/".join(url.split('/')[-2:])
+            is_hoster = "hoster.txt" in url
+            added_from_source = 0
+            
             for line in source_data.get(url, []):
                 host = extract_host(line)
                 if not host: continue
@@ -265,36 +277,51 @@ def main():
                     stats["duplicate"] += 1
                     continue
                 
-                if get_matching_tld(host, s_set, d_map):
-                    stats["tld"] += 1
-                    continue
-                if NSFW_REGEX.search(host):
-                    stats["kw"] += 1
-                    continue
-                
-                # Check whitelist FIRST
+                # Priority 1: Whitelist
                 if has_suffix_match(host, w_list):
                     stats["whitelisted"] += 1
                     continue
                 
-                # Check top 1m relevance
+                # Priority 2: SPAM TLDs
+                if get_matching_tld(host, s_set, d_map):
+                    stats["tld"] += 1
+                    continue
+                
+                # Priority 3: NSFW Keywords
+                if NSFW_REGEX.search(host):
+                    stats["kw"] += 1
+                    continue
+                
+                # Priority 4: Relevance
                 if not has_suffix_match(host, a_list):
                     stats["irrelevant"] += 1
                     continue
                 
-                found.add(host)
+                # Priority 5: Hoster Pruning (If this isn't the hoster list itself, check if a hoster domain covers it)
+                if not is_hoster and has_suffix_match(host, hoster_active):
+                    stats["pruned_by_hoster"] += 1
+                    continue
                 
-        # Apply tree pruning
+                found.add(host)
+                added_from_source += 1
+                
+                # Keep track of validated hoster domains for future pruning
+                if is_hoster:
+                    hoster_active.add(host)
+                
+            source_stats[source_name] = added_from_source
+                
+        # Apply general tree pruning for remaining internal redundancies (e.g. OISD subdomains)
         initial_count = len(found)
         optimized = optimize_domains(found)
         stats["pruned"] = initial_count - len(optimized)
         
-        return optimized, stats
+        return optimized, stats, source_stats
 
     print("[*] Generating Main List...")
-    main_set, main_stats = build_dataset(active_main, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist)
+    main_set, main_stats, main_src_stats = build_dataset(active_main, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist)
     print("[*] Generating Mobile List...")
-    mobile_set, mobile_stats = build_dataset(active_mobile, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist)
+    mobile_set, mobile_stats, mobile_src_stats = build_dataset(active_mobile, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist)
 
     del source_data
     gc.collect()
@@ -317,11 +344,16 @@ def main():
 
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     
-    for filename, dataset, s, label in [(args.output, main_set, main_stats, "MAIN"), (args.mobile, mobile_set, mobile_stats, "MOBILE")]:
+    for filename, dataset, s, src_stats, label in [(args.output, main_set, main_stats, main_src_stats, "MAIN"), (args.mobile, mobile_set, mobile_stats, mobile_src_stats, "MOBILE")]:
         with open(filename, "w", encoding="utf-8") as f:
             f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
             f.write(f"! Generated: {now}\n")
-            f.write(f"! Stats: Kept {len(dataset)} | Tree-Pruned {s['pruned']} | Whitelisted {s['whitelisted']} | Irrelevant {s['irrelevant']} | Duplicates {s['duplicate']} | TLD {s['tld']} | NSFW {s['kw']}\n\n")
+            f.write(f"! Stats: Kept {len(dataset)} | Hoster-Pruned {s['pruned_by_hoster']} | General-Pruned {s['pruned']} | Whitelisted {s['whitelisted']} | Irrelevant {s['irrelevant']} | Duplicates {s['duplicate']} | TLD {s['tld']} | NSFW {s['kw']}\n")
+            
+            f.write("!\n! --- Source Contributions (Pre-Pruning) ---\n")
+            for src, count in src_stats.items():
+                f.write(f"! {src}: {count}\n")
+            f.write("!\n\n")
             
             for dom in sorted(dataset): f.write(f"||{dom}^\n")
             
@@ -334,6 +366,10 @@ def main():
                 f.write("\n! --- SPAM TLDs ---\n" + spam_req.text)
 
     print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)}")
+    print("\nMain Source Breakdown (Pre-Pruning):")
+    for src, count in main_src_stats.items():
+        print(f"  - {src}: {count}")
+    print(f"  > Domains annihilated by Hoster magnet: {main_stats['pruned_by_hoster']}")
 
 if __name__ == "__main__":
     main()
