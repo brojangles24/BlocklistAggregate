@@ -32,9 +32,9 @@ MAIN_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
 
     # --- 1HOSTS ---
-    "https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
-    "https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
+    #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
+    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
 
     # --- OISD ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
