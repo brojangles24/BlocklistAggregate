@@ -13,7 +13,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.14.MAINTAINED_STATUS"
+VERSION = "2026.03.16.OPTIMIZED"
 
 # ---------------------------------------------------------------------------
 # MAIN LIST SELECTION
@@ -114,6 +114,18 @@ def has_suffix_match(host, lookup_set):
     for i in range(1, len(parts)):
         if ".".join(parts[i:]) in lookup_set: return True
     return False
+
+def optimize_domains(domains: set[str]) -> list[str]:
+    """Reverse domains to use prefix matching for subdomain pruning."""
+    reversed_sorted = sorted(d[::-1] for d in domains)
+    optimized: list[str] = []
+    last_kept: str | None = None
+    for rev in reversed_sorted:
+        if last_kept and rev.startswith(last_kept + "."):
+            continue
+        optimized.append(rev)
+        last_kept = rev
+    return [d[::-1] for d in optimized]
 
 def _parse_csv_lines(iterable, col_idx, skip_header):
     domains = set()
@@ -238,10 +250,9 @@ def main():
         for future in as_completed(fetch_futures):
             source_data[fetch_futures[future]] = future.result()
 
-    # Pass manual_whitelist as w_list
     def build_dataset(urls, s_set, d_map, a_list, w_list):
         found = set()
-        stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0, "whitelisted": 0}
+        stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0, "whitelisted": 0, "pruned": 0}
         for url in urls:
             for line in source_data.get(url, []):
                 host = extract_host(line)
@@ -270,7 +281,13 @@ def main():
                     continue
                 
                 found.add(host)
-        return found, stats
+                
+        # Apply tree pruning
+        initial_count = len(found)
+        optimized = optimize_domains(found)
+        stats["pruned"] = initial_count - len(optimized)
+        
+        return optimized, stats
 
     print("[*] Generating Main List...")
     main_set, main_stats = build_dataset(active_main, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist)
@@ -302,7 +319,7 @@ def main():
         with open(filename, "w", encoding="utf-8") as f:
             f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
             f.write(f"! Generated: {now}\n")
-            f.write(f"! Stats: Kept {len(dataset)} | Duplicates {s['duplicate']} | Irrelevant {s['irrelevant']} | TLD {s['tld']} | NSFW {s['kw']} | Whitelisted {s['whitelisted']}\n\n")
+            f.write(f"! Stats: Kept {len(dataset)} | Tree-Pruned {s['pruned']} | Whitelisted {s['whitelisted']} | Irrelevant {s['irrelevant']} | Duplicates {s['duplicate']} | TLD {s['tld']} | NSFW {s['kw']}\n\n")
             
             for dom in sorted(dataset): f.write(f"||{dom}^\n")
             
