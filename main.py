@@ -21,7 +21,7 @@ VERSION = "2026.03.16.HOSTER_TRACKED"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # RELEVANCE FILTER TOGGLES
-ENABLE_MAIN_RELEVANCE = False
+ENABLE_MAIN_RELEVANCE = True
 ENABLE_MOBILE_RELEVANCE = True
 
 # ---------------------------------------------------------------------------
