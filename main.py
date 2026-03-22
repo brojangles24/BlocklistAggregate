@@ -47,7 +47,7 @@ MAIN_SOURCES = [
     #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
 
     # --- OISD ---
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
