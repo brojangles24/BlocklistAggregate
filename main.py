@@ -44,7 +44,7 @@ MAIN_SOURCES = [
     # --- 1HOSTS ---
     #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
     #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
-    "https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
+    #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
 
     # --- OISD ---
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
