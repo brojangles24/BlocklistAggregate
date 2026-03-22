@@ -21,7 +21,7 @@ VERSION = "2026.03.16.HOSTER_TRACKED"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # RELEVANCE FILTER TOGGLES
-ENABLE_MAIN_RELEVANCE = True
+ENABLE_MAIN_RELEVANCE = False
 ENABLE_MOBILE_RELEVANCE = True
 
 # ---------------------------------------------------------------------------
@@ -42,11 +42,11 @@ MAIN_SOURCES = [
 
     # --- 1HOSTS ---
     #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
 
     # --- OISD ---
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
@@ -79,13 +79,13 @@ MOBILE_SOURCES = [
 
     # --- 1HOSTS ---
     #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
 
     # --- OISD ---
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
     # --- SPECIALTY ---
