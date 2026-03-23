@@ -113,6 +113,9 @@ TOP_LISTS = [
     ("https://raw.githubusercontent.com/zakird/crux-top-lists/main/data/global/current.csv.gz", 0, True, "gzip"),
     ("https://downloads.majestic.com/majestic_million.csv", 2, True, "raw"),
     ("https://www.domcop.com/files/top/top10milliondomains.csv.zip", 1, True, "zip"),
+    ("https://api.cloudflare.com/client/v4/radar/datasets/download?datasetId=213", 0, False, "csv"), 
+    ("https://builtwith.com/dl/builtwith-top1m.zip", 0, False, "zip"),
+    ("https://statvoo.com/dl/top-1million-sites.csv.zip", 1, False, "zip"),
 ]
 
 NSFW_PATTERN = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
