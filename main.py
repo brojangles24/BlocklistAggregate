@@ -113,11 +113,9 @@ TOP_LISTS = [
     ("https://raw.githubusercontent.com/zakird/crux-top-lists/main/data/global/current.csv.gz", 0, True, "gzip"),
     ("https://downloads.majestic.com/majestic_million.csv", 2, True, "raw"),
     ("https://www.domcop.com/files/top/top10milliondomains.csv.zip", 1, True, "zip"),
-    # Fixed Cloudflare Link (Direct CSV Mirror)
-    ("https://raw.githubusercontent.com/cloudflare/radar-datasets/main/net_usage/top_1000000_domains.csv", 0, False, "raw"),
     ("https://builtwith.com/dl/builtwith-top1m.zip", 0, False, "zip"),
+    ("https://radar.cloudflare.com/charts/LargerTopDomainsTable/attachment?id=1257&top=1000000", 0, True, "raw"),
 ]
-
 NSFW_PATTERN = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
 NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
 DOMAIN_RE = re.compile(r"(?i)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}")
