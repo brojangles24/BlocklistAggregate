@@ -128,7 +128,7 @@ MOBILE_SOURCES = [
 # ---------------------------------------------------------------------------
 # MINIMAL LIST SELECTION
 # ---------------------------------------------------------------------------
-MAIN_SOURCES = [
+MINIMAL_SOURCES = [
     # --- HAGEZI THREAT INTEL & HOSTER ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
