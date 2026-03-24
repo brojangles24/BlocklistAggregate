@@ -20,9 +20,18 @@ AZ_TZ = timezone(timedelta(hours=-7))
 VERSION = "2026.03.16.HOSTER_TRACKED"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
-# RELEVANCE FILTER TOGGLES
+# FILTER TOGGLES
 ENABLE_MAIN_RELEVANCE = True
+ENABLE_MAIN_TLD = True
+ENABLE_MAIN_KW = True
+
 ENABLE_MOBILE_RELEVANCE = True
+ENABLE_MOBILE_TLD = True
+ENABLE_MOBILE_KW = True
+
+ENABLE_HOME_RELEVANCE = False
+ENABLE_HOME_TLD = True
+ENABLE_HOME_KW = True
 
 # ---------------------------------------------------------------------------
 # MAIN LIST SELECTION
@@ -60,6 +69,11 @@ MAIN_SOURCES = [
     "https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
     "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
 ]
+
+# ---------------------------------------------------------------------------
+# HOME LIST SELECTION
+# ---------------------------------------------------------------------------
+HOME_SOURCES = MAIN_SOURCES.copy()
 
 # ---------------------------------------------------------------------------
 # MOBILE LIST SELECTION
@@ -246,7 +260,7 @@ def friendly_label_for_url(url: str) -> str:
     filename = p.path.rstrip('/').split('/')[-1] or p.path
     return f"{p.netloc}/{filename}"
 
-def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], a_list: set[str], w_list: set[str], source_data: dict[str, list[str]], disable_relevance: bool = False) -> tuple[list[str], dict[str, int], dict[str, int]]:
+def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], a_list: set[str], w_list: set[str], source_data: dict[str, list[str]], disable_relevance: bool = False, disable_tld: bool = False, disable_kw: bool = False) -> tuple[list[str], dict[str, int], dict[str, int]]:
     found = set()
     stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0, "whitelisted": 0, "pruned": 0, "pruned_by_hoster": 0}
     source_stats = {}
@@ -274,11 +288,11 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
                 stats["whitelisted"] += 1
                 continue
 
-            if get_matching_tld(host, s_set, d_map):
+            if not disable_tld and get_matching_tld(host, s_set, d_map):
                 stats["tld"] += 1
                 continue
 
-            if NSFW_REGEX.search(host):
+            if not disable_kw and NSFW_REGEX.search(host):
                 stats["kw"] += 1
                 continue
 
@@ -340,12 +354,14 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--output", default="blocklist.txt")
     parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
+    parser.add_argument("--home", default="home-blocklist.txt")
     parser.add_argument("-w", "--whitelist", default="whitelist.txt")
     args = parser.parse_args()
 
     active_main = [s for s in MAIN_SOURCES if s and not s.strip().startswith(("#", "//"))]
     active_mobile = [s for s in MOBILE_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    all_unique_urls = list(dict.fromkeys(active_main + active_mobile))
+    active_home = [s for s in HOME_SOURCES if s and not s.strip().startswith(("#", "//"))]
+    all_unique_urls = list(dict.fromkeys(active_main + active_mobile + active_home))
     
     session = get_retry_session()
 
@@ -354,7 +370,7 @@ def main() -> None:
         master_allowlist = set()
         
         # Only fetch top lists if relevance is enabled for at least one list
-        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE:
+        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE or ENABLE_HOME_RELEVANCE:
             top_futures = [executor.submit(fetch_top_list, url, col, skip, comp, session) for url, col, skip, comp in TOP_LISTS]
         else:
             top_futures = []
@@ -398,11 +414,24 @@ def main() -> None:
 
     print("[*] Generating Main List...")
     main_set, main_stats, main_src_stats = build_dataset(
-        active_main, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, disable_relevance=not ENABLE_MAIN_RELEVANCE
+        active_main, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
+        disable_relevance=not ENABLE_MAIN_RELEVANCE,
+        disable_tld=not ENABLE_MAIN_TLD,
+        disable_kw=not ENABLE_MAIN_KW
     )
     print("[*] Generating Mobile List...")
     mobile_set, mobile_stats, mobile_src_stats = build_dataset(
-        active_mobile, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, disable_relevance=not ENABLE_MOBILE_RELEVANCE
+        active_mobile, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
+        disable_relevance=not ENABLE_MOBILE_RELEVANCE,
+        disable_tld=not ENABLE_MOBILE_TLD,
+        disable_kw=not ENABLE_MOBILE_KW
+    )
+    print("[*] Generating Home List...")
+    home_set, home_stats, home_src_stats = build_dataset(
+        active_home, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
+        disable_relevance=not ENABLE_HOME_RELEVANCE,
+        disable_tld=not ENABLE_HOME_TLD,
+        disable_kw=not ENABLE_HOME_KW
     )
 
     del source_data
@@ -426,15 +455,9 @@ def main() -> None:
 
     write_output_file(args.output, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text)
     write_output_file(args.mobile, mobile_set, mobile_stats, mobile_src_stats, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text)
+    write_output_file(args.home, home_set, home_stats, home_src_stats, HOME_SOURCES, "HOME", rebind_text, ss_rules, spam_text)
 
-    print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)}")
-    print("\nMain Source Breakdown (Pre-Pruning):")
-    for entry in MAIN_SOURCES:
-        url = entry.lstrip("# ").strip()
-        if not url:
-            continue
-        print(f"  - {entry} -> {main_src_stats.get(url, 0)}")
-    print(f"  > Domains annihilated by Hoster magnet: {main_stats['pruned_by_hoster']}")
+    print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)} | Home: {len(home_set)}")
 
 if __name__ == "__main__":
     main()
