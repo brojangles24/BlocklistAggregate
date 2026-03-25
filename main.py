@@ -56,7 +56,7 @@ MAIN_SOURCES = [
 
     # --- 1HOSTS ---
     #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
 
     # --- OISD ---
@@ -70,11 +70,11 @@ MAIN_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
     "https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
-    "https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
-    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
+    #"https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
 ]
 
 # ---------------------------------------------------------------------------
@@ -102,7 +102,7 @@ MOBILE_SOURCES = [
 
     # --- 1HOSTS ---
     #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
 
     # --- OISD ---
@@ -118,7 +118,7 @@ MOBILE_SOURCES = [
     "https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt", 
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
     #"https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
     #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
