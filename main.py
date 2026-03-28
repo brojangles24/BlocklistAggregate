@@ -29,13 +29,14 @@ ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = True
 ENABLE_MOBILE_KW = True
 
-ENABLE_HOME_RELEVANCE = False
-ENABLE_HOME_TLD = True
-ENABLE_HOME_KW = True
-
-ENABLE_MINIMAL_RELEVANCE = True
-ENABLE_MINIMAL_TLD = True
-ENABLE_MINIMAL_KW = True
+# --- REGEX COMPILATION ---
+NSFW_PATTERN = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
+NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
+DOMAIN_RE = re.compile(r"(?i)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}")
+IP_HOST_RE = re.compile(r'^(?:0\.0\.0\.0|127\.0\.0\.1)\s+([^\s#]+)')
+DNSMASQ_RE = re.compile(r'(?:address|server)=/([^/]+)/')
+ADBLOCK_EXACT_RE = re.compile(r'^\|\|([^/\^]+)\^')
+ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 
 # ---------------------------------------------------------------------------
 # MAIN LIST SELECTION
@@ -79,11 +80,6 @@ MAIN_SOURCES = [
 ]
 
 # ---------------------------------------------------------------------------
-# HOME LIST SELECTION
-# ---------------------------------------------------------------------------
-HOME_SOURCES = MAIN_SOURCES.copy()
-
-# ---------------------------------------------------------------------------
 # MOBILE LIST SELECTION
 # ---------------------------------------------------------------------------
 MOBILE_SOURCES = [
@@ -125,49 +121,6 @@ MOBILE_SOURCES = [
     #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
 ]
 
-
-# ---------------------------------------------------------------------------
-# MINIMAL LIST SELECTION
-# ---------------------------------------------------------------------------
-MINIMAL_SOURCES = [
-    # --- HAGEZI THREAT INTEL & HOSTER ---
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
-
-    # --- HAGEZI MAIN LISTS ---
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.mini.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
-
-    # --- 1HOSTS ---
-    #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
-    #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
-
-    # --- OISD ---
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
-
-    # --- SPECIALTY ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt", 
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
-    #"https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
-    #"https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
-    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
-]
-
 # Shared Core Resources
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 REBIND_URL = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt"
@@ -183,9 +136,6 @@ TOP_LISTS = [
     ("https://www.domcop.com/files/top/top10milliondomains.csv.zip", 1, True, "zip"),
     ("https://builtwith.com/dl/builtwith-top1m.zip", 0, False, "zip"),
 ]
-NSFW_PATTERN = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
-NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
-DOMAIN_RE = re.compile(r"(?i)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}")
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -263,17 +213,16 @@ def extract_host(clean: str) -> str | None:
     clean = clean.split("!")[0].split("#")[0].strip()
     if not clean: return None
 
-    m = re.match(r'^(?:0\.0\.0\.0|127\.0\.0\.1)\s+([^\s#]+)', clean)
+    m = IP_HOST_RE.match(clean)
     if m: return m.group(1).lower().strip('.')
 
-    m = re.search(r'address=/([^/]+)/|server=/([^/]+)/', clean)
-    if m:
-        dom = m.group(1) or m.group(2)
-        return dom.lower().strip('.') if dom else None
-
-    m = re.search(r'^\|\|([^/\^]+)\^', clean)
+    m = DNSMASQ_RE.search(clean)
     if m: return m.group(1).lower().strip('.')
-    m = re.search(r'^([^/\^]+)\^', clean)
+
+    m = ADBLOCK_EXACT_RE.search(clean)
+    if m: return m.group(1).lower().strip('.')
+    
+    m = ADBLOCK_BASIC_RE.search(clean)
     if m: return m.group(1).lower().strip('.')
 
     m = DOMAIN_RE.search(clean)
@@ -284,8 +233,10 @@ def extract_host(clean: str) -> str | None:
 def parse_tld_patterns(lines: list[str]) -> tuple[set[str], dict[str, set[str]]]:
     tld_patterns, denyallow_map = set(), {}
     for line in lines:
-        clean = line.split("!")[0].split("#")[0].strip().lower()
+        clean = line.split("!")[0].split("#")[0].strip()
         if not clean: continue
+        clean = clean.lower()
+        
         denyallow_hosts = set()
         if "$" in clean:
             rule_part, _, modifiers = clean.partition("$")
@@ -392,14 +343,12 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
                 f.write(f"! {entry} -> {count}\n")
         f.write("!\n\n")
 
-        for dom in sorted(dataset):
-            f.write(f"||{dom}^\n")
+        f.writelines(f"||{dom}^\n" for dom in sorted(dataset))
 
         f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text)
         f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
-        for rule in ss_rules:
-            f.write(f"{rule}\n")
-        f.write("\n! --- NSFW REGEX ---\n/" + NSFW_PATTERN + "/\n")
+        f.writelines(f"{rule}\n" for rule in ss_rules)
+        f.write(f"\n! --- NSFW REGEX ---\n/{NSFW_PATTERN}/\n")
 
         if spam_text:
             f.write("\n! --- SPAM TLDs ---\n" + spam_text)
@@ -408,17 +357,13 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--output", default="blocklist.txt")
     parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
-    parser.add_argument("--home", default="home-blocklist.txt")
-    parser.add_argument("--minimal", default="minimal-blocklist.txt")
     parser.add_argument("-w", "--whitelist", default="whitelist.txt")
     args = parser.parse_args()
 
     active_main = [s for s in MAIN_SOURCES if s and not s.strip().startswith(("#", "//"))]
     active_mobile = [s for s in MOBILE_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    active_home = [s for s in HOME_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    active_minimal = [s for s in MINIMAL_SOURCES if s and not s.strip().startswith(("#", "//"))]
     
-    all_unique_urls = list(dict.fromkeys(active_main + active_mobile + active_home + active_minimal))
+    all_unique_urls = list(dict.fromkeys(active_main + active_mobile))
     
     session = get_retry_session()
 
@@ -426,8 +371,7 @@ def main() -> None:
         print("[*] Loading master logic (Allowlists/TLDs)...")
         master_allowlist = set()
         
-        # Only fetch top lists if relevance is enabled for at least one list
-        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE or ENABLE_HOME_RELEVANCE or ENABLE_MINIMAL_RELEVANCE:
+        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE:
             top_futures = [executor.submit(fetch_top_list, url, col, skip, comp, session) for url, col, skip, comp in TOP_LISTS]
         else:
             top_futures = []
@@ -483,20 +427,6 @@ def main() -> None:
         disable_tld=not ENABLE_MOBILE_TLD,
         disable_kw=not ENABLE_MOBILE_KW
     )
-    print("[*] Generating Home List...")
-    home_set, home_stats, home_src_stats = build_dataset(
-        active_home, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
-        disable_relevance=not ENABLE_HOME_RELEVANCE,
-        disable_tld=not ENABLE_HOME_TLD,
-        disable_kw=not ENABLE_HOME_KW
-    )
-    print("[*] Generating Minimal List...")
-    minimal_set, minimal_stats, minimal_src_stats = build_dataset(
-        active_minimal, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
-        disable_relevance=not ENABLE_MINIMAL_RELEVANCE,
-        disable_tld=not ENABLE_MINIMAL_TLD,
-        disable_kw=not ENABLE_MINIMAL_KW
-    )
 
     del source_data
     gc.collect()
@@ -519,10 +449,8 @@ def main() -> None:
 
     write_output_file(args.output, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text)
     write_output_file(args.mobile, mobile_set, mobile_stats, mobile_src_stats, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text)
-    write_output_file(args.home, home_set, home_stats, home_src_stats, HOME_SOURCES, "HOME", rebind_text, ss_rules, spam_text)
-    write_output_file(args.minimal, minimal_set, minimal_stats, minimal_src_stats, MINIMAL_SOURCES, "MINIMAL", rebind_text, ss_rules, spam_text)
 
-    print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)} | Home: {len(home_set)} | Minimal: {len(minimal_set)}")
+    print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)}")
 
 if __name__ == "__main__":
     main()
