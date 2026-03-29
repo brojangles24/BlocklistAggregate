@@ -29,6 +29,17 @@ ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = True
 ENABLE_MOBILE_KW = True
 
+# APPEND TOGGLES
+ENABLE_MAIN_REBIND = False
+ENABLE_MAIN_SAFESEARCH = False
+ENABLE_MAIN_NSFW_REGEX = False
+ENABLE_MAIN_SPAM_TLDS = False
+
+ENABLE_MOBILE_REBIND = False
+ENABLE_MOBILE_SAFESEARCH = False
+ENABLE_MOBILE_NSFW_REGEX = False
+ENABLE_MOBILE_SPAM_TLDS = False
+
 # --- REGEX COMPILATION ---
 NSFW_PATTERN = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
 NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
@@ -93,7 +104,7 @@ MOBILE_SOURCES = [
     # --- HAGEZI MAIN LISTS ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-   #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.mini.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.mini.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
 
@@ -324,7 +335,7 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
 
     return optimized, stats, source_stats
 
-def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None) -> None:
+def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool) -> None:
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
@@ -345,12 +356,17 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
 
         f.writelines(f"||{dom}^\n" for dom in sorted(dataset))
 
-        f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text)
-        f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
-        f.writelines(f"{rule}\n" for rule in ss_rules)
-        f.write(f"\n! --- NSFW REGEX ---\n/{NSFW_PATTERN}/\n")
+        if include_rebind and rebind_text:
+            f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text)
+        
+        if include_safesearch and ss_rules:
+            f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
+            f.writelines(f"{rule}\n" for rule in ss_rules)
+            
+        if include_regex:
+            f.write(f"\n! --- NSFW REGEX ---\n/{NSFW_PATTERN}/\n")
 
-        if spam_text:
+        if include_spam and spam_text:
             f.write("\n! --- SPAM TLDs ---\n" + spam_text)
 
 def main() -> None:
@@ -447,8 +463,14 @@ def main() -> None:
         except requests.exceptions.RequestException as e:
             print(f"[-] Failed to fetch SafeSearch rules from {url}: {e}")
 
-    write_output_file(args.output, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text)
-    write_output_file(args.mobile, mobile_set, mobile_stats, mobile_src_stats, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text)
+    write_output_file(
+        args.output, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text,
+        ENABLE_MAIN_REBIND, ENABLE_MAIN_SAFESEARCH, ENABLE_MAIN_NSFW_REGEX, ENABLE_MAIN_SPAM_TLDS
+    )
+    write_output_file(
+        args.mobile, mobile_set, mobile_stats, mobile_src_stats, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text,
+        ENABLE_MOBILE_REBIND, ENABLE_MOBILE_SAFESEARCH, ENABLE_MOBILE_NSFW_REGEX, ENABLE_MOBILE_SPAM_TLDS
+    )
 
     print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)}")
 
