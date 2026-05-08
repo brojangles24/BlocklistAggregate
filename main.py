@@ -78,6 +78,12 @@ MAIN_SOURCES = [
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
+    # --- Steven Black ---
+    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+
+    # --- The Blocklist Project ---
+    "https://blocklistproject.github.io/Lists/porn.txt",
+    
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
