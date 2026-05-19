@@ -23,11 +23,15 @@ DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 # FILTER TOGGLES
 ENABLE_MAIN_RELEVANCE = False
 ENABLE_MAIN_TLD = True
-ENABLE_MAIN_KW = False
+ENABLE_MAIN_KW = True
 
 ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = True
-ENABLE_MOBILE_KW = False
+ENABLE_MOBILE_KW = True
+
+ENABLE_ULTIMATE_RELEVANCE = False
+ENABLE_ULTIMATE_TLD = True
+ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
 ENABLE_MAIN_REBIND = False
@@ -39,6 +43,11 @@ ENABLE_MOBILE_REBIND = False
 ENABLE_MOBILE_SAFESEARCH = False
 ENABLE_MOBILE_NSFW_REGEX = False
 ENABLE_MOBILE_SPAM_TLDS = False
+
+ENABLE_ULTIMATE_REBIND = True
+ENABLE_ULTIMATE_SAFESEARCH = True
+ENABLE_ULTIMATE_NSFW_REGEX = True
+ENABLE_ULTIMATE_SPAM_TLDS = True
 
 # --- REGEX COMPILATION ---
 NSFW_PATTERN = r"(xxx|porn|sex|sexy|fuck|tits|titties|titty|boobs|boobies|booty|pussy|hentai|milf|blowjob|threesome|bondage|bdsm|gangbang|handjob|deepthroat|horny|bukkake|titfuck|brazzers|redtube|pornhub|shemale|erotic|omegle|xnxx|xvideo|xxvideo|camgirl|nude|naked)"
@@ -82,10 +91,38 @@ MAIN_SOURCES = [
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- The Blocklist Project ---
+    #"https://blocklistproject.github.io/Lists/abuse.txt",
+    #"https://blocklistproject.github.io/Lists/ads.txt",
+    #"https://blocklistproject.github.io/Lists/crypto.txt",
+    #"https://blocklistproject.github.io/Lists/drugs.txt",
+    #"https://blocklistproject.github.io/Lists/fraud.txt",
+    #"https://blocklistproject.github.io/Lists/gambling.txt",
+    #"https://blocklistproject.github.io/Lists/malware.txt",
+    #"https://blocklistproject.github.io/Lists/phishing.txt",
+    #"https://blocklistproject.github.io/Lists/piracy.txt",
     #"https://blocklistproject.github.io/Lists/porn.txt",
+    #"https://blocklistproject.github.io/Lists/ransomware.txt",
+    #"https://blocklistproject.github.io/Lists/redirect.txt",
+    #"https://blocklistproject.github.io/Lists/scam.txt",
+    #"https://blocklistproject.github.io/Lists/smart-tv.txt",
+    #"https://blocklistproject.github.io/Lists/tiktok.txt",
+    #"https://blocklistproject.github.io/Lists/torrent.txt",
+    #"https://blocklistproject.github.io/Lists/tracking.txt",
+    #"https://blocklistproject.github.io/Lists/youtube.txt",
 
     # --- ShadowWhisperer ---
     "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
+
+    # --- PETER LOWE ---
+    #"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=adblockplus&showintro=1&mimetype=plaintext",
+
+    # --- TELEMETRY & IOT ---
+    #"https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV-AGH.txt",
+    #"https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
+
+    # --- SECURITY / MALWARE ---
+    #"https://urlhaus.abuse.ch/downloads/hostfile/",
     
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -97,14 +134,12 @@ MAIN_SOURCES = [
     #"https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     #"https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
-    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
 ]
 
 # ---------------------------------------------------------------------------
 # MOBILE LIST SELECTION
 # ---------------------------------------------------------------------------
 MOBILE_SOURCES = [
-    # Pick lighter versions for mobile performance
     # --- HAGEZI THREAT INTEL & HOSTER ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
@@ -134,10 +169,38 @@ MOBILE_SOURCES = [
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- The Blocklist Project ---
+    #"https://blocklistproject.github.io/Lists/abuse.txt",
+    #"https://blocklistproject.github.io/Lists/ads.txt",
+    #"https://blocklistproject.github.io/Lists/crypto.txt",
+    #"https://blocklistproject.github.io/Lists/drugs.txt",
+    #"https://blocklistproject.github.io/Lists/fraud.txt",
+    #"https://blocklistproject.github.io/Lists/gambling.txt",
+    #"https://blocklistproject.github.io/Lists/malware.txt",
+    #"https://blocklistproject.github.io/Lists/phishing.txt",
+    #"https://blocklistproject.github.io/Lists/piracy.txt",
     #"https://blocklistproject.github.io/Lists/porn.txt",
+    #"https://blocklistproject.github.io/Lists/ransomware.txt",
+    #"https://blocklistproject.github.io/Lists/redirect.txt",
+    #"https://blocklistproject.github.io/Lists/scam.txt",
+    #"https://blocklistproject.github.io/Lists/smart-tv.txt",
+    #"https://blocklistproject.github.io/Lists/tiktok.txt",
+    #"https://blocklistproject.github.io/Lists/torrent.txt",
+    #"https://blocklistproject.github.io/Lists/tracking.txt",
+    #"https://blocklistproject.github.io/Lists/youtube.txt",
 
     # --- ShadowWhisperer ---
     "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
+
+    # --- PETER LOWE ---
+    #"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=adblockplus&showintro=1&mimetype=plaintext",
+
+    # --- TELEMETRY & IOT ---
+    #"https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV-AGH.txt",
+    #"https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
+
+    # --- SECURITY / MALWARE ---
+    #"https://urlhaus.abuse.ch/downloads/hostfile/",
     
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -149,7 +212,84 @@ MOBILE_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
     #"https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
-    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
+]
+
+# ---------------------------------------------------------------------------
+# ULTIMATE LIST SELECTION (Jorgensen Omni)
+# ---------------------------------------------------------------------------
+ULTIMATE_SOURCES = [
+    # --- HAGEZI THREAT INTEL & HOSTER ---
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
+
+    # --- HAGEZI MAIN LISTS ---
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.mini.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
+
+    # --- 1HOSTS ---
+    #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
+    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
+
+    # --- OISD ---
+    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
+    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
+
+    # --- Steven Black ---
+    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+
+    # --- The Blocklist Project ---
+    "https://blocklistproject.github.io/Lists/abuse.txt",
+    "https://blocklistproject.github.io/Lists/ads.txt",
+    #"https://blocklistproject.github.io/Lists/crypto.txt",
+    "https://blocklistproject.github.io/Lists/drugs.txt",
+    "https://blocklistproject.github.io/Lists/fraud.txt",
+    #"https://blocklistproject.github.io/Lists/gambling.txt",
+    "https://blocklistproject.github.io/Lists/malware.txt",
+    "https://blocklistproject.github.io/Lists/phishing.txt",
+    "https://blocklistproject.github.io/Lists/piracy.txt",
+    "https://blocklistproject.github.io/Lists/porn.txt",
+    "https://blocklistproject.github.io/Lists/ransomware.txt",
+    #"https://blocklistproject.github.io/Lists/redirect.txt",
+    "https://blocklistproject.github.io/Lists/scam.txt",
+    #"https://blocklistproject.github.io/Lists/smart-tv.txt",
+    #"https://blocklistproject.github.io/Lists/tiktok.txt",
+    #"https://blocklistproject.github.io/Lists/torrent.txt",
+    "https://blocklistproject.github.io/Lists/tracking.txt",
+    #"https://blocklistproject.github.io/Lists/youtube.txt",
+
+    # --- ShadowWhisperer ---
+    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
+    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
+
+    # --- PETER LOWE ---
+    "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=adblockplus&showintro=1&mimetype=plaintext",
+
+    # --- TELEMETRY & IOT ---
+    #"https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV-AGH.txt",
+    "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
+
+    # --- SECURITY / MALWARE ---
+    "https://urlhaus.abuse.ch/downloads/hostfile/",
+    
+    # --- SPECIALTY ---
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
+    "https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    "https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
 ]
 
 # Shared Core Resources
@@ -175,7 +315,7 @@ TOP_LISTS = [
 def get_retry_session() -> requests.Session:
     session = requests.Session()
     retries = Retry(total=3, backoff_factor=1, status_forcelist=[500, 502, 503, 504])
-    adapter = HTTPAdapter(pool_connections=10, pool_maxsize=10, max_retries=retries)
+    adapter = HTTPAdapter(pool_connections=15, pool_maxsize=15, max_retries=retries)
     session.mount('http://', adapter)
     session.mount('https://', adapter)
     return session
@@ -231,19 +371,21 @@ def fetch_top_list(url: str, col_idx: int, skip_header: bool, compression: str, 
         print(f"[-] Processing error for top list {url}: {e}")
     return set()
 
-def fetch_source_lines(url: str, session: requests.Session) -> list[str]:
-    try:
-        r = session.get(url, stream=True, timeout=60)
-        r.raise_for_status()
-        return [l.strip() for l in r.iter_lines(decode_unicode=True) if l and not l.strip().startswith(('!', '#', '[', ' '))]
-    except requests.exceptions.RequestException as e:
-        print(f"[-] Network error fetching source {url}: {e}")
-        return []
-
 def extract_host(clean: str) -> str | None:
     clean = clean.split("!")[0].split("#")[0].strip()
     if not clean: return None
 
+    # Fast-path for standard hosts format (bypasses regex processing overhead)
+    if clean.startswith(("0.0.0.0 ", "127.0.0.1 ", "0.0.0.0\t", "127.0.0.1\t")):
+        parts = clean.split()
+        if len(parts) > 1:
+            return parts[1].lower().strip('.')
+
+    # Fast-path for clean exact Adblock rules ||domain.com^
+    if clean.startswith("||") and clean.endswith("^") and "/" not in clean and "^" not in clean[2:-1]:
+        return clean[2:-1].lower().strip('.')
+
+    # Fallback to general regex extractions
     m = IP_HOST_RE.match(clean)
     if m: return m.group(1).lower().strip('.')
 
@@ -260,6 +402,26 @@ def extract_host(clean: str) -> str | None:
     if m: return m.group(0).lower().strip('.')
 
     return None
+
+def fetch_source_domains(url: str, session: requests.Session) -> list[str]:
+    try:
+        r = session.get(url, stream=True, timeout=60, headers={"User-Agent": "Mozilla/5.0"})
+        r.raise_for_status()
+        domains = []
+        for line in r.iter_lines(decode_unicode=True):
+            if not line: continue
+            clean_line = line.strip()
+            if not clean_line or clean_line.startswith(('!', '#', '[', ' ')): continue
+            
+            host = extract_host(clean_line)
+            if host:
+                if host.startswith("www."): 
+                    host = host[4:]
+                domains.append(host)
+        return domains
+    except requests.exceptions.RequestException as e:
+        print(f"[-] Network error fetching source {url}: {e}")
+        return []
 
 def parse_tld_patterns(lines: list[str]) -> tuple[set[str], dict[str, set[str]]]:
     tld_patterns, denyallow_map = set(), {}
@@ -311,11 +473,7 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
         is_hoster = "hoster.txt" in url
         added_from_source = 0
 
-        for line in source_data.get(url, []):
-            host = extract_host(line)
-            if not host: continue
-            if host.startswith("www."): host = host[4:]
-
+        for host in source_data.get(url, []):
             if host in found:
                 stats["duplicate"] += 1
                 continue
@@ -393,37 +551,34 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--output", default="blocklist.txt")
     parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
+    parser.add_argument("-u", "--ultimate", default="omni-blocklist.txt")
     parser.add_argument("-w", "--whitelist", default="whitelist.txt")
     args = parser.parse_args()
 
     active_main = [s for s in MAIN_SOURCES if s and not s.strip().startswith(("#", "//"))]
     active_mobile = [s for s in MOBILE_SOURCES if s and not s.strip().startswith(("#", "//"))]
+    active_ultimate = [s for s in ULTIMATE_SOURCES if s and not s.strip().startswith(("#", "//"))]
     
-    all_unique_urls = list(dict.fromkeys(active_main + active_mobile))
+    all_unique_urls = list(dict.fromkeys(active_main + active_mobile + active_ultimate))
     
     session = get_retry_session()
 
-    with ThreadPoolExecutor(max_workers=6) as executor:
-        print("[*] Loading master logic (Allowlists/TLDs)...")
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        print("[*] Loading master logic and scheduling background downloads...")
         master_allowlist = set()
         
-        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE:
+        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE or ENABLE_ULTIMATE_RELEVANCE:
             top_futures = [executor.submit(fetch_top_list, url, col, skip, comp, session) for url, col, skip, comp in TOP_LISTS]
         else:
             top_futures = []
 
-        try:
-            spam_req = session.get(SPAM_TLD_URL, timeout=30)
-            spam_req.raise_for_status()
-            spam_patterns_set, denyallow_map = parse_tld_patterns(spam_req.text.splitlines())
-            spam_text = spam_req.text
-        except requests.exceptions.RequestException as e:
-            print(f"[-] Failed to fetch SPAM TLDs: {e}")
-            spam_patterns_set, denyallow_map, spam_text = set(), {}, None
+        # Background async downloads for footers
+        rebind_future = executor.submit(lambda: session.get(REBIND_URL, timeout=30).text if REBIND_URL else "")
+        ss_futures = {executor.submit(session.get, url, timeout=30): url for url in ADGUARD_SAFESEARCH_URLS}
 
-        print(f"[*] Downloading {len(all_unique_urls)} source files...")
+        print(f"[*] Downloading and parsing {len(all_unique_urls)} source files concurrently...")
         source_data = {}
-        fetch_futures = {executor.submit(fetch_source_lines, url, session): url for url in all_unique_urls}
+        fetch_futures = {executor.submit(fetch_source_domains, url, session): url for url in all_unique_urls}
 
         for future in as_completed(top_futures):
             master_allowlist.update(future.result())
@@ -438,16 +593,40 @@ def main() -> None:
 
         for future in as_completed(fetch_futures):
             url = fetch_futures[future]
-            lines = future.result()
-            source_data[url] = lines
+            hosts = future.result()
+            source_data[url] = hosts
             if DEBUG_SAMPLES:
                 safe_name = urlparse(url).netloc + "_" + urlparse(url).path.replace("/", "_").strip("_")
                 try:
                     with open(f"debug_{safe_name}.sample", "w", encoding="utf-8") as dbg:
-                        dbg.write("\n".join(lines[:200]))
+                        dbg.write("\n".join(hosts[:200]))
                 except OSError as e:
                     print(f"[-] Failed to write debug sample for {url}: {e}")
-            print(f"[*] Fetched {len(lines)} lines from {url}")
+            print(f"[*] Fetched and parsed {len(hosts)} clean domains from {url}")
+
+        try:
+            spam_req = session.get(SPAM_TLD_URL, timeout=30)
+            spam_req.raise_for_status()
+            spam_patterns_set, denyallow_map = parse_tld_patterns(spam_req.text.splitlines())
+            spam_text = spam_req.text
+        except requests.exceptions.RequestException as e:
+            print(f"[-] Failed to fetch SPAM TLDs: {e}")
+            spam_patterns_set, denyallow_map, spam_text = set(), {}, None
+
+        try:
+            rebind_text = rebind_future.result() if REBIND_URL else ""
+        except Exception as e:
+            print(f"[-] Failed to fetch Rebind rules: {e}")
+            rebind_text = ""
+
+        ss_rules = []
+        for future, url in ss_futures.items():
+            try:
+                r = future.result()
+                r.raise_for_status()
+                ss_rules.extend([l for l in r.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
+            except Exception as e:
+                print(f"[-] Failed to fetch SafeSearch rules from {url}: {e}")
 
     print("[*] Generating Main List...")
     main_set, main_stats, main_src_stats = build_dataset(
@@ -463,25 +642,16 @@ def main() -> None:
         disable_tld=not ENABLE_MOBILE_TLD,
         disable_kw=not ENABLE_MOBILE_KW
     )
+    print("[*] Generating Omni List...")
+    ultimate_set, ultimate_stats, ultimate_src_stats = build_dataset(
+        active_ultimate, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
+        disable_relevance=not ENABLE_ULTIMATE_RELEVANCE,
+        disable_tld=not ENABLE_ULTIMATE_TLD,
+        disable_kw=not ENABLE_ULTIMATE_KW
+    )
 
     del source_data
     gc.collect()
-
-    print("[*] Fetching Dynamic Footers...")
-    try:
-        rebind_text = session.get(REBIND_URL, timeout=30).text if REBIND_URL else ""
-    except requests.exceptions.RequestException as e:
-        print(f"[-] Failed to fetch Rebind rules: {e}")
-        rebind_text = ""
-
-    ss_rules = []
-    for url in ADGUARD_SAFESEARCH_URLS:
-        try:
-            r = session.get(url, timeout=30)
-            r.raise_for_status()
-            ss_rules.extend([l for l in r.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
-        except requests.exceptions.RequestException as e:
-            print(f"[-] Failed to fetch SafeSearch rules from {url}: {e}")
 
     write_output_file(
         args.output, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text,
@@ -491,8 +661,12 @@ def main() -> None:
         args.mobile, mobile_set, mobile_stats, mobile_src_stats, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text,
         ENABLE_MOBILE_REBIND, ENABLE_MOBILE_SAFESEARCH, ENABLE_MOBILE_NSFW_REGEX, ENABLE_MOBILE_SPAM_TLDS
     )
+    write_output_file(
+        args.ultimate, ultimate_set, ultimate_stats, ultimate_src_stats, ULTIMATE_SOURCES, "OMNI", rebind_text, ss_rules, spam_text,
+        ENABLE_ULTIMATE_REBIND, ENABLE_ULTIMATE_SAFESEARCH, ENABLE_ULTIMATE_NSFW_REGEX, ENABLE_ULTIMATE_SPAM_TLDS
+    )
 
-    print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)}")
+    print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)} | Omni: {len(ultimate_set)}")
 
 if __name__ == "__main__":
     main()
