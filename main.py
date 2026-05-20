@@ -248,7 +248,7 @@ ULTIMATE_SOURCES = [
 
     # --- The Blocklist Project ---
     "https://blocklistproject.github.io/Lists/abuse.txt",
-    "https://blocklistproject.github.io/Lists/ads.txt",
+    #"https://blocklistproject.github.io/Lists/ads.txt",
     "https://blocklistproject.github.io/Lists/crypto.txt",
     "https://blocklistproject.github.io/Lists/drugs.txt",
     "https://blocklistproject.github.io/Lists/fraud.txt",
