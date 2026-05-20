@@ -226,8 +226,8 @@ ULTIMATE_SOURCES = [
 
     # --- HAGEZI MAIN LISTS ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.mini.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
@@ -244,7 +244,7 @@ ULTIMATE_SOURCES = [
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
     # --- Steven Black ---
-    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- The Blocklist Project ---
     "https://blocklistproject.github.io/Lists/abuse.txt",
@@ -263,25 +263,25 @@ ULTIMATE_SOURCES = [
     #"https://blocklistproject.github.io/Lists/smart-tv.txt",
     #"https://blocklistproject.github.io/Lists/tiktok.txt",
     #"https://blocklistproject.github.io/Lists/torrent.txt",
-    "https://blocklistproject.github.io/Lists/tracking.txt",
+    #"https://blocklistproject.github.io/Lists/tracking.txt",
     #"https://blocklistproject.github.io/Lists/youtube.txt",
     
     # --- CUSTOM_RAW_ADULT ---
-    "https://raw.githubusercontent.com/mullvad/dns-blocklists/main/output/relay/relay_adult.txt",
-    "https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
-    "https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
-    "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts",
+    #"https://raw.githubusercontent.com/mullvad/dns-blocklists/main/output/relay/relay_adult.txt",
+    #"https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
+    #"https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
+    #"https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts",
 
     # --- ShadowWhisperer ---
-    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
-    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
 
     # --- PETER LOWE ---
-    "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=adblockplus&showintro=1&mimetype=plaintext",
+    #"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=adblockplus&showintro=1&mimetype=plaintext",
 
     # --- TELEMETRY & IOT ---
     #"https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV-AGH.txt",
-    "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
+    #"https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
 
     # --- SECURITY / MALWARE ---
     #"https://urlhaus.abuse.ch/downloads/hostfile/",
