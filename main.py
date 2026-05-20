@@ -284,7 +284,7 @@ ULTIMATE_SOURCES = [
     "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
 
     # --- SECURITY / MALWARE ---
-    "https://urlhaus.abuse.ch/downloads/hostfile/",
+    #"https://urlhaus.abuse.ch/downloads/hostfile/",
     "https://phishing.army/download/phishing_army_blocklist_extended.txt",
     "https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt",
     "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt",
