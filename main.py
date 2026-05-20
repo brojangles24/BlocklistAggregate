@@ -249,10 +249,10 @@ ULTIMATE_SOURCES = [
     # --- The Blocklist Project ---
     "https://blocklistproject.github.io/Lists/abuse.txt",
     "https://blocklistproject.github.io/Lists/ads.txt",
-    #"https://blocklistproject.github.io/Lists/crypto.txt",
+    "https://blocklistproject.github.io/Lists/crypto.txt",
     "https://blocklistproject.github.io/Lists/drugs.txt",
     "https://blocklistproject.github.io/Lists/fraud.txt",
-    #"https://blocklistproject.github.io/Lists/gambling.txt",
+    "https://blocklistproject.github.io/Lists/gambling.txt",
     "https://blocklistproject.github.io/Lists/malware.txt",
     "https://blocklistproject.github.io/Lists/phishing.txt",
     "https://blocklistproject.github.io/Lists/piracy.txt",
@@ -260,7 +260,7 @@ ULTIMATE_SOURCES = [
     "https://blocklistproject.github.io/Lists/ransomware.txt",
     #"https://blocklistproject.github.io/Lists/redirect.txt",
     "https://blocklistproject.github.io/Lists/scam.txt",
-    #"https://blocklistproject.github.io/Lists/smart-tv.txt",
+    "https://blocklistproject.github.io/Lists/smart-tv.txt",
     #"https://blocklistproject.github.io/Lists/tiktok.txt",
     #"https://blocklistproject.github.io/Lists/torrent.txt",
     "https://blocklistproject.github.io/Lists/tracking.txt",
@@ -280,7 +280,7 @@ ULTIMATE_SOURCES = [
     "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=adblockplus&showintro=1&mimetype=plaintext",
 
     # --- TELEMETRY & IOT ---
-    #"https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV-AGH.txt",
+    "https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV-AGH.txt",
     "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
 
     # --- SECURITY / MALWARE ---
@@ -292,7 +292,7 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
     "https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
