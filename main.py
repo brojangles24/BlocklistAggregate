@@ -226,19 +226,19 @@ ULTIMATE_SOURCES = [
 
     # --- HAGEZI MAIN LISTS ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.mini.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
 
     # --- 1HOSTS ---
     #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
-    "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
+    #"https://badmojr.github.io/1Hosts/Lite/adblock.txt",
     #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
 
     # --- OISD ---
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
@@ -252,15 +252,15 @@ ULTIMATE_SOURCES = [
     "https://blocklistproject.github.io/Lists/crypto.txt",
     "https://blocklistproject.github.io/Lists/drugs.txt",
     "https://blocklistproject.github.io/Lists/fraud.txt",
-    "https://blocklistproject.github.io/Lists/gambling.txt",
+    #"https://blocklistproject.github.io/Lists/gambling.txt",
     "https://blocklistproject.github.io/Lists/malware.txt",
     "https://blocklistproject.github.io/Lists/phishing.txt",
     "https://blocklistproject.github.io/Lists/piracy.txt",
-    "https://blocklistproject.github.io/Lists/porn.txt",
+    #"https://blocklistproject.github.io/Lists/porn.txt",
     "https://blocklistproject.github.io/Lists/ransomware.txt",
     #"https://blocklistproject.github.io/Lists/redirect.txt",
     "https://blocklistproject.github.io/Lists/scam.txt",
-    "https://blocklistproject.github.io/Lists/smart-tv.txt",
+    #"https://blocklistproject.github.io/Lists/smart-tv.txt",
     #"https://blocklistproject.github.io/Lists/tiktok.txt",
     #"https://blocklistproject.github.io/Lists/torrent.txt",
     "https://blocklistproject.github.io/Lists/tracking.txt",
@@ -280,7 +280,7 @@ ULTIMATE_SOURCES = [
     "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=adblockplus&showintro=1&mimetype=plaintext",
 
     # --- TELEMETRY & IOT ---
-    "https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV-AGH.txt",
+    #"https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV-AGH.txt",
     "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
 
     # --- SECURITY / MALWARE ---
@@ -294,7 +294,6 @@ ULTIMATE_SOURCES = [
     "https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts",
     "https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
     "https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt",
-    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dating",
     "https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt",
     "https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt",
     
@@ -304,10 +303,11 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
     "https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dating",
 ]
 
 # Shared Core Resources
