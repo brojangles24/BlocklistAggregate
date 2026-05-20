@@ -270,7 +270,7 @@ ULTIMATE_SOURCES = [
     "https://raw.githubusercontent.com/mullvad/dns-blocklists/main/output/relay/relay_adult.txt",
     "https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
     "https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
-    "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts"
+    "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts",
 
     # --- ShadowWhisperer ---
     "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
