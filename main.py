@@ -284,7 +284,17 @@ ULTIMATE_SOURCES = [
     "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
 
     # --- SECURITY / MALWARE ---
-   "https://urlhaus.abuse.ch/downloads/hostfile/",
+    "https://urlhaus.abuse.ch/downloads/hostfile/",
+    "https://phishing.army/download/phishing_army_blocklist_extended.txt",
+    "https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt",
+    "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt",
+    "https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt",
+    "https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt",
+    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware",
+    "https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts",
+    "https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
+    "https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt",
+    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dating",
     
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
