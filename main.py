@@ -83,7 +83,7 @@ MAIN_SOURCES = [
 
     # --- OISD ---
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
@@ -179,7 +179,7 @@ MOBILE_SOURCES = [
 
     # --- OISD ---
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
