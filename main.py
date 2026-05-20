@@ -29,7 +29,7 @@ ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = True
 ENABLE_MOBILE_KW = True
 
-ENABLE_ULTIMATE_RELEVANCE = True
+ENABLE_ULTIMATE_RELEVANCE = False
 ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
@@ -226,8 +226,8 @@ ULTIMATE_SOURCES = [
 
     # --- HAGEZI MAIN LISTS ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.mini.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
@@ -235,7 +235,7 @@ ULTIMATE_SOURCES = [
     # --- 1HOSTS ---
     #"https://raw.githubusercontent.com/badmojr/1Hosts/refs/heads/master/Xtra/adblock.txt",
     "https://badmojr.github.io/1Hosts/Lite/adblock.txt",
-    #"https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
+    "https://badmojr.gitlab.io/addons_1hosts/kidSaf/adblock.txt",
 
     # --- OISD ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
@@ -265,6 +265,12 @@ ULTIMATE_SOURCES = [
     #"https://blocklistproject.github.io/Lists/torrent.txt",
     "https://blocklistproject.github.io/Lists/tracking.txt",
     #"https://blocklistproject.github.io/Lists/youtube.txt",
+    
+    # --- CUSTOM_RAW_ADULT ---
+    "https://raw.githubusercontent.com/mullvad/dns-blocklists/main/output/relay/relay_adult.txt",
+    "https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
+    "https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
+    "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts"
 
     # --- ShadowWhisperer ---
     "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
@@ -278,7 +284,7 @@ ULTIMATE_SOURCES = [
     "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
 
     # --- SECURITY / MALWARE ---
-    "https://urlhaus.abuse.ch/downloads/hostfile/",
+   "https://urlhaus.abuse.ch/downloads/hostfile/",
     
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
