@@ -63,10 +63,10 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
     # --- HAGEZI THREAT INTEL & HOSTER ---
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
 
     # --- HAGEZI MAIN LISTS ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
@@ -83,7 +83,7 @@ MAIN_SOURCES = [
 
     # --- OISD ---
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
@@ -91,19 +91,19 @@ MAIN_SOURCES = [
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- The Blocklist Project ---
-    "https://blocklistproject.github.io/Lists/abuse.txt",
+    #"https://blocklistproject.github.io/Lists/abuse.txt",
     #"https://blocklistproject.github.io/Lists/ads.txt",
-    "https://blocklistproject.github.io/Lists/crypto.txt",
-    "https://blocklistproject.github.io/Lists/drugs.txt",
-    "https://blocklistproject.github.io/Lists/fraud.txt",
+    #"https://blocklistproject.github.io/Lists/crypto.txt",
+    #"https://blocklistproject.github.io/Lists/drugs.txt",
+    #"https://blocklistproject.github.io/Lists/fraud.txt",
     #"https://blocklistproject.github.io/Lists/gambling.txt",
-    "https://blocklistproject.github.io/Lists/malware.txt",
-    "https://blocklistproject.github.io/Lists/phishing.txt",
-    "https://blocklistproject.github.io/Lists/piracy.txt",
+    #"https://blocklistproject.github.io/Lists/malware.txt",
+    #"https://blocklistproject.github.io/Lists/phishing.txt",
+    #"https://blocklistproject.github.io/Lists/piracy.txt",
     #"https://blocklistproject.github.io/Lists/porn.txt",
-    "https://blocklistproject.github.io/Lists/ransomware.txt",
+    #"https://blocklistproject.github.io/Lists/ransomware.txt",
     #"https://blocklistproject.github.io/Lists/redirect.txt",
-    "https://blocklistproject.github.io/Lists/scam.txt",
+    #"https://blocklistproject.github.io/Lists/scam.txt",
     #"https://blocklistproject.github.io/Lists/smart-tv.txt",
     #"https://blocklistproject.github.io/Lists/tiktok.txt",
     #"https://blocklistproject.github.io/Lists/torrent.txt",
@@ -129,17 +129,17 @@ MAIN_SOURCES = [
 
     # --- SECURITY / MALWARE ---
     #"https://urlhaus.abuse.ch/downloads/hostfile/",
-    "https://phishing.army/download/phishing_army_blocklist_extended.txt",
-    "https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt",
-    "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt",
-    "https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt",
-    "https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt",
-    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware",
-    "https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts",
-    "https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
-    "https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt",
-    "https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt",
-    "https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt",
+    #"https://phishing.army/download/phishing_army_blocklist_extended.txt",
+    #"https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt",
+    #"https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt",
+    #"https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt",
+    #"https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware",
+    #"https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts",
+    #"https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
+    #"https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt",
+    #"https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt",
+    #"https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt",
     
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -159,10 +159,10 @@ MAIN_SOURCES = [
 # ---------------------------------------------------------------------------
 MOBILE_SOURCES = [
     # --- HAGEZI THREAT INTEL & HOSTER ---
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
 
     # --- HAGEZI MAIN LISTS ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
@@ -179,7 +179,7 @@ MOBILE_SOURCES = [
 
     # --- OISD ---
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
@@ -187,19 +187,19 @@ MOBILE_SOURCES = [
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- The Blocklist Project ---
-    "https://blocklistproject.github.io/Lists/abuse.txt",
+    #"https://blocklistproject.github.io/Lists/abuse.txt",
     #"https://blocklistproject.github.io/Lists/ads.txt",
-    "https://blocklistproject.github.io/Lists/crypto.txt",
-    "https://blocklistproject.github.io/Lists/drugs.txt",
-    "https://blocklistproject.github.io/Lists/fraud.txt",
+    #"https://blocklistproject.github.io/Lists/crypto.txt",
+    #"https://blocklistproject.github.io/Lists/drugs.txt",
+    #"https://blocklistproject.github.io/Lists/fraud.txt",
     #"https://blocklistproject.github.io/Lists/gambling.txt",
-    "https://blocklistproject.github.io/Lists/malware.txt",
-    "https://blocklistproject.github.io/Lists/phishing.txt",
-    "https://blocklistproject.github.io/Lists/piracy.txt",
+    #"https://blocklistproject.github.io/Lists/malware.txt",
+    #"https://blocklistproject.github.io/Lists/phishing.txt",
+    #"https://blocklistproject.github.io/Lists/piracy.txt",
     #"https://blocklistproject.github.io/Lists/porn.txt",
-    "https://blocklistproject.github.io/Lists/ransomware.txt",
+    #"https://blocklistproject.github.io/Lists/ransomware.txt",
     #"https://blocklistproject.github.io/Lists/redirect.txt",
-    "https://blocklistproject.github.io/Lists/scam.txt",
+    #"https://blocklistproject.github.io/Lists/scam.txt",
     #"https://blocklistproject.github.io/Lists/smart-tv.txt",
     #"https://blocklistproject.github.io/Lists/tiktok.txt",
     #"https://blocklistproject.github.io/Lists/torrent.txt",
@@ -225,17 +225,17 @@ MOBILE_SOURCES = [
 
     # --- SECURITY / MALWARE ---
     #"https://urlhaus.abuse.ch/downloads/hostfile/",
-    "https://phishing.army/download/phishing_army_blocklist_extended.txt",
-    "https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt",
-    "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt",
-    "https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt",
-    "https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt",
-    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware",
-    "https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts",
-    "https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
-    "https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt",
-    "https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt",
-    "https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt",
+    #"https://phishing.army/download/phishing_army_blocklist_extended.txt",
+    #"https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt",
+    #"https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt",
+    #"https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt",
+    #"https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware",
+    #"https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts",
+    #"https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
+    #"https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt",
+    #"https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt",
+    #"https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt",
     
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
