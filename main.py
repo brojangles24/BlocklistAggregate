@@ -63,7 +63,7 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
     # --- HAGEZI THREAT INTEL & HOSTER ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
@@ -73,7 +73,7 @@ MAIN_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.mini.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
 
     # --- 1HOSTS ---
@@ -88,7 +88,7 @@ MAIN_SOURCES = [
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
     # --- Steven Black ---
-    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- The Blocklist Project ---
     #"https://blocklistproject.github.io/Lists/abuse.txt",
@@ -111,7 +111,7 @@ MAIN_SOURCES = [
     #"https://blocklistproject.github.io/Lists/youtube.txt",
 
     # --- ShadowWhisperer ---
-    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
     #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
 
     # --- PETER LOWE ---
@@ -129,10 +129,10 @@ MAIN_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
-    #"https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    "https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     #"https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
 ]
 
@@ -141,7 +141,7 @@ MAIN_SOURCES = [
 # ---------------------------------------------------------------------------
 MOBILE_SOURCES = [
     # --- HAGEZI THREAT INTEL & HOSTER ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
@@ -151,7 +151,7 @@ MOBILE_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.mini.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/ultimate.mini.txt",
 
     # --- 1HOSTS ---
@@ -166,7 +166,7 @@ MOBILE_SOURCES = [
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
     # --- Steven Black ---
-    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- The Blocklist Project ---
     #"https://blocklistproject.github.io/Lists/abuse.txt",
@@ -189,7 +189,7 @@ MOBILE_SOURCES = [
     #"https://blocklistproject.github.io/Lists/youtube.txt",
 
     # --- ShadowWhisperer ---
-    "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
+    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
     #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking",
 
     # --- PETER LOWE ---
@@ -206,10 +206,10 @@ MOBILE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    #"https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt", 
+    "https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt", 
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
     #"https://www.github.developerdan.com/hosts/lists/ads-and-tracking-extended.txt",
 ]
@@ -302,7 +302,7 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
     "https://filters.adtidy.org/dns/filter_52.txt", #Adguard DoH, VPN, Tor, Bypass optimized blocklist
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
