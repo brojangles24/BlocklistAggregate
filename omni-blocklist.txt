@@ -1,6 +1,6 @@
 ! Jorgensen OMNI List | Version: 2026.03.16.HOSTER_TRACKED
-! Generated: 2026-05-19 08:07:59 PM MST
-! Stats: Kept 926706 | Badware-Pruned 278056 | General-Pruned 1863558 | Whitelisted 25 | Irrelevant 0 | Duplicates 1777809 | TLD 1113301 | NSFW 629603
+! Generated: 2026-05-19 08:41:46 PM MST
+! Stats: Kept 926725 | Badware-Pruned 278061 | General-Pruned 1863584 | Whitelisted 25 | Irrelevant 0 | Duplicates 1777846 | TLD 1113356 | NSFW 629635
 !
 ! --- Source Contributions (Pre-Pruning) ---
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt -> 865948
@@ -8,8 +8,8 @@
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt -> 156377
 ! https://badmojr.github.io/1Hosts/Lite/adblock.txt -> 21527
 ! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt -> 119908
-! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 150096
-! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 21654
+! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 150171
+! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 21653
 ! https://blocklistproject.github.io/Lists/abuse.txt -> 201705
 ! https://blocklistproject.github.io/Lists/ads.txt -> 99875
 ! https://blocklistproject.github.io/Lists/crypto.txt -> 9584
@@ -19,7 +19,7 @@
 ! https://blocklistproject.github.io/Lists/malware.txt -> 94
 ! https://blocklistproject.github.io/Lists/phishing.txt -> 94599
 ! https://blocklistproject.github.io/Lists/piracy.txt -> 1030
-! https://blocklistproject.github.io/Lists/porn.txt -> 300949
+! https://blocklistproject.github.io/Lists/porn.txt -> 300931
 ! https://blocklistproject.github.io/Lists/ransomware.txt -> 2
 ! https://blocklistproject.github.io/Lists/scam.txt -> 561
 ! https://blocklistproject.github.io/Lists/smart-tv.txt -> 50
@@ -28,7 +28,7 @@
 ! https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt -> 8661
 ! https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt -> 10
 ! https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts -> 5
-! https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult -> 51251
+! https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult -> 51238
 ! https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Tracking -> 77985
 ! https://pgl.yoyo.org/adservers/serverlist.php?hostformat=adblockplus&showintro=1&mimetype=plaintext -> 62
 ! https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV-AGH.txt -> 53
@@ -42,11 +42,11 @@
 ! https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts -> 4563
 ! https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts -> 758
 ! https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt -> 26989
-! https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dating -> 1084
-! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 4876
+! https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dating -> 1083
+! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 4882
 ! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 2430
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 826
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 17212
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 17209
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 177
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 44
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt -> 1019
@@ -87499,6 +87499,7 @@
 ||allmenarecreatedequal.net^
 ||allmini.com.br^
 ||allmodapk.de^
+||allmodels.free.fr^
 ||allmovieland.one^
 ||allmovies.pro^
 ||allmoviesforyou.co^
@@ -129254,6 +129255,7 @@
 ||av19.to^
 ||av2.sozcu.com.tr^
 ||av22.info^
+||av222.tv^
 ||av2be.xyz^
 ||av3-84-90-164-75.netvisao.pt^
 ||av30.net^
@@ -226613,6 +226615,7 @@
 ||conduct.pro^
 ||conductabaseco.digital^
 ||conductional.host^
+||conductors.net^
 ||conductrics.net^
 ||conduit-beacon-usw2.mtvnservices.com.edgekey.net^
 ||conduit-beacon.use1.prod.aws.viacbs.cloud^
@@ -280041,6 +280044,7 @@
 ||donhangnhanh.net^
 ||donhomes.ru^
 ||doniandrade.com.br^
+||doniatrans.free.fr^
 ||donic.co.id^
 ||donicablivvie.pages.dev^
 ||doniec.pl^
@@ -315770,6 +315774,7 @@
 ||escortsamsterdam.net^
 ||escortsamsterdam.nl^
 ||escortsamsterdam.org^
+||escortsancaktepe.xyz^
 ||escortsandbabes.com.au^
 ||escortsandbrothels.co.nz^
 ||escortsandthecity.co.uk^
@@ -352894,6 +352899,7 @@
 ||fragment-irani.ir^
 ||fragment-numbers.live^
 ||fragment-numbers.pages.dev^
+||fragment.eve.x.free.fr^
 ||fragmentary.info^
 ||fragments.network^
 ||fragmentusernames.pages.dev^
@@ -405734,6 +405740,7 @@
 ||hentaiparadise.info^
 ||hentaiparadize.net^
 ||hentaiparadize.org^
+||hentaiparadize2.net^
 ||hentaipark.de^
 ||hentaipd.xyz^
 ||hentaipics.xyz^
@@ -426551,6 +426558,7 @@
 ||ihentai.blog^
 ||ihentai.cloud^
 ||ihentai.dev^
+||ihentai.gay^
 ||ihentai.nl^
 ||ihentai.to^
 ||ihentai.us^
@@ -511691,6 +511699,8 @@
 ||lustplanet.de^
 ||lustplayground.live^
 ||lustpoint.ch^
+||lustprofi.ch^
+||lustprofi.de^
 ||lustpur.de^
 ||lustrank.ch^
 ||lustraspin.fr^
@@ -604278,6 +604288,7 @@
 ||ontireg.net^
 ||ontknaapservice.nl^
 ||ontknapingen.nl^
+||ontmaagd.nl^
 ||ontmaagd18.nl^
 ||ontmaagdemeiden.nl^
 ||ontmaagding.startspot.nl^
@@ -617342,6 +617353,7 @@
 ||papaproxy.net^
 ||paparaco.me^
 ||paparazix.free.fr^
+||paparazo.com.br^
 ||paparazo.cwsurf.de^
 ||paparazzi.blogter.hu^
 ||paparazzi.com.ru^
@@ -659789,11 +659801,13 @@
 ||prostitutkiastrahaniwant.info^
 ||prostitutkiastrahanix.net^
 ||prostitutkiavtovo.info^
+||prostitutkiazovaher.info^
 ||prostitutkiazovareal.net^
 ||prostitutkibabushkinskaya.info^
 ||prostitutkibalakovo2021.info^
 ||prostitutkibalakovotask.info^
 ||prostitutkibalashihi2026.net^
+||prostitutkibalashihinew.net^
 ||prostitutkibarnaula.stream^
 ||prostitutkibarnaula2022.info^
 ||prostitutkibarnaulaact.net^
@@ -660243,6 +660257,7 @@
 ||prostitutkiivanovochange.net^
 ||prostitutkiivanovogirl.info^
 ||prostitutkiivanovogirl.net^
+||prostitutkiivanovolast.info^
 ||prostitutkiivanovolast.net^
 ||prostitutkiivanovomeet.net^
 ||prostitutkiivanovomix.net^
@@ -696044,6 +696059,7 @@
 ||ronge.co.za^
 ||rongeundhis.ru^
 ||ronghai.com.au^
+||ronghua.org.cn^
 ||rongo.prohash.org^
 ||rongpan.net^
 ||rongrongtu.cn^
@@ -699590,6 +699606,7 @@
 ||rui.easydns.us^
 ||rui61.cn^
 ||ruibaitong.net^
+||ruiboen-tech.com.cn^
 ||ruic-protect.pro^
 ||ruichuang.net^
 ||ruidesign.ca^
@@ -716666,6 +716683,7 @@
 ||seitensprung24.tv^
 ||seitensprung69.ch^
 ||seitensprungagentur-lovepoint.de^
+||seitensprungarea.ch^
 ||seitensprungclub.ch^
 ||seitensprungclub.de^
 ||seitensprunghh.log.ag^
@@ -757454,6 +757472,7 @@
 ||squinny.stream^
 ||squinsybase.digital^
 ||squiragehub.digital^
+||squirclegames.itch.io^
 ||squire.host^
 ||squirepark.org^
 ||squiret.org^
