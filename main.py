@@ -295,6 +295,8 @@ ULTIMATE_SOURCES = [
     "https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
     "https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt",
     "https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Dating",
+    "https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt",
+    "https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt",
     
     # --- SPECIALTY ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
