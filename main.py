@@ -33,7 +33,7 @@ ENABLE_MOBILE_HEURISTICS = False  # Mathematical DGA Engine
 
 ENABLE_ULTIMATE_RELEVANCE = False
 ENABLE_ULTIMATE_TLD = True
-ENABLE_ULTIMATE_KW = False        # Offloaded to Control D Upstream
+ENABLE_ULTIMATE_KW = True       # Offloaded to Control D Upstream
 ENABLE_ULTIMATE_HEURISTICS = True # Mathematical DGA Engine
 
 # APPEND TOGGLES
