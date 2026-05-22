@@ -22,14 +22,14 @@ DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
 ENABLE_MAIN_RELEVANCE = False
-ENABLE_MAIN_TLD = True
+ENABLE_MAIN_TLD = False
 ENABLE_MAIN_KW = False          # Offloaded to Control D Upstream
-ENABLE_MAIN_HEURISTICS = True   # Mathematical DGA Engine
+ENABLE_MAIN_HEURISTICS = False   # Mathematical DGA Engine
 
 ENABLE_MOBILE_RELEVANCE = True
-ENABLE_MOBILE_TLD = True
+ENABLE_MOBILE_TLD = False
 ENABLE_MOBILE_KW = False         # Offloaded to Control D Upstream
-ENABLE_MOBILE_HEURISTICS = True  # Mathematical DGA Engine
+ENABLE_MOBILE_HEURISTICS = False  # Mathematical DGA Engine
 
 ENABLE_ULTIMATE_RELEVANCE = False
 ENABLE_ULTIMATE_TLD = True
@@ -37,15 +37,15 @@ ENABLE_ULTIMATE_KW = False        # Offloaded to Control D Upstream
 ENABLE_ULTIMATE_HEURISTICS = True # Mathematical DGA Engine
 
 # APPEND TOGGLES
-ENABLE_MAIN_REBIND = True
-ENABLE_MAIN_SAFESEARCH = True
-ENABLE_MAIN_NSFW_REGEX = True
-ENABLE_MAIN_SPAM_TLDS = True
+ENABLE_MAIN_REBIND = False
+ENABLE_MAIN_SAFESEARCH = False
+ENABLE_MAIN_NSFW_REGEX = False
+ENABLE_MAIN_SPAM_TLDS = False
 
-ENABLE_MOBILE_REBIND = True
-ENABLE_MOBILE_SAFESEARCH = True
-ENABLE_MOBILE_NSFW_REGEX = True
-ENABLE_MOBILE_SPAM_TLDS = True
+ENABLE_MOBILE_REBIND = False
+ENABLE_MOBILE_SAFESEARCH = False
+ENABLE_MOBILE_NSFW_REGEX = False
+ENABLE_MOBILE_SPAM_TLDS = False
 
 ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
@@ -123,17 +123,17 @@ def is_dga_heuristic(domain: str) -> bool:
 # OPTIMIZED SOURCE ARCHITECTURE (Control D Cleaned)
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
-    "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
+    #"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
 
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    "https://filters.adtidy.org/dns/filter_52.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    #"https://filters.adtidy.org/dns/filter_52.txt",
 ]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
