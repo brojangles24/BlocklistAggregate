@@ -63,7 +63,7 @@ MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    "https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
+    #"https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
 
     # --- 2. The Multi-Threat Security Core (The "Mini-Omni" Engines) ---
     # Drops ads, privacy tracking, and native OS telemetry cleanly
@@ -78,7 +78,7 @@ MAIN_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://filters.adtidy.org/dns/filter_52.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
 ]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
@@ -92,12 +92,12 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
 
     # --- Core Content Tiers ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    "https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
+    #"https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
 
     # --- High-Yield Blocklist Project Components ---
     "https://blocklistproject.github.io/Lists/abuse.txt",
@@ -105,8 +105,8 @@ ULTIMATE_SOURCES = [
     "https://blocklistproject.github.io/Lists/drugs.txt",
     "https://blocklistproject.github.io/Lists/fraud.txt",
     "https://blocklistproject.github.io/Lists/phishing.txt",
-    "https://blocklistproject.github.io/Lists/piracy.txt",
-    "https://blocklistproject.github.io/Lists/scam.txt",
+    #"https://blocklistproject.github.io/Lists/piracy.txt",
+    #"https://blocklistproject.github.io/Lists/scam.txt",
 
     # --- Specialized Live Threat Feeds ---
     "https://phishing.army/download/phishing_army_blocklist_extended.txt",
