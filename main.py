@@ -60,19 +60,25 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 # MAIN LIST SELECTION
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
-    # --- OISD & Steven Black Core Tier ---
+    # --- 1. Content Filtering & Core Safety Baseline ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-
-    # --- Modern Dynamic Lists ---
-    "https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
     "https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
-    
-    # --- Specialty Content Tiers ---
+
+    # --- 2. The Multi-Threat Security Core (The "Mini-Omni" Engines) ---
+    # Drops ads, privacy tracking, and native OS telemetry cleanly
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", 
+    # Injects heavy real-time threat intel without the extreme storage footprint
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
+
+    # --- 3. Enforcement & Behavioral Blocks ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    "https://filters.adtidy.org/dns/filter_52.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
 ]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
