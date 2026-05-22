@@ -64,7 +64,7 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 MAIN_SOURCES = [
     # --- HAGEZI THREAT INTEL & HOSTER ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
 
@@ -83,12 +83,12 @@ MAIN_SOURCES = [
 
     # --- OISD ---
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
     # --- Steven Black ---
-    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- The Blocklist Project ---
     #"https://blocklistproject.github.io/Lists/abuse.txt",
@@ -111,10 +111,10 @@ MAIN_SOURCES = [
     #"https://blocklistproject.github.io/Lists/youtube.txt",
     
     # --- CUSTOM_RAW_ADULT ---
-    #"https://raw.githubusercontent.com/mullvad/dns-blocklists/main/output/relay/relay_adult.txt",
-    #"https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
-    #"https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
-    #"https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts",
+    "https://raw.githubusercontent.com/mullvad/dns-blocklists/main/output/relay/relay_adult.txt",
+    "https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
+    "https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
+    "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts",
 
     # --- ShadowWhisperer ---
     #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
@@ -160,7 +160,7 @@ MAIN_SOURCES = [
 MOBILE_SOURCES = [
     # --- HAGEZI THREAT INTEL & HOSTER ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
 
@@ -179,12 +179,12 @@ MOBILE_SOURCES = [
 
     # --- OISD ---
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_big.txt",
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_small.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw_small.txt",
 
     # --- Steven Black ---
-    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- The Blocklist Project ---
     #"https://blocklistproject.github.io/Lists/abuse.txt",
@@ -207,10 +207,10 @@ MOBILE_SOURCES = [
     #"https://blocklistproject.github.io/Lists/youtube.txt",
     
     # --- CUSTOM_RAW_ADULT ---
-    #"https://raw.githubusercontent.com/mullvad/dns-blocklists/main/output/relay/relay_adult.txt",
-    #"https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
-    #"https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
-    #"https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts",
+    "https://raw.githubusercontent.com/mullvad/dns-blocklists/main/output/relay/relay_adult.txt",
+    "https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
+    "https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
+    "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts",
 
     # --- ShadowWhisperer ---
     #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/refs/heads/master/Lists/Adult",
