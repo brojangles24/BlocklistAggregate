@@ -32,14 +32,14 @@ ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
-ENABLE_MAIN_REBIND = False
-ENABLE_MAIN_SAFESEARCH = False
-ENABLE_MAIN_NSFW_REGEX = False
+ENABLE_MAIN_REBIND = True
+ENABLE_MAIN_SAFESEARCH = True
+ENABLE_MAIN_NSFW_REGEX = True
 ENABLE_MAIN_SPAM_TLDS = False
 
-ENABLE_MOBILE_REBIND = False
-ENABLE_MOBILE_SAFESEARCH = False
-ENABLE_MOBILE_NSFW_REGEX = False
+ENABLE_MOBILE_REBIND = True
+ENABLE_MOBILE_SAFESEARCH = True
+ENABLE_MOBILE_NSFW_REGEX = True
 ENABLE_MOBILE_SPAM_TLDS = False
 
 ENABLE_ULTIMATE_REBIND = True
@@ -268,7 +268,7 @@ async def fetch_top_list(url: str, col_idx: int, skip_header: bool, compression:
         print(f"[-] Error processing top list {url}: {e}")
         return set()
 
-async def fetch_source_domains(url: str, client: httpx.AsyncClient) -> set[str]:
+async def fetch_source_domains(url: str, client: httpx.AsyncClient) -> tuple[str, set[str]]:
     try:
         domains = set()
         add_dom = domains.add
@@ -285,10 +285,10 @@ async def fetch_source_domains(url: str, client: httpx.AsyncClient) -> set[str]:
                     if host.startswith("www."): 
                         host = host[4:]
                     add_dom(host)
-        return domains
+        return url, domains
     except Exception as e:
         print(f"[-] Network error fetching source {url}: {e}")
-        return set()
+        return url, set()
 
 # ---------------------------------------------------------------------------
 # Data Synthesis Processing
@@ -314,16 +314,16 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if has_suffix_match(host, w_list):
                 stats["whitelisted"] += 1
                 continue
-            if not disable_tld and get_matching_tld(host, s_set, d_map):
+            if not disable_tld && get_matching_tld(host, s_set, d_map):
                 stats["tld"] += 1
                 continue
-            if not disable_kw and NSFW_REGEX.search(host):
+            if not disable_kw && NSFW_REGEX.search(host):
                 stats["kw"] += 1
                 continue
-            if not disable_relevance and not has_suffix_match(host, a_list):
+            if not disable_relevance && not has_suffix_match(host, a_list):
                 stats["irrelevant"] += 1
                 continue
-            if not is_hoster and has_suffix_match(host, hoster_active):
+            if not is_hoster && has_suffix_match(host, hoster_active):
                 stats["pruned_by_hoster"] += 1
                 continue
 
@@ -419,7 +419,7 @@ async def run_pipeline() -> None:
         ss_tasks = {asyncio.create_task(client.get(url, timeout=30.0)): url for url in ADGUARD_SAFESEARCH_URLS}
 
         print(f"[*] Downloading and parsing {len(all_unique_urls)} source files concurrently...")
-        fetch_tasks = {asyncio.create_task(fetch_source_domains(url, client)): url for url in all_unique_urls}
+        fetch_tasks = [asyncio.create_task(fetch_source_domains(url, client)) for url in all_unique_urls]
 
         if top_tasks:
             top_results = await asyncio.gather(*top_tasks)
@@ -435,9 +435,8 @@ async def run_pipeline() -> None:
             print(f"[*] Manual whitelist '{args.whitelist}' not found. Skipping local disk read.")
 
         source_data = {}
-        for task in asyncio.as_completed(fetch_tasks.keys()):
-            hosts = await task
-            url = fetch_tasks[task]
+        for task in asyncio.as_completed(fetch_tasks):
+            url, hosts = await task
             source_data[url] = hosts
             
             if DEBUG_SAMPLES:
