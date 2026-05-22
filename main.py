@@ -314,16 +314,16 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if has_suffix_match(host, w_list):
                 stats["whitelisted"] += 1
                 continue
-            if not disable_tld && get_matching_tld(host, s_set, d_map):
+            if not disable_tld and get_matching_tld(host, s_set, d_map):
                 stats["tld"] += 1
                 continue
-            if not disable_kw && NSFW_REGEX.search(host):
+            if not disable_kw and NSFW_REGEX.search(host):
                 stats["kw"] += 1
                 continue
-            if not disable_relevance && not has_suffix_match(host, a_list):
+            if not disable_relevance and not has_suffix_match(host, a_list):
                 stats["irrelevant"] += 1
                 continue
-            if not is_hoster && has_suffix_match(host, hoster_active):
+            if not is_hoster and has_suffix_match(host, hoster_active):
                 stats["pruned_by_hoster"] += 1
                 continue
 
