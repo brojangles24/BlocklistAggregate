@@ -18,43 +18,42 @@ from typing import Iterable
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.05.22.OMNI_MAX_EFFICIENCY_TOGGLEABLE"
+VERSION = "2026.05.23.OMNI_KALLI_ISAAC_SUBNETS"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
-# FILTER TOGGLES (Python Compilation Layer Heuristics)
-ENABLE_MAIN_RELEVANCE = False
-ENABLE_MAIN_TLD = True
-ENABLE_MAIN_KW = True        # Offloaded to Control D Upstream
-ENABLE_MAIN_HEURISTICS = True   # Mathematical DGA Engine
+# --- PROFILE FILTERS & LAYER TOGGLES ---
+# Isaac Profile Toggles (Lean, High-Relevance Standard Controls)
+ENABLE_ISAAC_RELEVANCE = False
+ENABLE_ISAAC_TLD = True
+ENABLE_ISAAC_KW = True
+ENABLE_ISAAC_HEURISTICS = True
+ENABLE_ISAAC_REBIND = False
+ENABLE_ISAAC_SAFESEARCH = False
+ENABLE_ISAAC_NSFW_REGEX = False
+ENABLE_ISAAC_DGA_REGEX = False
+ENABLE_ISAAC_SPAM_TLDS = False
 
-ENABLE_MOBILE_RELEVANCE = True
-ENABLE_MOBILE_TLD = True
-ENABLE_MOBILE_KW = True        # Offloaded to Control D Upstream
-ENABLE_MOBILE_HEURISTICS = True  # Mathematical DGA Engine
+# Kalli Profile Toggles (Comprehensive, Strict Defenses)
+ENABLE_KALLI_RELEVANCE = False
+ENABLE_KALLI_TLD = True
+ENABLE_KALLI_KW = True
+ENABLE_KALLI_HEURISTICS = True
+ENABLE_KALLI_REBIND = True
+ENABLE_KALLI_SAFESEARCH = True
+ENABLE_KALLI_NSFW_REGEX = True
+ENABLE_KALLI_DGA_REGEX = True
+ENABLE_KALLI_SPAM_TLDS = True
 
-ENABLE_ULTIMATE_RELEVANCE = False
-ENABLE_ULTIMATE_TLD = True
-ENABLE_ULTIMATE_KW = True        # Offloaded to Control D Upstream
-ENABLE_ULTIMATE_HEURISTICS = True # Mathematical DGA Engine
-
-# APPEND TOGGLES (AdGuard Home Firewall Layer Rules)
-ENABLE_MAIN_REBIND = True
-ENABLE_MAIN_SAFESEARCH = True
-ENABLE_MAIN_NSFW_REGEX = True
-ENABLE_MAIN_DGA_REGEX = True     # Dynamic AdGuard Home DGA Regex Injection
-ENABLE_MAIN_SPAM_TLDS = True
-
-ENABLE_MOBILE_REBIND = True
-ENABLE_MOBILE_SAFESEARCH = True
-ENABLE_MOBILE_NSFW_REGEX = True
-ENABLE_MOBILE_DGA_REGEX = True    # Dynamic AdGuard Home DGA Regex Injection
-ENABLE_MOBILE_SPAM_TLDS = True
-
-ENABLE_ULTIMATE_REBIND = True
-ENABLE_ULTIMATE_SAFESEARCH = True
-ENABLE_ULTIMATE_NSFW_REGEX = True
-ENABLE_ULTIMATE_DGA_REGEX = True  # Dynamic AdGuard Home DGA Regex Injection
-ENABLE_ULTIMATE_SPAM_TLDS = True
+# Omni Profile Toggles (The Master Set: Combines Main Subnet + IoT Firewall Layers)
+ENABLE_OMNI_RELEVANCE = False
+ENABLE_OMNI_TLD = True
+ENABLE_OMNI_KW = True
+ENABLE_OMNI_HEURISTICS = True
+ENABLE_OMNI_REBIND = True
+ENABLE_OMNI_SAFESEARCH = True
+ENABLE_OMNI_NSFW_REGEX = True
+ENABLE_OMNI_DGA_REGEX = True
+ENABLE_OMNI_SPAM_TLDS = True
 
 # --- HIGH-RISK CONTEXTUAL MATRIX ---
 HIGH_RISK_TLDS = {".top", ".xyz", ".click", ".country", ".gq", ".tk", ".cf", ".ml", ".ga", ".cc", ".icu", ".vip", ".live"}
@@ -77,7 +76,7 @@ class SuffixTrie:
         parts = domain.strip().lower().split('.')[::-1]
         node = self.root
         for part in parts:
-            if '$' in node: return  # Parent domain already handles ancestry path
+            if '$' in node: return  
             node = node.setdefault(part, {})
         node['$'] = True
 
@@ -95,7 +94,6 @@ class SuffixTrie:
 NSFW_PATTERN = r"(blowjob|threesome|gangbang|deepthroat|bukkake|tits|fuck|onlyfans|porn|xxx|sex)"
 NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
 
-# Precise structural DGA patterns (Style 1: 1-char sub + 56-char hex | Style 2: 10-char hex + 10-char hex)
 DGA_PATTERN = r"^(?:[a-z]\.[0-9a-f]{56}|[0-9a-f]{10}\.[0-9a-f]{10})\.[a-z]{2,}$"
 DGA_REGEX = re.compile(f"(?i){DGA_PATTERN}")
 
@@ -115,19 +113,13 @@ def has_suffix_match(host: str, lookup_set: set[str]) -> bool:
     return False
 
 def calculate_shannon_entropy(label: str) -> float:
-    """Computes mathematical Shannon Entropy to evaluate character randomness."""
     if not label: return 0.0
     probabilities = [count / len(label) for count in Counter(label).values()]
     return -sum(p * math.log2(p) for p in probabilities)
 
 def is_dga_heuristic(domain: str) -> bool:
-    """Evaluates labels dynamically for entropy anomalies with context-aware mitigation."""
-    if DGA_REGEX.search(domain):
-        return True
-        
-    # Protection shield protecting trusted CDNs/Cloud providers from mathematical heuristics
-    if has_suffix_match(domain, IMMUNE_INFRASTRUCTURE):
-        return False
+    if DGA_REGEX.search(domain): return True
+    if has_suffix_match(domain, IMMUNE_INFRASTRUCTURE): return False
     
     parts = domain.split('.')[:-1]
     for part in parts:
@@ -137,44 +129,25 @@ def is_dga_heuristic(domain: str) -> bool:
         consonants = len(CONSONANT_PATTERN.findall(part))
         consonant_ratio = consonants / len(part)
         
-        # Risk matrix shift: Lower standard ceiling if domain runs on high-risk TLD infrastructure
         entropy_floor = 3.82 if any(domain.endswith(tld) for tld in HIGH_RISK_TLDS) else 4.15
-        
-        # Flag structural alphanumeric entropy chaos (zero-day dynamic variations)
-        if entropy > entropy_floor and len(part) > 16:
-            return True
-        # Flag extreme consonant clustering density
-        if consonant_ratio > 0.83:
-            return True
+        if entropy > entropy_floor and len(part) > 16: return True
+        if consonant_ratio > 0.83: return True
     return False
 
-# ---------------------------------------------------------------------------
-# SOURCE ARCHITECTURE (Control D Cleaned Matrix)
-# ---------------------------------------------------------------------------
-MAIN_SOURCES = [
-    #"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
-
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    #"https://filters.adtidy.org/dns/filter_52.txt",
+# --- SOURCE MATRIX ASSETS ---
+ISAAC_SOURCES = [
+    "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
 ]
 
-MOBILE_SOURCES = list(MAIN_SOURCES)
-
-ULTIMATE_SOURCES = [
+KALLI_SOURCES = [
     "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt",
-
     "https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt",
     "https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
     "https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt",
@@ -184,12 +157,11 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
 ]
 
-# Shared Core Resources
+OMNI_SOURCES = list(KALLI_SOURCES)
+
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 REBIND_URL = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt"
-ADGUARD_SAFESEARCH_URLS = [
-    "https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt",
-]
+ADGUARD_SAFESEARCH_URLS = ["https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt"]
 
 TOP_LISTS = [
     ("https://tranco-list.eu/top-1m.csv.zip", 1, False, "zip"),
@@ -243,9 +215,7 @@ RAW_IOT_RULES = [
     "@@||car-partner-01.lemonade.com^", "@@||d2wvvf45320aru.cloudfront.net^", "@@||telemetry-prd.vn.tesla.services^"
 ]
 
-# ---------------------------------------------------------------------------
-# Pure Performance Optimization Code
-# ---------------------------------------------------------------------------
+# --- PERFORMANCE STRATEGIES ---
 def get_matching_tld(host: str, spam_set: set[str], denyallow_map: dict[str, set[str]]) -> str | None:
     if host in spam_set:
         if host in denyallow_map and host in denyallow_map[host]: return None
@@ -311,9 +281,7 @@ def extract_host(clean: str) -> str | None:
     if m: return m.group(0).lower().strip('.')
     return None
 
-# ---------------------------------------------------------------------------
-# Network Data Acquisition Layer
-# ---------------------------------------------------------------------------
+# --- CONCURRENT DATA ACQUISITION LAYER ---
 async def fetch_with_retry(client: httpx.AsyncClient, url: str, **kwargs) -> httpx.Response:
     total_retries = 3
     backoff_factor = 1.0
@@ -367,9 +335,7 @@ async def fetch_source_domains(url: str, client: httpx.AsyncClient) -> tuple[str
         print(f"[-] Network error fetching source {url}: {e}")
         return url, set()
 
-# ---------------------------------------------------------------------------
-# Algorithmic Data Processing & Trie Pruning
-# ---------------------------------------------------------------------------
+# --- ALGORITHMIC DATA PROCESSING & PRUNING ---
 def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], allow_trie: SuffixTrie, white_trie: SuffixTrie, source_data: dict[str, set[str]], disable_relevance: bool = False, disable_tld: bool = False, disable_kw: bool = False, disable_heuristics: bool = False) -> tuple[list[str], dict[str, int], dict[str, int]]:
     found = set()
     stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0, "whitelisted": 0, "pruned": 0, "pruned_by_hoster": 0, "heuristics": 0, "punycode_purged": 0}
@@ -414,8 +380,6 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if is_hoster: hoster_active.insert(host)
 
         source_stats[url] = added_from_source
-        p = urlparse(url)
-        filename = p.path.rstrip('/').split('/')[-1] or p.path
 
     initial_count = len(found)
     optimized = optimize_domains(found)
@@ -446,7 +410,7 @@ def parse_tld_patterns(lines: list[str]) -> tuple[set[str], dict[str, set[str]]]
 def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool, include_dga_regex: bool, client_suffix: str = "", iot_rules: list[str] | None = None) -> None:
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     with open(filename, "w", encoding="utf-8") as f:
-        f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
+        f.write(f"! Jorgensen {label} Profile | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
         f.write(f"! Stats: Kept {len(dataset)} | Badware-Pruned {stats['pruned_by_hoster']} | General-Pruned {stats['pruned']} | Whitelisted {stats['whitelisted']} | Irrelevant {stats['irrelevant']} | Duplicates {stats['duplicate']} | TLD {stats['tld']} | NSFW {stats['kw']} | Heuristic DGA Counter {stats['heuristics']} | Individual Punycode Intercepts {stats['punycode_purged']}\n")
 
@@ -479,7 +443,6 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
             f.write("\n! --- NSFW REGEX INTERCEPTIONS ---\n")
             f.write(f"/{NSFW_PATTERN}/{client_suffix}\n")
             
-        # Decoupled Toggle: Active when configuration variable matches append profile
         if include_dga_regex:
             f.write("\n! --- COMPILATION EMBEDDED STRUCTURAL DGA REGEX ---\n")
             f.write(f"/{DGA_PATTERN}/{client_suffix}\n")
@@ -500,21 +463,19 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
             f.write("\n! --- IOT ISOLATED SUBNET INTERCEPTIONS ---\n")
             f.writelines(f"{rule}\n" for rule in iot_rules)
 
-# ---------------------------------------------------------------------------
-# Pipeline Execution Core (Accelerated Multi-Processing Pool)
-# ---------------------------------------------------------------------------
+# --- PIPELINE ENGINE CORE ---
 async def run_pipeline() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--output", default="blocklist.txt")
-    parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
-    parser.add_argument("-u", "--ultimate", default="omni-blocklist.txt")
+    parser.add_argument("-o", "--omni", default="omni-blocklist.txt")
+    parser.add_argument("-k", "--kalli", default="kalli-blocklist.txt")
+    parser.add_argument("-i", "--isaac", default="isaac-blocklist.txt")
     parser.add_argument("-w", "--whitelist", default="whitelist.txt")
     args = parser.parse_args()
 
-    active_main = [s for s in MAIN_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    active_mobile = [s for s in MOBILE_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    active_ultimate = [s for s in ULTIMATE_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    all_unique_urls = list(dict.fromkeys(active_main + active_mobile + active_ultimate))
+    active_isaac = [s for s in ISAAC_SOURCES if s and not s.strip().startswith(("#", "//"))]
+    active_kalli = [s for s in KALLI_SOURCES if s and not s.strip().startswith(("#", "//"))]
+    active_omni = [s for s in OMNI_SOURCES if s and not s.strip().startswith(("#", "//"))]
+    all_unique_urls = list(dict.fromkeys(active_isaac + active_kalli + active_omni))
 
     limits = httpx.Limits(max_keepalive_connections=20, max_connections=40)
     async with httpx.AsyncClient(limits=limits, follow_redirects=True) as client:
@@ -523,7 +484,7 @@ async def run_pipeline() -> None:
         white_trie = SuffixTrie()
 
         top_tasks = []
-        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE or ENABLE_ULTIMATE_RELEVANCE:
+        if ENABLE_ISAAC_RELEVANCE or ENABLE_KALLI_RELEVANCE or ENABLE_OMNI_RELEVANCE:
             top_tasks = [asyncio.create_task(fetch_top_list(url, col, skip, comp, client)) for url, col, skip, comp in TOP_LISTS]
 
         rebind_task = asyncio.create_task(client.get(REBIND_URL, timeout=30.0)) if REBIND_URL else None
@@ -585,47 +546,52 @@ async def run_pipeline() -> None:
     with ProcessPoolExecutor() as executor:
         loop = asyncio.get_running_loop()
         
-        main_future = loop.run_in_executor(
-            executor, build_dataset, active_main, spam_patterns_set, denyallow_map, 
-            allow_trie, white_trie, source_data, not ENABLE_MAIN_RELEVANCE, 
-            not ENABLE_MAIN_TLD, not ENABLE_MAIN_KW, not ENABLE_MAIN_HEURISTICS
+        isaac_future = loop.run_in_executor(
+            executor, build_dataset, active_isaac, spam_patterns_set, denyallow_map, 
+            allow_trie, white_trie, source_data, not ENABLE_ISAAC_RELEVANCE, 
+            not ENABLE_ISAAC_TLD, not ENABLE_ISAAC_KW, not ENABLE_ISAAC_HEURISTICS
         )
-        mobile_future = loop.run_in_executor(
-            executor, build_dataset, active_mobile, spam_patterns_set, denyallow_map, 
-            allow_trie, white_trie, source_data, not ENABLE_MOBILE_RELEVANCE, 
-            not ENABLE_MOBILE_TLD, not ENABLE_MOBILE_KW, not ENABLE_MOBILE_HEURISTICS
+        kalli_future = loop.run_in_executor(
+            executor, build_dataset, active_kalli, spam_patterns_set, denyallow_map, 
+            allow_trie, white_trie, source_data, not ENABLE_KALLI_RELEVANCE, 
+            not ENABLE_KALLI_TLD, not ENABLE_KALLI_KW, not ENABLE_KALLI_HEURISTICS
         )
-        ultimate_future = loop.run_in_executor(
-            executor, build_dataset, active_ultimate, spam_patterns_set, denyallow_map, 
-            allow_trie, white_trie, source_data, not ENABLE_ULTIMATE_RELEVANCE, 
-            not ENABLE_ULTIMATE_TLD, not ENABLE_ULTIMATE_KW, not ENABLE_ULTIMATE_HEURISTICS
+        omni_future = loop.run_in_executor(
+            executor, build_dataset, active_omni, spam_patterns_set, denyallow_map, 
+            allow_trie, white_trie, source_data, not ENABLE_OMNI_RELEVANCE, 
+            not ENABLE_OMNI_TLD, not ENABLE_OMNI_KW, not ENABLE_OMNI_HEURISTICS
         )
 
         print("[*] Awaiting multi-core background tasks processing execution layout...")
-        main_set, main_stats, main_src_stats = await main_future
-        mobile_set, mobile_stats, mobile_src_stats = await mobile_future
-        ultimate_set, ultimate_stats, ultimate_src_stats = await ultimate_future
+        isaac_set, isaac_stats, isaac_src_stats = await isaac_future
+        kalli_set, kalli_stats, kalli_src_stats = await kalli_future
+        omni_set, omni_stats, omni_src_stats = await omni_future
 
     del source_data
     gc.collect()
 
     formatted_iot_rules = [f"{rule}$client=10.20.20.0/24" for rule in RAW_IOT_RULES]
 
+    # Write Isaac Profile (Lean baseline targeting)
     write_output_file(
-        args.output, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text,
-        ENABLE_MAIN_REBIND, ENABLE_MAIN_SAFESEARCH, ENABLE_MAIN_NSFW_REGEX, ENABLE_MAIN_SPAM_TLDS, ENABLE_MAIN_DGA_REGEX
+        args.isaac, isaac_set, isaac_stats, isaac_src_stats, ISAAC_SOURCES, "ISAAC", rebind_text, ss_rules, spam_text,
+        ENABLE_ISAAC_REBIND, ENABLE_ISAAC_SAFESEARCH, ENABLE_ISAAC_NSFW_REGEX, ENABLE_ISAAC_SPAM_TLDS, ENABLE_ISAAC_DGA_REGEX
     )
+
+    # Write Kalli Profile (Isolated endpoint tracking setup)
     write_output_file(
-        args.mobile, mobile_set, mobile_stats, mobile_src_stats, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text,
-        ENABLE_MOBILE_REBIND, ENABLE_MOBILE_SAFESEARCH, ENABLE_MOBILE_NSFW_REGEX, ENABLE_MOBILE_SPAM_TLDS, ENABLE_MOBILE_DGA_REGEX
+        args.kalli, kalli_set, kalli_stats, kalli_src_stats, KALLI_SOURCES, "KALLI", rebind_text, ss_rules, spam_text,
+        ENABLE_KALLI_REBIND, ENABLE_KALLI_SAFESEARCH, ENABLE_KALLI_NSFW_REGEX, ENABLE_KALLI_SPAM_TLDS, ENABLE_KALLI_DGA_REGEX
     )
+    
+    # Write Omni Profile (Appends main client subnet suffix AND maps the isolated IoT firewall rules)
     write_output_file(
-        args.ultimate, ultimate_set, ultimate_stats, ultimate_src_stats, ULTIMATE_SOURCES, "OMNI", rebind_text, ss_rules, spam_text,
-        ENABLE_ULTIMATE_REBIND, ENABLE_ULTIMATE_SAFESEARCH, ENABLE_ULTIMATE_NSFW_REGEX, ENABLE_ULTIMATE_SPAM_TLDS, ENABLE_ULTIMATE_DGA_REGEX,
+        args.omni, omnni_set := omni_set, omni_stats, omni_src_stats, OMNI_SOURCES, "OMNI", rebind_text, ss_rules, spam_text,
+        ENABLE_OMNI_REBIND, ENABLE_OMNI_SAFESEARCH, ENABLE_OMNI_NSFW_REGEX, ENABLE_OMNI_SPAM_TLDS, ENABLE_OMNI_DGA_REGEX,
         client_suffix="$client=10.10.10.0/24", iot_rules=formatted_iot_rules
     )
 
-    print(f"[+] Operational Sync Sequence Terminated. Main: {len(main_set)} | Mobile: {len(mobile_set)} | Omni: {len(ultimate_set)}")
+    print(f"[+] Operational Sync Sequence Terminated. Isaac: {len(isaac_set)} | Kalli: {len(kalli_set)} | Omni: {len(omni_set)}")
 
 def main() -> None:
     asyncio.run(run_pipeline())
