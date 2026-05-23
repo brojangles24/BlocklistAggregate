@@ -10,6 +10,7 @@ import gzip
 import gc
 import os
 import math
+from concurrent.futures import ProcessPoolExecutor
 from collections import Counter
 from datetime import datetime, timezone, timedelta
 from urllib.parse import urlparse
@@ -17,40 +18,53 @@ from typing import Iterable
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.05.22.OMNI_TLD_DEDUPLICATED"
+VERSION = "2026.05.22.OMNI_MAX_EFFICIENCY_TOGGLEABLE"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
-# FILTER TOGGLES
+# FILTER TOGGLES (Python Compilation Layer Heuristics)
 ENABLE_MAIN_RELEVANCE = False
-ENABLE_MAIN_TLD = False
-ENABLE_MAIN_KW = False          # Offloaded to Control D Upstream
-ENABLE_MAIN_HEURISTICS = False   # Mathematical DGA Engine
+ENABLE_MAIN_TLD = True
+ENABLE_MAIN_KW = True        # Offloaded to Control D Upstream
+ENABLE_MAIN_HEURISTICS = True   # Mathematical DGA Engine
 
 ENABLE_MOBILE_RELEVANCE = True
-ENABLE_MOBILE_TLD = False
-ENABLE_MOBILE_KW = False         # Offloaded to Control D Upstream
-ENABLE_MOBILE_HEURISTICS = False  # Mathematical DGA Engine
+ENABLE_MOBILE_TLD = True
+ENABLE_MOBILE_KW = True        # Offloaded to Control D Upstream
+ENABLE_MOBILE_HEURISTICS = True  # Mathematical DGA Engine
 
 ENABLE_ULTIMATE_RELEVANCE = False
 ENABLE_ULTIMATE_TLD = True
-ENABLE_ULTIMATE_KW = True       # Offloaded to Control D Upstream
+ENABLE_ULTIMATE_KW = True        # Offloaded to Control D Upstream
 ENABLE_ULTIMATE_HEURISTICS = True # Mathematical DGA Engine
 
-# APPEND TOGGLES
-ENABLE_MAIN_REBIND = False
-ENABLE_MAIN_SAFESEARCH = False
-ENABLE_MAIN_NSFW_REGEX = False
-ENABLE_MAIN_SPAM_TLDS = False
+# APPEND TOGGLES (AdGuard Home Firewall Layer Rules)
+ENABLE_MAIN_REBIND = True
+ENABLE_MAIN_SAFESEARCH = True
+ENABLE_MAIN_NSFW_REGEX = True
+ENABLE_MAIN_DGA_REGEX = True     # Dynamic AdGuard Home DGA Regex Injection
+ENABLE_MAIN_SPAM_TLDS = True
 
-ENABLE_MOBILE_REBIND = False
-ENABLE_MOBILE_SAFESEARCH = False
-ENABLE_MOBILE_NSFW_REGEX = False
-ENABLE_MOBILE_SPAM_TLDS = False
+ENABLE_MOBILE_REBIND = True
+ENABLE_MOBILE_SAFESEARCH = True
+ENABLE_MOBILE_NSFW_REGEX = True
+ENABLE_MOBILE_DGA_REGEX = True    # Dynamic AdGuard Home DGA Regex Injection
+ENABLE_MOBILE_SPAM_TLDS = True
 
 ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
 ENABLE_ULTIMATE_NSFW_REGEX = True
+ENABLE_ULTIMATE_DGA_REGEX = True  # Dynamic AdGuard Home DGA Regex Injection
 ENABLE_ULTIMATE_SPAM_TLDS = True
+
+# --- HIGH-RISK CONTEXTUAL MATRIX ---
+HIGH_RISK_TLDS = {".top", ".xyz", ".click", ".country", ".gq", ".tk", ".cf", ".ml", ".ga", ".cc", ".icu", ".vip", ".live"}
+
+IMMUNE_INFRASTRUCTURE = {
+    "cloudfront.net", "amazonaws.com", "azureedge.net", "windows.net", 
+    "digicert.com", "letsencrypt.org", "trafficmanager.net", "akadns.net",
+    "akamai.net", "akamaiedge.net", "edgekey.net", "googleusercontent.com",
+    "githubusercontent.com", "gstatic.com", "googleapis.com"
+}
 
 # --- ALGORITHMIC INFRASTRUCTURE ---
 class SuffixTrie:
@@ -92,6 +106,14 @@ DNSMASQ_RE = re.compile(r'(?:address|server)=/([^/]+)/')
 ADBLOCK_EXACT_RE = re.compile(r'^\|\|([^/\^]+)\^')
 ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 
+def has_suffix_match(host: str, lookup_set: set[str]) -> bool:
+    if host in lookup_set: return True
+    idx = host.find('.')
+    while idx != -1:
+        if host[idx+1:] in lookup_set: return True
+        idx = host.find('.', idx + 1)
+    return False
+
 def calculate_shannon_entropy(label: str) -> float:
     """Computes mathematical Shannon Entropy to evaluate character randomness."""
     if not label: return 0.0
@@ -99,9 +121,13 @@ def calculate_shannon_entropy(label: str) -> float:
     return -sum(p * math.log2(p) for p in probabilities)
 
 def is_dga_heuristic(domain: str) -> bool:
-    """Evaluates labels dynamically for entropy anomalies and high consonant density."""
+    """Evaluates labels dynamically for entropy anomalies with context-aware mitigation."""
     if DGA_REGEX.search(domain):
         return True
+        
+    # Protection shield protecting trusted CDNs/Cloud providers from mathematical heuristics
+    if has_suffix_match(domain, IMMUNE_INFRASTRUCTURE):
+        return False
     
     parts = domain.split('.')[:-1]
     for part in parts:
@@ -111,8 +137,11 @@ def is_dga_heuristic(domain: str) -> bool:
         consonants = len(CONSONANT_PATTERN.findall(part))
         consonant_ratio = consonants / len(part)
         
-        # Flag structural alphanumeric entropy chaos (e.g., zero-day dynamic tracking mutations)
-        if entropy > 4.15 and len(part) > 16:
+        # Risk matrix shift: Lower standard ceiling if domain runs on high-risk TLD infrastructure
+        entropy_floor = 3.82 if any(domain.endswith(tld) for tld in HIGH_RISK_TLDS) else 4.15
+        
+        # Flag structural alphanumeric entropy chaos (zero-day dynamic variations)
+        if entropy > entropy_floor and len(part) > 16:
             return True
         # Flag extreme consonant clustering density
         if consonant_ratio > 0.83:
@@ -120,20 +149,20 @@ def is_dga_heuristic(domain: str) -> bool:
     return False
 
 # ---------------------------------------------------------------------------
-# OPTIMIZED SOURCE ARCHITECTURE (Control D Cleaned)
+# SOURCE ARCHITECTURE (Control D Cleaned Matrix)
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
-    #"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
+    "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
 
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    #"https://filters.adtidy.org/dns/filter_52.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    "https://filters.adtidy.org/dns/filter_52.txt",
 ]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
@@ -171,7 +200,6 @@ TOP_LISTS = [
     ("https://builtwith.com/dl/builtwith-top1m.zip", 0, False, "zip"),
 ]
 
-# --- Isolated IoT Rules Preset ---
 RAW_IOT_RULES = [
     "||*", "@@||10.10.10.1^", "@@||arl.assets.apl-alexa.com^", "@@||api.amazonalexa.com^", 
     "@@||time.nist.gov^", "@@||pool.ntp.org^", "@@||api.tplinkra.com^", "@@||tplinkcloud.com^", 
@@ -388,7 +416,6 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
         source_stats[url] = added_from_source
         p = urlparse(url)
         filename = p.path.rstrip('/').split('/')[-1] or p.path
-        print(f"[*] Source contribution: {p.netloc}/{filename} -> {added_from_source}")
 
     initial_count = len(found)
     optimized = optimize_domains(found)
@@ -416,7 +443,7 @@ def parse_tld_patterns(lines: list[str]) -> tuple[set[str], dict[str, set[str]]]
             if denyallow_hosts: denyallow_map[rule_part] = denyallow_hosts
     return tld_patterns, denyallow_map
 
-def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool, include_heuristics: bool, client_suffix: str = "", iot_rules: list[str] | None = None) -> None:
+def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool, include_dga_regex: bool, client_suffix: str = "", iot_rules: list[str] | None = None) -> None:
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
@@ -430,7 +457,6 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
             f.write(f"! {entry} -> {count}\n")
         f.write("!\n\n")
 
-        # Output the structural core list records
         f.writelines(f"||{dom}^{client_suffix}\n" for dom in sorted(dataset))
 
         if include_rebind and rebind_text:
@@ -449,25 +475,22 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
                 elif rule.strip():
                     f.write(f"{rule}\n")
 
-        # Embedded AdGuard-native engine formatting parameters
         if include_regex:
             f.write("\n! --- NSFW REGEX INTERCEPTIONS ---\n")
-            f.write(f"||/{NSFW_PATTERN}/^{client_suffix}\n")
+            f.write(f"/{NSFW_PATTERN}/{client_suffix}\n")
             
-        if include_heuristics:
+        # Decoupled Toggle: Active when configuration variable matches append profile
+        if include_dga_regex:
             f.write("\n! --- COMPILATION EMBEDDED STRUCTURAL DGA REGEX ---\n")
-            f.write(f"||/{DGA_PATTERN}/^{client_suffix}\n")
+            f.write(f"/{DGA_PATTERN}/{client_suffix}\n")
 
-        # Consolidated Global Punycode Interceptor Rule
         f.write("\n! --- GLOBAL PUNYCODE PURGE INTERCEPTOR ---\n")
         f.write(f"||xn--*^{client_suffix}\n")
 
         if include_spam and spam_text:
             f.write("\n! --- SPAM TLD FOOTPRINTS ---\n")
             for line in spam_text.splitlines():
-                # Optimizing: Skip individual xn-- TLD rule records since global rule handles them
-                if "xn--" in line: 
-                    continue
+                if "xn--" in line: continue
                 if line.strip() and not line.strip().startswith(('!', '#')):
                     f.write(f"{line.strip()}{client_suffix}\n")
                 elif line.strip():
@@ -478,7 +501,7 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
             f.writelines(f"{rule}\n" for rule in iot_rules)
 
 # ---------------------------------------------------------------------------
-# Pipeline Structural Core Execution Loop
+# Pipeline Execution Core (Accelerated Multi-Processing Pool)
 # ---------------------------------------------------------------------------
 async def run_pipeline() -> None:
     parser = argparse.ArgumentParser()
@@ -518,7 +541,7 @@ async def run_pipeline() -> None:
         try:
             with open(args.whitelist, 'r') as wf:
                 for line in wf:
-                    if line.strip() and not line.strip().startswith(('#', '!')):
+                    if line.strip() and not line.strip().startswith(('$', '#', '!')):
                         white_trie.insert(line.strip().lower())
                 print(f"[*] Loaded local tracking whitelists into SuffixTrie memory core.")
         except FileNotFoundError:
@@ -528,15 +551,6 @@ async def run_pipeline() -> None:
         for task in asyncio.as_completed(fetch_tasks):
             url, hosts = await task
             source_data[url] = hosts
-            
-            if DEBUG_SAMPLES:
-                p = urlparse(url)
-                safe_name = f"{p.netloc}_{p.path.replace('/', '_').strip('_')}"
-                try:
-                    with open(f"debug_{safe_name}.sample", "w", encoding="utf-8") as dbg:
-                        dbg.write("\n".join(list(hosts)[0:200]))
-                except OSError as e:
-                    print(f"[-] Debug write fault for {url}: {e}")
             print(f"[*] Fetched and parsed {len(hosts)} clean domains from {url}")
 
         spam_patterns_set, denyallow_map, spam_text = set(), {}, None
@@ -567,39 +581,47 @@ async def run_pipeline() -> None:
             except Exception as e:
                 print(f"[-] SafeSearch sync validation failed for {url}: {e}")
 
-    print("[*] Generating Main List...")
-    main_set, main_stats, main_src_stats = build_dataset(
-        active_main, spam_patterns_set, denyallow_map, allow_trie, white_trie, source_data, 
-        disable_relevance=not ENABLE_MAIN_RELEVANCE, disable_tld=not ENABLE_MAIN_TLD, disable_kw=not ENABLE_MAIN_KW, disable_heuristics=not ENABLE_MAIN_HEURISTICS
-    )
-    print("[*] Generating Mobile List...")
-    mobile_set, mobile_stats, mobile_src_stats = build_dataset(
-        active_mobile, spam_patterns_set, denyallow_map, allow_trie, white_trie, source_data, 
-        disable_relevance=not ENABLE_MOBILE_RELEVANCE, disable_tld=not ENABLE_MOBILE_TLD, disable_kw=not ENABLE_MOBILE_KW, disable_heuristics=not ENABLE_MOBILE_HEURISTICS
-    )
-    print("[*] Generating Omni List...")
-    ultimate_set, ultimate_stats, ultimate_src_stats = build_dataset(
-        active_ultimate, spam_patterns_set, denyallow_map, allow_trie, white_trie, source_data, 
-        disable_relevance=not ENABLE_ULTIMATE_RELEVANCE, disable_tld=not ENABLE_ULTIMATE_TLD, disable_kw=not ENABLE_ULTIMATE_KW, disable_heuristics=not ENABLE_ULTIMATE_HEURISTICS
-    )
+    print("[*] Spawning parallel dataset compilation workers across hardware process pool...")
+    with ProcessPoolExecutor() as executor:
+        loop = asyncio.get_running_loop()
+        
+        main_future = loop.run_in_executor(
+            executor, build_dataset, active_main, spam_patterns_set, denyallow_map, 
+            allow_trie, white_trie, source_data, not ENABLE_MAIN_RELEVANCE, 
+            not ENABLE_MAIN_TLD, not ENABLE_MAIN_KW, not ENABLE_MAIN_HEURISTICS
+        )
+        mobile_future = loop.run_in_executor(
+            executor, build_dataset, active_mobile, spam_patterns_set, denyallow_map, 
+            allow_trie, white_trie, source_data, not ENABLE_MOBILE_RELEVANCE, 
+            not ENABLE_MOBILE_TLD, not ENABLE_MOBILE_KW, not ENABLE_MOBILE_HEURISTICS
+        )
+        ultimate_future = loop.run_in_executor(
+            executor, build_dataset, active_ultimate, spam_patterns_set, denyallow_map, 
+            allow_trie, white_trie, source_data, not ENABLE_ULTIMATE_RELEVANCE, 
+            not ENABLE_ULTIMATE_TLD, not ENABLE_ULTIMATE_KW, not ENABLE_ULTIMATE_HEURISTICS
+        )
+
+        print("[*] Awaiting multi-core background tasks processing execution layout...")
+        main_set, main_stats, main_src_stats = await main_future
+        mobile_set, mobile_stats, mobile_src_stats = await mobile_future
+        ultimate_set, ultimate_stats, ultimate_src_stats = await ultimate_future
 
     del source_data
     gc.collect()
 
-    # Client mapping and structural injection parameters for IoT infrastructure
     formatted_iot_rules = [f"{rule}$client=10.20.20.0/24" for rule in RAW_IOT_RULES]
 
     write_output_file(
         args.output, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text,
-        ENABLE_MAIN_REBIND, ENABLE_MAIN_SAFESEARCH, ENABLE_MAIN_NSFW_REGEX, ENABLE_MAIN_SPAM_TLDS, ENABLE_MAIN_HEURISTICS
+        ENABLE_MAIN_REBIND, ENABLE_MAIN_SAFESEARCH, ENABLE_MAIN_NSFW_REGEX, ENABLE_MAIN_SPAM_TLDS, ENABLE_MAIN_DGA_REGEX
     )
     write_output_file(
         args.mobile, mobile_set, mobile_stats, mobile_src_stats, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text,
-        ENABLE_MOBILE_REBIND, ENABLE_MOBILE_SAFESEARCH, ENABLE_MOBILE_NSFW_REGEX, ENABLE_MOBILE_SPAM_TLDS, ENABLE_MOBILE_HEURISTICS
+        ENABLE_MOBILE_REBIND, ENABLE_MOBILE_SAFESEARCH, ENABLE_MOBILE_NSFW_REGEX, ENABLE_MOBILE_SPAM_TLDS, ENABLE_MOBILE_DGA_REGEX
     )
     write_output_file(
         args.ultimate, ultimate_set, ultimate_stats, ultimate_src_stats, ULTIMATE_SOURCES, "OMNI", rebind_text, ss_rules, spam_text,
-        ENABLE_ULTIMATE_REBIND, ENABLE_ULTIMATE_SAFESEARCH, ENABLE_ULTIMATE_NSFW_REGEX, ENABLE_ULTIMATE_SPAM_TLDS, ENABLE_ULTIMATE_HEURISTICS,
+        ENABLE_ULTIMATE_REBIND, ENABLE_ULTIMATE_SAFESEARCH, ENABLE_ULTIMATE_NSFW_REGEX, ENABLE_ULTIMATE_SPAM_TLDS, ENABLE_ULTIMATE_DGA_REGEX,
         client_suffix="$client=10.10.10.0/24", iot_rules=formatted_iot_rules
     )
 
