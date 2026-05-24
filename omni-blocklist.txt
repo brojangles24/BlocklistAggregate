@@ -1,6 +1,6 @@
 ! Jorgensen OMNI List | Version: 2026.03.16.OMNI_STREAMLINED
-! Generated: 2026-05-24 12:50:39 AM MST
-! Stats: Kept 767327 | Badware-Pruned 23118 | General-Pruned 1092580 | Whitelisted 18 | Irrelevant 0 | Duplicates 270787 | TLD 730388 | NSFW 169798
+! Generated: 2026-05-24 02:56:33 AM MST
+! Stats: Kept 767380 | Badware-Pruned 23118 | General-Pruned 1092628 | Whitelisted 18 | Irrelevant 0 | Duplicates 270810 | TLD 730457 | NSFW 169835
 !
 ! --- Source Contributions (Pre-Pruning) ---
 ! https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt -> 1401
@@ -9,8 +9,8 @@
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt -> 152435
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt -> 9575
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt -> 14569
-! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 196154
-! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 21845
+! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 196232
+! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 21843
 ! https://blocklistproject.github.io/Lists/abuse.txt -> 213712
 ! https://blocklistproject.github.io/Lists/crypto.txt -> 11883
 ! https://blocklistproject.github.io/Lists/drugs.txt -> 16811
@@ -25,10 +25,10 @@
 ! https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts -> 4900
 ! https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts -> 753
 ! https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt -> 26975
-! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 127
+! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 156
 ! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 33209
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 837
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 22813
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 22809
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 180
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 48
 !
@@ -449,6 +449,7 @@
 ||010aa.cn^
 ||010com.cn^
 ||010online.com.cn^
+||010ttw.cn^
 ||01100010011011000110111101100011011010110110110101100101.zone.id^
 ||011012013.xyz^
 ||0110shop.info^
@@ -1034,6 +1035,7 @@
 ||0624.org^
 ||0624004.xyz^
 ||06259.academy^
+||062cpw.cn^
 ||062d0f54bb8d.xyz^
 ||063.us^
 ||0633.ru^
@@ -26176,6 +26178,7 @@
 ||3iwe5j-streamlesseg.stream^
 ||3j0pw4ed7uac-a.akamaihd.net^
 ||3j1.cn^
+||3j308y7prtcxb.xyz^
 ||3j50.xyz^
 ||3j5h64le0b.cywhxygctk.madpendesign.com.au^
 ||3j88s.net^
@@ -29841,6 +29844,7 @@
 ||4muhammed.org^
 ||4muse.ru^
 ||4mweb.com.br^
+||4mwodje8okhdt.xyz^
 ||4myin.cloud^
 ||4myplanet.org^
 ||4n.wf^
@@ -40135,6 +40139,7 @@
 ||7willowkranz.ru^
 ||7wind.ru^
 ||7wm7dt.info^
+||7wptrkh2ujk43.xyz^
 ||7wrxo2xh.iriscreative.co^
 ||7wsq.xyz^
 ||7x3.net^
@@ -74321,6 +74326,7 @@
 ||alanya.co.uk^
 ||alanyaescort.mobi^
 ||alanyaescortgo.xyz^
+||alanyaescortlar.xyz^
 ||alanyamasajterapi.xyz^
 ||alanyaturkeyproperties.gb.net^
 ||alanylbase.digital^
@@ -165519,6 +165525,7 @@
 ||chathimmel.de^
 ||chatholland.nl^
 ||chathooker.net^
+||chathorny.co.uk^
 ||chathostess.net^
 ||chathostess.org^
 ||chathot.nl^
@@ -241823,6 +241830,7 @@
 ||dwz.mk^
 ||dwz07vifylnk5.cloudfront.net^
 ||dwzi-adguard.pro^
+||dx-104.info^
 ||dx-616.info^
 ||dx-one.gmbh^
 ||dx-team.org^
@@ -253485,6 +253493,7 @@
 ||emirates-ship.net^
 ||emirates.domains^
 ||emirates.net.ae^
+||emirates.run^
 ||emiratesapp.company^
 ||emiratesgift.us^
 ||emiratesglance.info^
@@ -258353,6 +258362,7 @@
 ||erokawaii.xyz^
 ||erokilabs.itch.io^
 ||erokiss.org^
+||erokniga.ru^
 ||erokomiksi.org^
 ||erokomix.ru^
 ||erokontakt.eu^
@@ -258599,6 +258609,7 @@
 ||erotic-hypnosis.com.stoesser.powered-by-rackspeed.de^
 ||erotic-israel.net^
 ||erotic-kino-schobergstr-wiesbaden.pages.dev^
+||erotic-leipzig-squirting-geschichten.pages.dev^
 ||erotic-live-cam.de^
 ||erotic-livecams.at^
 ||erotic-lounge.de^
@@ -265125,6 +265136,7 @@
 ||etheasydrop.eu^
 ||etheatriwallet.webflow.io^
 ||ethecityonatallcolu.org^
+||ethelvedo.xyz^
 ||ethema.fi^
 ||ethema.org^
 ||etheme.nl^
@@ -288442,6 +288454,7 @@
 ||flamingarrow.net^
 ||flaminghead.net^
 ||flamingo-cart.xyz^
+||flamingo-es.xyz^
 ||flamingo-finance.pages.dev^
 ||flamingo-shop.eu^
 ||flamingo.abihome.de^
@@ -298529,6 +298542,7 @@
 ||fry65.xyz^
 ||fry708.info^
 ||fryaz-fei.info^
+||fryaz-id.info^
 ||fryaz-igd.info^
 ||frybread.us^
 ||fryeschuhe.de^
@@ -300528,6 +300542,7 @@
 ||fuqeluvumholdingsnet.digital^
 ||fuqer.mobi^
 ||fuqer.org^
+||fuqewuy5.pro^
 ||fuqexadakiasystems21.digital^
 ||fuqexatucoisventures.digital^
 ||fuqhlnkv.cn^
@@ -306746,6 +306761,7 @@
 ||gayhookupsite.us^
 ||gayhookupsites.net^
 ||gayhorse.net^
+||gayhotline.net^
 ||gayhotpics.net^
 ||gayhotpictures.net^
 ||gayhsjshs.pages.dev^
@@ -310322,6 +310338,7 @@
 ||germangoogirls.us^
 ||germanheritagesociety.org^
 ||germani-srl.it^
+||germanidentityhub.de^
 ||germaninpittsburgh.org^
 ||germaniptv4k.de^
 ||germanitssilk.digital^
@@ -320821,6 +320838,7 @@
 ||gppd.us^
 ||gppg.dk^
 ||gppsmaharajganj.org^
+||gpqhybp.info^
 ||gpr.hu^
 ||gprcl.org^
 ||gprdigital.com.br^
@@ -330709,6 +330727,7 @@
 ||gzzkjc.cn^
 ||gzzkjdam.cn^
 ||gzzwfast.168348.xyz^
+||h-1-whatsapp.com.cn^
 ||h-2-only.ru^
 ||h-39.ru^
 ||h-66-166-1-77.lsanca54.static.covad.net^
@@ -335783,6 +335802,7 @@
 ||hdxxvideo.net^
 ||hdy.321700.xyz^
 ||hdy.nlyqhihe.maxgrowth.ru^
+||hdyc.net^
 ||hdyca.info^
 ||hdyeyhe.digital^
 ||hdyhonjncharabancs.xyz^
@@ -369022,6 +369042,7 @@
 ||is-great.net^
 ||is-great.org^
 ||is-inspect.net^
+||is-it-gay-to-finger-yourself.pages.dev^
 ||is-kuailian.com.cn^
 ||is-log.furunavi.jp^
 ||is-lost.org^
@@ -374130,6 +374151,7 @@
 ||izmitarcelikservisi.net^
 ||izmitescortbayan.info^
 ||izmitescortgo.xyz^
+||izmitforum.net^
 ||izmitgranit.net^
 ||izmyth.pro^
 ||iznbgt.art^
@@ -377355,6 +377377,7 @@
 ||jbe.ro^
 ||jbec.kz^
 ||jbee.my^
+||jbescort2u.net^
 ||jbestcc.ru^
 ||jbf088d0ebc77e80940cd264bf2ff84cda.ws^
 ||jbfacilitymanagement.net^
@@ -379710,6 +379733,7 @@
 ||jishindo.it^
 ||jishitongxun-whatsapp.com.cn^
 ||jishu2026.mobi^
+||jishuge.one^
 ||jisibeorservices.digital^
 ||jisk.cn^
 ||jisne.com.cn^
@@ -399786,6 +399810,7 @@
 ||kumarproperties.co.in^
 ||kumas.com.ar^
 ||kumbaldekor.cz^
+||kumburgazescort.xyz^
 ||kumbuyartyty.net^
 ||kumefawikumindustries.digital^
 ||kumei.net^
@@ -410341,6 +410366,7 @@
 ||lesbians.pl^
 ||lesbians4u.org^
 ||lesbiansasian.org^
+||lesbiansblack.org^
 ||lesbianscatgirls.net^
 ||lesbianscissoring.ch^
 ||lesbianseductions.net^
@@ -428494,6 +428520,7 @@
 ||m333mx.net^
 ||m336.pages.dev^
 ||m339.info^
+||m345dyv5w6kj9.xyz^
 ||m3499.contabo.net^
 ||m351-mp1.ppphg-08-brnt.dial.ntli.net^
 ||m35e.xyz^
@@ -430557,6 +430584,7 @@
 ||magicminutes.co.uk^
 ||magicmomentforme.live^
 ||magicmoni.xyz^
+||magicmovies.net^
 ||magicmuffin.tv^
 ||magicmushroomsonline.co.uk^
 ||magicmushroomsupply.net^
@@ -454875,6 +454903,7 @@
 ||mirikonaservices.digital^
 ||miringintumpang.sch.id^
 ||mirintima96.ru^
+||mirion.com.cn^
 ||miriyaonline.in^
 ||mirko.programmaticanet.it^
 ||mirkxoij.kunsin.cn^
@@ -463474,6 +463503,9 @@
 ||mplglobal.es^
 ||mplicmp.info^
 ||mplimpo-16300.web.app^
+||mplng-1269.pro^
+||mplng-3201.pro^
+||mplng-9023.pro^
 ||mplobvfr.web.app^
 ||mplstudios.net^
 ||mplstudios.org^
@@ -481864,6 +481896,7 @@
 ||next-chain.org^
 ||next-core.forum^
 ||next-cryptolist.net^
+||next-door-gay-buddies.pages.dev^
 ||next-door-studios.ru^
 ||next-door3.cr2pskiing.in.net^
 ||next-door3.de8trevarm.in.net^
@@ -494063,6 +494096,7 @@
 ||o365support.net^
 ||o368sxdu.xyz^
 ||o394ugn.pr.itsrinaldo.net^
+||o39nkqdq742g.xyz^
 ||o3fs4mi0.little-spoken.digital^
 ||o3hpy.flare-path.in.net^
 ||o3o.ca^
@@ -498337,6 +498371,7 @@
 ||ol234-11.fibertel.com.ar^
 ||ol254-218.fibertel.com.ar^
 ||ol29-212.fibertel.com.ar^
+||ol2jojv019i3v.xyz^
 ||ol4qzr.tech^
 ||ol51-249.fibertel.com.ar^
 ||ol54-26.fibertel.com.ar^
@@ -500483,6 +500518,7 @@
 ||onemacroenterprise.digital^
 ||onemail.host^
 ||onemain.sc.omtrdc.net^
+||onemakan.ma^
 ||onemanbanned.tv^
 ||onemanchester.co^
 ||onemancompany.cloud^
@@ -503277,6 +503313,7 @@
 ||opencloudstorage.info^
 ||opencolumn.nl^
 ||opencommerce.org^
+||opencommnsblkyn.org^
 ||opencompassview.pro^
 ||opencomposer.dev^
 ||openconection.xyz^
@@ -529332,6 +529369,7 @@
 ||pinupsgold.free.fr^
 ||pinupx.free.fr^
 ||pinuqijobiisconsulting.digital^
+||pinusssw.xyz^
 ||pinwalestack.digital^
 ||pinwang.net^
 ||pinweb.info^
@@ -533794,6 +533832,7 @@
 ||plngsuiv-8450.pro^
 ||plngsuiv-8610.pro^
 ||plngsuiv-8642.pro^
+||plngsuiv-9082.pro^
 ||plngsuiv-9408.pro^
 ||plngsuiv-9681.pro^
 ||plngsuiv-9784.pro^
@@ -546207,6 +546246,7 @@
 ||prostitutkidomodedovoreal.net^
 ||prostitutkidomodedovoslip.info^
 ||prostitutkidomodedovostart.net^
+||prostitutkidomodedovosuck.net^
 ||prostitutkidonetskaboom.net^
 ||prostitutkidonetskadear.info^
 ||prostitutkidonetskalet.net^
@@ -547091,6 +547131,7 @@
 ||prostitutkinovosibirskavip.info^
 ||prostitutkinovosibirskavip.net^
 ||prostitutkinovosibirskawant.net^
+||prostitutkinovouralskadosug.info^
 ||prostitutkinovouralskagirl.info^
 ||prostitutkinoyabrska2020.info^
 ||prostitutkinoyabrskadosug.info^
@@ -547323,6 +547364,7 @@
 ||prostitutkipyatigorskawant.info^
 ||prostitutkipyatigorskawithin.info^
 ||prostitutkipyatigorskax.info^
+||prostitutkipyatigorskax.net^
 ||prostitutkiramenskoestop.net^
 ||prostitutkirostova.link^
 ||prostitutkirostova.me^
@@ -547394,6 +547436,7 @@
 ||prostitutkirybinskadosug.info^
 ||prostitutkirybinskagirls.info^
 ||prostitutkisalavatawomen.net^
+||prostitutkisalehardalike.net^
 ||prostitutkisalehardanice.info^
 ||prostitutkisamara.net^
 ||prostitutkisamary.me^
@@ -554179,6 +554222,7 @@
 ||putana74.net^
 ||putanismbase.digital^
 ||putanka-elit.ru^
+||putankazrelaya.ru^
 ||putanykrasnodar.pro^
 ||putanythinghere.coffeeon.me^
 ||putaria.blog^
@@ -557900,6 +557944,7 @@
 ||qualityerotik.ch^
 ||qualityfinance.net^
 ||qualityfires.co.uk^
+||qualitygermanbrand.de^
 ||qualityhomerenovation.org^
 ||qualityhost.org^
 ||qualityinjetores.com.br^
@@ -596574,6 +596619,7 @@
 ||sekschatten.nl^
 ||sekschattennu.nl^
 ||seksclips.nl^
+||sekscontactvinden.nl^
 ||seksczat.org^
 ||seksdate50plus.nl^
 ||seksdateads.nl^
@@ -607197,6 +607243,7 @@
 ||shey.net^
 ||sheyla.net^
 ||sheyn.gg^
+||sheynin.ru^
 ||sheyu.net^
 ||shezhan.org^
 ||shf35.cn^
@@ -608868,6 +608915,7 @@
 ||showblend.my^
 ||showbottle.net^
 ||showbox.media^
+||showbua.tv^
 ||showbuaz.net^
 ||showbzzizzes.info^
 ||showcam.fr^
@@ -609824,6 +609872,7 @@
 ||sieundihn.de^
 ||sieunung.co.uk^
 ||sieunung.net^
+||sieunung.org^
 ||sieurtech.digital^
 ||sieutienao.net^
 ||sievesize.in^
@@ -622762,6 +622811,7 @@
 ||sohung.org^
 ||sohuqogoumcollectiveinc.digital^
 ||sohuqq.net^
+||sohzirtx.xyz^
 ||soi.com.ve^
 ||soi.kjukenhi.in^
 ||soib-adguard.pro^
@@ -652264,6 +652314,7 @@
 ||syf.com.data.adobedc.net^
 ||syfacebook.org^
 ||syfeotuoe.deye.maxgrowth.ru^
+||syfihiiee.org^
 ||syfipyqafi.info^
 ||syflewun.eaailluar.maxgrowth.ru^
 ||syfr-ai.xyz^
@@ -658955,6 +659006,7 @@
 ||tattoocams.net^
 ||tattoocream.co^
 ||tattoocursos.com.br^
+||tattooed-temptress-asshole-fetish-ass-spreading.pages.dev^
 ||tattooed-temptress-horny-mommy-wants-alone-time.pages.dev^
 ||tattooed-temptress-oiled-feet-footjob-fetish.pages.dev^
 ||tattooed-temptress-pigtail-fetish-joi.pages.dev^
@@ -674945,6 +674997,7 @@
 ||timelyterm.pro^
 ||timem.tv^
 ||timenews24.net^
+||timenft.cn^
 ||timeoffice.com.cn^
 ||timeone.io^
 ||timeops.ru^
