@@ -15,7 +15,7 @@ from typing import Iterable
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.16.OMNI_STREAMLINED"
+VERSION = "VERSION = "2026.05.25.OMNI_TEST"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
