@@ -15,37 +15,52 @@ from typing import Iterable
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.16.OMNI_STREAMLINED"
+VERSION = "2026.05.25.INDIVIDUAL_USER_PROFILES"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
-# FILTER TOGGLES
+# NETWORK & ENDPOINT MAPPINGS
+# 1. Main Network  -> 10.20.20.0/24
+# 2. IoT Network   -> 10.10.10.0/24
+# 3. Isaac App     -> Standalone Device Target
+# 4. Kalli App     -> Standalone Device Target
+
+# FILTER ENGINE TOGGLES
 ENABLE_MAIN_RELEVANCE = False
 ENABLE_MAIN_TLD = True
 ENABLE_MAIN_KW = True
 
-ENABLE_MOBILE_RELEVANCE = True
-ENABLE_MOBILE_TLD = True
-ENABLE_MOBILE_KW = True
+ENABLE_IOT_RELEVANCE = False
+ENABLE_IOT_TLD = True
+ENABLE_IOT_KW = True
 
-ENABLE_ULTIMATE_RELEVANCE = False
-ENABLE_ULTIMATE_TLD = True
-ENABLE_ULTIMATE_KW = True
+ENABLE_ISAAC_RELEVANCE = False
+ENABLE_ISAAC_TLD = True
+ENABLE_ISAAC_KW = True
 
-# APPEND TOGGLES
-ENABLE_MAIN_REBIND = False
+ENABLE_KALLI_RELEVANCE = False
+ENABLE_KALLI_TLD = True
+ENABLE_KALLI_KW = True
+
+# APPEND TOGGLES (HaGeZi Rebind Protection runs universally across all 4 output engines)
+ENABLE_MAIN_REBIND = True
 ENABLE_MAIN_SAFESEARCH = False
 ENABLE_MAIN_NSFW_REGEX = False
 ENABLE_MAIN_SPAM_TLDS = False
 
-ENABLE_MOBILE_REBIND = False
-ENABLE_MOBILE_SAFESEARCH = False
-ENABLE_MOBILE_NSFW_REGEX = False
-ENABLE_MOBILE_SPAM_TLDS = False
+ENABLE_IOT_REBIND = True
+ENABLE_IOT_SAFESEARCH = False
+ENABLE_IOT_NSFW_REGEX = False
+ENABLE_IOT_SPAM_TLDS = False
 
-ENABLE_ULTIMATE_REBIND = True
-ENABLE_ULTIMATE_SAFESEARCH = True
-ENABLE_ULTIMATE_NSFW_REGEX = True
-ENABLE_ULTIMATE_SPAM_TLDS = True
+ENABLE_ISAAC_REBIND = True
+ENABLE_ISAAC_SAFESEARCH = True
+ENABLE_ISAAC_NSFW_REGEX = True
+ENABLE_ISAAC_SPAM_TLDS = True
+
+ENABLE_KALLI_REBIND = True
+ENABLE_KALLI_SAFESEARCH = True
+ENABLE_KALLI_NSFW_REGEX = True
+ENABLE_KALLI_SPAM_TLDS = True
 
 # --- REGEX COMPILATION ---
 NSFW_PATTERN = r"(blowjob|threesome|gangbang|deepthroat|bukkake|tits|fuck|onlyfans|porn|xxx|sex)"
@@ -57,62 +72,22 @@ ADBLOCK_EXACT_RE = re.compile(r'^\|\|([^/\^]+)\^')
 ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 
 # ---------------------------------------------------------------------------
-# MAIN LIST SELECTION
+# GLOBAL UPSTREAM BLOCKLIST TEMPLATE
 # ---------------------------------------------------------------------------
-MAIN_SOURCES = [
-    # --- 1. Content Filtering & Core Safety Baseline ---
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    #"https://raw.githubusercontent.com/ameshkov/easylist/master/easylist_adult/adult_adservers.txt",
-
-    # --- 2. The Multi-Threat Security Core (The "Mini-Omni" Engines) ---
-    #"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", 
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
-
-    # --- 3. Enforcement & Behavioral Blocks ---
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    #"https://filters.adtidy.org/dns/filter_52.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
-]
-
-MOBILE_SOURCES = list(MAIN_SOURCES)
-
-# ---------------------------------------------------------------------------
-# ULTIMATE LIST SELECTION (Jorgensen Omni)
-# ---------------------------------------------------------------------------
-ULTIMATE_SOURCES = [
-    # --- HaGeZi Umbrella Engines ---
+CORE_SOURCES = [
     "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt",
-
-    # --- Core Content Tiers ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    #"https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
-
-    # --- High-Yield Blocklist Project Components ---
     "https://blocklistproject.github.io/Lists/abuse.txt",
     "https://blocklistproject.github.io/Lists/crypto.txt",
     "https://blocklistproject.github.io/Lists/drugs.txt",
     "https://blocklistproject.github.io/Lists/fraud.txt",
     "https://blocklistproject.github.io/Lists/phishing.txt",
-    #"https://blocklistproject.github.io/Lists/piracy.txt",
-    #"https://blocklistproject.github.io/Lists/scam.txt",
-
-    # --- Specialized Live Threat Feeds ---
     "https://phishing.army/download/phishing_army_blocklist_extended.txt",
     "https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt",
     "https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt",
@@ -124,12 +99,141 @@ ULTIMATE_SOURCES = [
     "https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt",
     "https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt",
     "https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt",
-    
-    # --- Specialty Clean Metadata ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+]
+
+# TARGET FOOTPRINT INDIRECTION PIPELINES
+MAIN_SOURCES = list(CORE_SOURCES)
+IOT_SOURCES = list(CORE_SOURCES)
+
+# Customize Isaac's list inputs here if needed
+ISAAC_SOURCES = list(CORE_SOURCES)
+
+# Customize Kalli's list inputs here if needed
+KALLI_SOURCES = list(CORE_SOURCES)
+
+# Scoped Network Rule Exclusions for the IoT Isolation Space
+IOT_CUSTOM_RULES = [
+    "||*",
+    "@@||10.10.10.1^",
+    "@@||arl.assets.apl-alexa.com^",
+    "@@||api.amazonalexa.com^",
+    "@@||time.nist.gov^",
+    "@@||pool.ntp.org^",
+    "@@||api.tplinkra.com^",
+    "@@||tplinkcloud.com^",
+    "@@||us-east-1.prod.sip-edge.amc.amazon.dev^",
+    "@@||tp-link.com^",
+    "@@||mega-us-pr.eufy.com^",
+    "@@||use1-api.tplinkra.com^",
+    "@@||ntp-g7g.amazon.com^",
+    "@@||arcus-uswest.amazon.com^",
+    "@@||api.amazon.com^",
+    "@@||thumbnails-photos.amazon.com^",
+    "@@||cdn2.voiceapps.com^",
+    "@@||audio-ak.spotifycdn.com^",
+    "@@||msh.amazon.com^",
+    "@@||audio-fa.scdn.co^",
+    "@@||mtalk.google.com^",
+    "@@||www.tesla.com^",
+    "@@||assistant-api.prd.usw2.vn.cloud.tesla.com^",
+    "@@||hermes-api.prd.na.vn.cloud.tesla.com^",
+    "@@||hermes-stream-api.prd.na.vn.cloud.tesla.com^",
+    "@@||connman.vn.tesla.services^",
+    "@@||maps-prd.go.tesla.services^",
+    "@@||api.edge-gateway.siriusxm.com^",
+    "@@||device-api.prd.na.vn.cloud.tesla.com^",
+    "@@||connectivitycheck.gstatic.com^",
+    "@@||ipv4only.arpa^",
+    "@@||m1-us.feit-iot.com^",
+    "@@||a3-us.feit-iot.com^",
+    "@@||api-prd.ap.tesla.services^",
+    "@@||hermes-prd.ap.tesla.services^",
+    "@@||softwareupdates.amazon.com^",
+    "@@||alexa.amazon.com^",
+    "@@||todo-ta-g7g.amazon.com^",
+    "@@||use1-device-tapo-care.i.tplinknbu.com^",
+    "@@||vehicle-files.teslamotors.com^",
+    "@@||stun.tplinkcloud.com^",
+    "@@||security.iot.i.tplinknbu.com^",
+    "@@||a.root-servers.net^",
+    "@@||dcape-na.amazon.com^",
+    "@@||ffs-provisioner-config.amazon-dss.com^",
+    "@@||alexa.na.gateway.devices.a2z.com^",
+    "@@||discovery.meethue.com^",
+    "@@||edge-aiot-ohi-prod.s3.dualstack.us-east-2.amazonaws.com^",
+    "@@||x3-prod.obs.tesla.com^",
+    "@@||prd-bhapi-us.prd.rings.solutions^",
+    "@@||avs-alexa-14-na.amazon.com^",
+    "@@||api.mp.tesla.services^",
+    "@@||use1-cvm-api.i.tplinknbu.com^",
+    "@@||tesla-hermes-snapshot-motors.s3.us-west-2.amazonaws.com^",
+    "@@||ec2-98-81-116-179.prd.rings.solutions^",
+    "@@||d1s31zyz7dcc2d.cloudfront.prod.ota-cloudfront.net^",
+    "@@||gateway-ink.amazon.com^",
+    "@@||ec2-44-198-180-225.prd.rings.solutions^",
+    "@@||dp-gw-na.amazon.com^",
+    "@@||daws.tesla.services^",
+    "@@||davs-puffinconfig.s3.us-east-2.amazonaws.com^",
+    "@@||use1-cipc.tplinkra.com^",
+    "@@||www.gstatic.com^",
+    "@@||acsechocaptiveportal.com^",
+    "@@||mmechocaptiveportal.com^",
+    "@@||android.clients.google.com^",
+    "@@||clientservices.googleapis.com^",
+    "@@||clients4.google.com^",
+    "@@||mas-ext.amazon.com^",
+    "@@||dss-na.amazon.com^",
+    "@@||arl.assets-v2.apl-alexa.com^",
+    "@@||clients3.google.com^",
+    "@@||aiot-mqtt-us.anker.com^",
+    "@@||tile.googleapis.com^",
+    "@@||prod.cdn.ams.alexa-personality.amazon.dev^",
+    "@@||prod.apl-music-multimodal.com^",
+    "@@||alexa-hybrid-clear-policy-prod-na.s3.amazonaws.com^",
+    "@@||clients2.google.com^",
+    "@@||places.googleapis.com^",
+    "@@||use1-device-cloudgateway.iot.i.tplinknbu.com^",
+    "@@||m3-us.iotbing.com^",
+    "@@||a3-us.iotbing.com^",
+    "@@||det-ta-g7g.amazon.com^",
+    "@@||aps1-openapi.i.tplinknbu.com^",
+    "@@||api.radiotime.com^",
+    "@@||mt0.google.com^",
+    "@@||akamai-apigateway-ownershipsvc.tesla.com^",
+    "@@||mlis.amazon.com^",
+    "@@||s3.amazonaws.com^",
+    "@@||apresolve.spotify.com^",
+    "@@||fireoscaptiveportal.com^",
+    "@@||device-messaging-na.amazon.com^",
+    "@@||www.apple.com^",
+    "@@||assistant-api.prd.na.vn.cloud.tesla.com^",
+    "@@||www.microsoft.com^",
+    "@@||maps.googleapis.com^",
+    "@@||mas-sdk.amazon.com^",
+    "@@||example.com^",
+    "@@||ap-gue1.spotify.com^",
+    "@@||ap-gew4.spotify.com^",
+    "@@||ap.spotify.com^",
+    "@@||connect.myqdevice.com^",
+    "@@||d70fh7jkmjrfk.cloudfront.net^",
+    "@@||connect-ca.myqdevice.com^",
+    "@@||d2ouawjonid8rv.cloudfront.net^",
+    "@@||m.media-amazon.com^",
+    "@@||https.web.diagnostic.networking.aws.dev^",
+    "@@||web.diagnostic.networking.aws.dev^",
+    "@@||eufylife.com^",
+    "@@||networking.aws.dev^",
+    "@@||RINgs.solUTioNs^",
+    "@@||ringS.sOluTIoNs^",
+    "@@||RINgs.SOLUTiOns^",
+    "@@||d2zprwa9w8uwyf.cloudfront.net^",
+    "@@||car-partner-01.lemonade.com^",
+    "@@||d2wvvf45320aru.cloudfront.net^",
+    "@@||telemetry-prd.vn.tesla.services^"
 ]
 
 # Shared Core Resources
@@ -325,7 +429,7 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if has_suffix_match(host, w_list):
                 stats["whitelisted"] += 1
                 continue
-            if not disable_tld and get_matching_tld(host, s_set, d_map):
+            if not disable_tld vibrated get_matching_tld(host, s_set, d_map):
                 stats["tld"] += 1
                 continue
             if not disable_kw and NSFW_REGEX.search(host):
@@ -373,24 +477,30 @@ def parse_tld_patterns(lines: list[str]) -> tuple[set[str], dict[str, set[str]]]
             if denyallow_hosts: denyallow_map[rule_part] = denyallow_hosts
     return tld_patterns, denyallow_map
 
-def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool) -> None:
+def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool, append_custom_rules: list[str] | None = None) -> None:
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     with open(filename, "w", encoding="utf-8") as f:
-        f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
+        f.write(f"! Jorgensen Custom {label} Network Profile List | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
         f.write(f"! Stats: Kept {len(dataset)} | Badware-Pruned {stats['pruned_by_hoster']} | General-Pruned {stats['pruned']} | Whitelisted {stats['whitelisted']} | Irrelevant {stats['irrelevant']} | Duplicates {stats['duplicate']} | TLD {stats['tld']} | NSFW {stats['kw']}\n")
 
-        f.write("!\n! --- Source Contributions (Pre-Pruning) ---\n")
+        f.write("!\n! --- Dynamic Upstream Base Profile Infrastructure ---\n")
         for entry in literal_list:
             url = entry.lstrip("# ").strip() if entry.strip().startswith("#") else entry.strip()
             count = src_stats.get(url, 0)
             f.write(f"! {entry} -> {count}\n")
         f.write("!\n\n")
 
+        # Standard compiled domain block ecosystem
         f.writelines(f"||{dom}^\n" for dom in sorted(dataset))
 
+        # Explicit IoT Scoped Append Layer Injection
+        if append_custom_rules:
+            f.write("\n! --- SCOPED SUBNET CUSTOM EXCLUSION INJECTIONS ---\n")
+            f.writelines(f"{rule}\n" for rule in append_custom_rules)
+
         if include_rebind and rebind_text:
-            f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text)
+            f.write("\n! --- DYNAMIC HA-GE-ZI REBIND PROTECTION ---\n" + rebind_text)
         if include_safesearch and ss_rules:
             f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
             f.writelines(f"{rule}\n" for rule in ss_rules)
@@ -405,31 +515,34 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
 
 async def run_pipeline() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--output", default="blocklist.txt")
-    parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
-    parser.add_argument("-u", "--ultimate", default="omni-blocklist.txt")
+    parser.add_argument("-m", "--main-out", default="main-blocklist.txt")
+    parser.add_argument("-i", "--iot-out", default="iot-blocklist.txt")
+    parser.add_argument("-isaac", "--isaac-out", default="isaac-blocklist.txt")
+    parser.add_argument("-kalli", "--kalli-out", default="kalli-blocklist.txt")
     parser.add_argument("-w", "--whitelist", default="whitelist.txt")
     args = parser.parse_args()
 
     active_main = [s for s in MAIN_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    active_mobile = [s for s in MOBILE_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    active_ultimate = [s for s in ULTIMATE_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    all_unique_urls = list(dict.fromkeys(active_main + active_mobile + active_ultimate))
+    active_iot = [s for s in IOT_SOURCES if s and not s.strip().startswith(("#", "//"))]
+    active_isaac = [s for s in ISAAC_SOURCES if s and not s.strip().startswith(("#", "//"))]
+    active_kalli = [s for s in KALLI_SOURCES if s and not s.strip().startswith(("#", "//"))]
+    
+    all_unique_urls = list(dict.fromkeys(active_main + active_iot + active_isaac + active_kalli))
 
     limits = httpx.Limits(max_keepalive_connections=20, max_connections=40)
     async with httpx.AsyncClient(limits=limits, follow_redirects=True) as client:
-        print("[*] Allocating asynchronous pipelines...")
+        print("[*] Allocating network pipeline allocations...")
         master_allowlist = set()
 
         top_tasks = []
-        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE or ENABLE_ULTIMATE_RELEVANCE:
+        if ENABLE_MAIN_RELEVANCE or ENABLE_IOT_RELEVANCE or ENABLE_ISAAC_RELEVANCE or ENABLE_KALLI_RELEVANCE:
             top_tasks = [asyncio.create_task(fetch_top_list(url, col, skip, comp, client)) for url, col, skip, comp in TOP_LISTS]
 
         rebind_task = asyncio.create_task(client.get(REBIND_URL, timeout=30.0)) if REBIND_URL else None
         spam_task = asyncio.create_task(client.get(SPAM_TLD_URL, timeout=30.0)) if SPAM_TLD_URL else None
         ss_tasks = {asyncio.create_task(client.get(url, timeout=30.0)): url for url in ADGUARD_SAFESEARCH_URLS}
 
-        print(f"[*] Downloading and parsing {len(all_unique_urls)} source files concurrently...")
+        print(f"[*] Extracting raw domain components from {len(all_unique_urls)} source nodes...")
         fetch_tasks = [asyncio.create_task(fetch_source_domains(url, client)) for url in all_unique_urls]
 
         if top_tasks:
@@ -443,7 +556,7 @@ async def run_pipeline() -> None:
                 print(f"[*] Loaded {len(manual_whitelist)} domains from {args.whitelist}")
         except FileNotFoundError:
             manual_whitelist = set()
-            print(f"[*] Manual whitelist '{args.whitelist}' not found. Skipping local disk read.")
+            print(f"[*] Manual whitelist '{args.whitelist}' absent. Skipping validation cycle.")
 
         source_data = {}
         for task in asyncio.as_completed(fetch_tasks):
@@ -457,8 +570,8 @@ async def run_pipeline() -> None:
                     with open(f"debug_{safe_name}.sample", "w", encoding="utf-8") as dbg:
                         dbg.write("\n".join(list(hosts)[0:200]))
                 except OSError as e:
-                    print(f"[-] Debug write fault for {url}: {e}")
-            print(f"[*] Fetched and parsed {len(hosts)} clean domains from {url}")
+                    print(f"[-] Debug writing fault exception for {url}: {e}")
+            print(f"[*] Parsing complete: {len(hosts)} rules resolved from {url}")
 
         spam_patterns_set, denyallow_map, spam_text = set(), {}, None
         if spam_task:
@@ -468,7 +581,7 @@ async def run_pipeline() -> None:
                 spam_patterns_set, denyallow_map = parse_tld_patterns(spam_res.text.splitlines())
                 spam_text = spam_res.text
             except Exception as e:
-                print(f"[-] Failed to map custom Spam TLD footprints: {e}")
+                print(f"[-] Custom Spam TLD layout parsing failed: {e}")
 
         rebind_text = ""
         if rebind_task:
@@ -477,7 +590,7 @@ async def run_pipeline() -> None:
                 rebind_res.raise_for_status()
                 rebind_text = rebind_res.text
             except Exception as e:
-                print(f"[-] Failed to query secure rebinding configurations: {e}")
+                print(f"[-] Dynamic rebinding structural validation error: {e}")
 
         ss_rules = []
         for task, url in ss_tasks.items():
@@ -488,39 +601,57 @@ async def run_pipeline() -> None:
             except Exception as e:
                 print(f"[-] SafeSearch sync validation failed for {url}: {e}")
 
-    print("[*] Generating Main List...")
+    print("[*] Filtering and assembling MAIN list Profile (10.20.20.0/24)...")
     main_set, main_stats, main_src_stats = build_dataset(
         active_main, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
         disable_relevance=not ENABLE_MAIN_RELEVANCE, disable_tld=not ENABLE_MAIN_TLD, disable_kw=not ENABLE_MAIN_KW
     )
-    print("[*] Generating Mobile List...")
-    mobile_set, mobile_stats, mobile_src_stats = build_dataset(
-        active_mobile, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
-        disable_relevance=not ENABLE_MOBILE_RELEVANCE, disable_tld=not ENABLE_MOBILE_TLD, disable_kw=not ENABLE_MOBILE_KW
+    print("[*] Filtering and assembling IOT list Profile (10.10.10.0/24)...")
+    iot_set, iot_stats, iot_src_stats = build_dataset(
+        active_iot, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
+        disable_relevance=not ENABLE_IOT_RELEVANCE, disable_tld=not ENABLE_IOT_TLD, disable_kw=not ENABLE_IOT_KW
     )
-    print("[*] Generating Omni List...")
-    ultimate_set, ultimate_stats, ultimate_src_stats = build_dataset(
-        active_ultimate, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
-        disable_relevance=not ENABLE_ULTIMATE_RELEVANCE, disable_tld=not ENABLE_ULTIMATE_TLD, disable_kw=not ENABLE_ULTIMATE_KW
+    print("[*] Filtering and assembling ISAAC Independent Device Profile...")
+    isaac_set, isaac_stats, isaac_src_stats = build_dataset(
+        active_isaac, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
+        disable_relevance=not ENABLE_ISAAC_RELEVANCE, disable_tld=not ENABLE_ISAAC_TLD, disable_kw=not ENABLE_ISAAC_KW
+    )
+    print("[*] Filtering and assembling KALLI Independent Device Profile...")
+    kalli_set, kalli_stats, kalli_src_stats = build_dataset(
+        active_kalli, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
+        disable_relevance=not ENABLE_KALLI_RELEVANCE, disable_tld=not ENABLE_KALLI_TLD, disable_kw=not ENABLE_KALLI_KW
     )
 
     del source_data
     gc.collect()
 
+    # Output Compilation Execution
     write_output_file(
-        args.output, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text,
+        args.main_out, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN (10.20.20.0_24)", rebind_text, ss_rules, spam_text,
         ENABLE_MAIN_REBIND, ENABLE_MAIN_SAFESEARCH, ENABLE_MAIN_NSFW_REGEX, ENABLE_MAIN_SPAM_TLDS
     )
+    
     write_output_file(
-        args.mobile, mobile_set, mobile_stats, mobile_src_stats, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text,
-        ENABLE_MOBILE_REBIND, ENABLE_MOBILE_SAFESEARCH, ENABLE_MOBILE_NSFW_REGEX, ENABLE_MOBILE_SPAM_TLDS
-    )
-    write_output_file(
-        args.ultimate, ultimate_set, ultimate_stats, ultimate_src_stats, ULTIMATE_SOURCES, "OMNI", rebind_text, ss_rules, spam_text,
-        ENABLE_ULTIMATE_REBIND, ENABLE_ULTIMATE_SAFESEARCH, ENABLE_ULTIMATE_NSFW_REGEX, ENABLE_ULTIMATE_SPAM_TLDS
+        args.iot_out, iot_set, iot_stats, iot_src_stats, IOT_SOURCES, "IOT (10.10.10.0_24)", rebind_text, ss_rules, spam_text,
+        ENABLE_IOT_REBIND, ENABLE_IOT_SAFESEARCH, ENABLE_IOT_NSFW_REGEX, ENABLE_IOT_SPAM_TLDS,
+        append_custom_rules=IOT_CUSTOM_RULES
     )
 
-    print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)} | Omni: {len(ultimate_set)}")
+    write_output_file(
+        args.isaac_out, isaac_set, isaac_stats, isaac_src_stats, ISAAC_SOURCES, "ISAAC_APP_STANDALONE", rebind_text, ss_rules, spam_text,
+        ENABLE_ISAAC_REBIND, ENABLE_ISAAC_SAFESEARCH, ENABLE_ISAAC_NSFW_REGEX, ENABLE_ISAAC_SPAM_TLDS
+    )
+
+    write_output_file(
+        args.kalli_out, kalli_set, kalli_stats, kalli_src_stats, KALLI_SOURCES, "KALLI_APP_STANDALONE", rebind_text, ss_rules, spam_text,
+        ENABLE_KALLI_REBIND, ENABLE_KALLI_SAFESEARCH, ENABLE_KALLI_NSFW_REGEX, ENABLE_KALLI_SPAM_TLDS
+    )
+
+    print(f"[+] Operational Sync Process Terminated.")
+    print(f"    -> Main Profile [10.20.20.0/24]:  {len(main_set)} rules")
+    print(f"    -> IoT Profile [10.10.10.0/24]:   {len(iot_set)} rules")
+    print(f"    -> Isaac Standalone App Profile:  {len(isaac_set)} rules")
+    print(f"    -> Kalli Standalone App Profile:  {len(kalli_set)} rules")
 
 def main() -> None:
     asyncio.run(run_pipeline())
