@@ -32,15 +32,15 @@ ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
-ENABLE_MAIN_REBIND = True
-ENABLE_MAIN_SAFESEARCH = True
-ENABLE_MAIN_NSFW_REGEX = True
-ENABLE_MAIN_SPAM_TLDS = True
+ENABLE_MAIN_REBIND = False
+ENABLE_MAIN_SAFESEARCH = False
+ENABLE_MAIN_NSFW_REGEX = False
+ENABLE_MAIN_SPAM_TLDS = False
 
-ENABLE_MOBILE_REBIND = True
-ENABLE_MOBILE_SAFESEARCH = True
-ENABLE_MOBILE_NSFW_REGEX = True
-ENABLE_MOBILE_SPAM_TLDS = True
+ENABLE_MOBILE_REBIND = False
+ENABLE_MOBILE_SAFESEARCH = False
+ENABLE_MOBILE_NSFW_REGEX = False
+ENABLE_MOBILE_SPAM_TLDS = False
 
 ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
@@ -65,18 +65,18 @@ MAIN_SOURCES = [
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
 
     # --- 2. The Multi-Threat Security Core (The "Mini-Omni" Engines) ---
-    "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
+    #"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
 
     # --- 3. Enforcement & Behavioral Blocks ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    "https://filters.adtidy.org/dns/filter_52.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    #"https://filters.adtidy.org/dns/filter_52.txt",
 ]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
