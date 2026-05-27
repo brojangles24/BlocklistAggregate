@@ -61,7 +61,7 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
     #"https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt",
