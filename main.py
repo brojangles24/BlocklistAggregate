@@ -15,21 +15,21 @@ from typing import Iterable
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.03.16.OMNI_STREAMLINED"
+VERSION = "2026.05.27.OMNI_TRIE_FIXED"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
 ENABLE_MAIN_RELEVANCE = False
 ENABLE_MAIN_TLD = True
-ENABLE_MAIN_KW = True
+ENABLE_MAIN_KW = True  # Strict filtering: Keeps ONLY matches to high-signal pattern
 
-ENABLE_MOBILE_RELEVANCE = True
+ENABLE_MOBILE_RELEVANCE = False  # Turned off to stop stripping long-tail threat infrastructure
 ENABLE_MOBILE_TLD = True
-ENABLE_MOBILE_KW = True
+ENABLE_MOBILE_KW = False
 
 ENABLE_ULTIMATE_RELEVANCE = False
 ENABLE_ULTIMATE_TLD = True
-ENABLE_ULTIMATE_KW = True
+ENABLE_ULTIMATE_KW = False
 
 # APPEND TOGGLES
 ENABLE_MAIN_REBIND = False
@@ -66,19 +66,11 @@ MAIN_SOURCES = [
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
     #"https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt",
 
-    # --- 2. The Multi-Threat Security Core (The "Mini-Omni" Engines) ---
-    #"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
-
-    # --- 3. Enforcement & Behavioral Blocks ---
+    # --- 2. Enforcement & Behavioral Blocks ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    #"https://filters.adtidy.org/dns/filter_52.txt",
 ]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
@@ -145,8 +137,43 @@ TOP_LISTS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Pure Performance Helper Functions
+# Structural Tree Optimization Classes & Helpers
 # ---------------------------------------------------------------------------
+
+class DomainTrieNode:
+    __slots__ = ('children', 'is_blocked')
+    def __init__(self):
+        self.children: dict[str, DomainTrieNode] = {}
+        self.is_blocked: bool = False
+
+def optimize_domains(domains: Iterable[str]) -> list[str]:
+    """Strict Domain Trie compression that runs top-down from TLD."""
+    root = DomainTrieNode()
+    
+    for domain in domains:
+        parts = domain.lower().split('.')
+        current = root
+        for part in reversed(parts):
+            if part not in current.children:
+                current.children[part] = DomainTrieNode()
+            current = current.children[part]
+            if current.is_blocked:
+                break
+        current.is_blocked = True
+
+    results: list[str] = []
+    
+    def walk_tree(node: DomainTrieNode, path_segments: list[str]):
+        if node.is_blocked:
+            results.append(".".join(reversed(path_segments)))
+            return
+        for segment, child_node in node.children.items():
+            path_segments.append(segment)
+            walk_tree(child_node, path_segments)
+            path_segments.pop()
+
+    walk_tree(root, [])
+    return results
 
 def has_suffix_match(host: str, lookup_set: set[str]) -> bool:
     if host in lookup_set:
@@ -173,23 +200,12 @@ def get_matching_tld(host: str, spam_set: set[str], denyallow_map: dict[str, set
         idx = host.find('.', idx + 1)
     return None
 
-def optimize_domains(domains: set[str]) -> list[str]:
-    reversed_sorted = sorted(d[::-1] for d in domains)
-    optimized: list[str] = []
-    last_kept: str | None = None
-    for rev in reversed_sorted:
-        if last_kept and rev.startswith(last_kept + "."):
-            continue
-        optimized.append(rev)
-        last_kept = rev
-    return [d[::-1] for d in optimized]
-
 def _parse_csv_lines(iterable: Iterable[str], col_idx: int, skip_header: bool) -> set[str]:
     domains = set()
     add_dom = domains.add
     for i, line in enumerate(iterable):
         if skip_header and i == 0: 
-            continue
+            return domains
         parts = line.split(',', col_idx + 1)
         if len(parts) > col_idx:
             dom = parts[col_idx].strip().lower().strip('"')
@@ -203,7 +219,6 @@ def extract_host(clean: str) -> str | None:
     clean = clean.strip()
     if not clean: return None
 
-    # Adblock Rules
     if clean.startswith("||"):
         if "$" in clean:
             clean = clean.split("$", 1)[0]
@@ -214,7 +229,6 @@ def extract_host(clean: str) -> str | None:
         m = ADBLOCK_EXACT_RE.search(clean) or ADBLOCK_BASIC_RE.search(clean)
         if m: return m.group(1).lower().strip('.')
 
-    # Hosts File format
     if clean.startswith(("0.0.0.0", "127.0.0.1")):
         parts = clean.split(None, 1)
         if len(parts) > 1:
@@ -222,13 +236,11 @@ def extract_host(clean: str) -> str | None:
             if '.' in out and ' ' not in out: 
                 return out.lower()
 
-    # Dnsmasq mapping format
     if clean.startswith(("address=/", "server=/")):
         parts = clean.split('/')
         if len(parts) > 1:
             return parts[1].lower().strip('.')
 
-    # Bare Domain optimization
     if '.' in clean and ' ' not in clean and '/' not in clean and '\\' not in clean:
         return clean.lower().strip('.')
 
@@ -259,7 +271,6 @@ async def fetch_with_retry(client: httpx.AsyncClient, url: str, **kwargs) -> htt
 async def fetch_top_list(url: str, col_idx: int, skip_header: bool, compression: str, client: httpx.AsyncClient) -> set[str]:
     try:
         r = await fetch_with_retry(client, url, headers={"User-Agent": "Mozilla/5.0"}, timeout=90.0)
-
         def process_sync():
             if compression == "zip":
                 with zipfile.ZipFile(io.BytesIO(r.content)) as z:
@@ -271,7 +282,6 @@ async def fetch_top_list(url: str, col_idx: int, skip_header: bool, compression:
                         return _parse_csv_lines(f, col_idx, skip_header)
             else:
                 return _parse_csv_lines(r.text.splitlines(), col_idx, skip_header)
-
         return await asyncio.to_thread(process_sync)
     except Exception as e:
         print(f"[-] Error processing top list {url}: {e}")
@@ -281,7 +291,6 @@ async def fetch_source_domains(url: str, client: httpx.AsyncClient) -> tuple[str
     try:
         domains = set()
         add_dom = domains.add
-
         async with client.stream("GET", url, headers={"User-Agent": "Mozilla/5.0"}, timeout=60.0) as r:
             r.raise_for_status()
             async for line in r.aiter_lines():
@@ -327,7 +336,9 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if not disable_tld and get_matching_tld(host, s_set, d_map):
                 stats["tld"] += 1
                 continue
-            if not disable_kw and NSFW_REGEX.search(host):
+            # FIXED: Fllipped lookahead context. If KW filtering is enabled,
+            # drop the domain if it does NOT match your targeted explicit patterns.
+            if not disable_kw and not NSFW_REGEX.search(host):
                 stats["kw"] += 1
                 continue
             if not disable_relevance and not has_suffix_match(host, a_list):
@@ -347,7 +358,7 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
         print(f"[*] Source contribution: {p.netloc}/{filename} -> {added_from_source}")
 
     initial_count = len(found)
-    optimized = optimize_domains(found)
+    optimized = optimize_domains(found)  # Executes Trie Pruning Engine
     stats["pruned"] = initial_count - len(optimized)
     return optimized, stats, source_stats
 
@@ -379,7 +390,7 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
-        f.write(f"! Stats: Kept {len(dataset)} | Badware-Pruned {stats['pruned_by_hoster']} | General-Pruned {stats['pruned']} | Whitelisted {stats['whitelisted']} | Irrelevant {stats['irrelevant']} | Duplicates {stats['duplicate']} | TLD {stats['tld']} | NSFW {stats['kw']}\n")
+        f.write(f"! Stats: Kept {len(dataset)} | Badware-Pruned {stats['pruned_by_hoster']} | General-Pruned {stats['pruned']} | Whitelisted {stats['whitelisted']} | Irrelevant {stats['irrelevant']} | Duplicates {stats['duplicate']} | TLD {stats['tld']} | Extraneous-Filtered {stats['kw']}\n")
 
         f.write("!\n! --- Source Contributions (Pre-Pruning) ---\n")
         for entry in literal_list:
