@@ -15,21 +15,21 @@ from typing import Iterable
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.05.27.OMNI_TRIE_FIXED"
+VERSION = "2026.05.27.OMNI_PRO_TRIE"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
 ENABLE_MAIN_RELEVANCE = False
 ENABLE_MAIN_TLD = True
-ENABLE_MAIN_KW = True  # Strict filtering: Keeps ONLY matches to high-signal pattern
+ENABLE_MAIN_KW = True  # Drops literal keyword matches to offload to the trailing regex rule
 
-ENABLE_MOBILE_RELEVANCE = False  # Turned off to stop stripping long-tail threat infrastructure
+ENABLE_MOBILE_RELEVANCE = False  
 ENABLE_MOBILE_TLD = True
-ENABLE_MOBILE_KW = False
+ENABLE_MOBILE_KW = True
 
 ENABLE_ULTIMATE_RELEVANCE = False
 ENABLE_ULTIMATE_TLD = True
-ENABLE_ULTIMATE_KW = False
+ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
 ENABLE_MAIN_REBIND = False
@@ -137,7 +137,7 @@ TOP_LISTS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Structural Tree Optimization Classes & Helpers
+# Trie Data Structures & Core Optimizers
 # ---------------------------------------------------------------------------
 
 class DomainTrieNode:
@@ -147,7 +147,7 @@ class DomainTrieNode:
         self.is_blocked: bool = False
 
 def optimize_domains(domains: Iterable[str]) -> list[str]:
-    """Strict Domain Trie compression that runs top-down from TLD."""
+    """Compresses lists from the TLD down using a strict structural tree layout."""
     root = DomainTrieNode()
     
     for domain in domains:
@@ -205,7 +205,7 @@ def _parse_csv_lines(iterable: Iterable[str], col_idx: int, skip_header: bool) -
     add_dom = domains.add
     for i, line in enumerate(iterable):
         if skip_header and i == 0: 
-            return domains
+            continue
         parts = line.split(',', col_idx + 1)
         if len(parts) > col_idx:
             dom = parts[col_idx].strip().lower().strip('"')
@@ -249,7 +249,7 @@ def extract_host(clean: str) -> str | None:
     return None
 
 # ---------------------------------------------------------------------------
-# Async Networking Layer
+# Async Network Engine
 # ---------------------------------------------------------------------------
 
 async def fetch_with_retry(client: httpx.AsyncClient, url: str, **kwargs) -> httpx.Response:
@@ -309,7 +309,7 @@ async def fetch_source_domains(url: str, client: httpx.AsyncClient) -> tuple[str
         return url, set()
 
 # ---------------------------------------------------------------------------
-# Data Synthesis Processing
+# Data Synthesis Engine
 # ---------------------------------------------------------------------------
 
 def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], a_list: set[str], w_list: set[str], source_data: dict[str, set[str]], disable_relevance: bool = False, disable_tld: bool = False, disable_kw: bool = False) -> tuple[list[str], dict[str, int], dict[str, int]]:
@@ -336,11 +336,13 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if not disable_tld and get_matching_tld(host, s_set, d_map):
                 stats["tld"] += 1
                 continue
-            # FIXED: Fllipped lookahead context. If KW filtering is enabled,
-            # drop the domain if it does NOT match your targeted explicit patterns.
-            if not disable_kw and not NSFW_REGEX.search(host):
+            
+            # --- CORRECTED KEYWORD FILTER ---
+            # If domain matches the pattern, drop it here because the regex rule handles it.
+            if not disable_kw and NSFW_REGEX.search(host):
                 stats["kw"] += 1
                 continue
+                
             if not disable_relevance and not has_suffix_match(host, a_list):
                 stats["irrelevant"] += 1
                 continue
@@ -358,7 +360,7 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
         print(f"[*] Source contribution: {p.netloc}/{filename} -> {added_from_source}")
 
     initial_count = len(found)
-    optimized = optimize_domains(found)  # Executes Trie Pruning Engine
+    optimized = optimize_domains(found)  # True Trie node reduction
     stats["pruned"] = initial_count - len(optimized)
     return optimized, stats, source_stats
 
@@ -390,7 +392,7 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
-        f.write(f"! Stats: Kept {len(dataset)} | Badware-Pruned {stats['pruned_by_hoster']} | General-Pruned {stats['pruned']} | Whitelisted {stats['whitelisted']} | Irrelevant {stats['irrelevant']} | Duplicates {stats['duplicate']} | TLD {stats['tld']} | Extraneous-Filtered {stats['kw']}\n")
+        f.write(f"! Stats: Kept {len(dataset)} | Badware-Pruned {stats['pruned_by_hoster']} | General-Pruned {stats['pruned']} | Whitelisted {stats['whitelisted']} | Irrelevant {stats['irrelevant']} | Duplicates {stats['duplicate']} | TLD {stats['tld']} | Regex-Offloaded {stats['kw']}\n")
 
         f.write("!\n! --- Source Contributions (Pre-Pruning) ---\n")
         for entry in literal_list:
@@ -412,7 +414,7 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
             f.write("\n! --- SPAM TLDs ---\n" + spam_text)
 
 # ---------------------------------------------------------------------------
-# Core Pipeline Execution
+# Pipeline Orchestrator
 # ---------------------------------------------------------------------------
 
 async def run_pipeline() -> None:
