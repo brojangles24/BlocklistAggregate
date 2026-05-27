@@ -63,10 +63,12 @@ MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
+    "https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt",
 
     # --- 2. The Multi-Threat Security Core (The "Mini-Omni" Engines) ---
     #"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", 
 
@@ -84,7 +86,7 @@ MOBILE_SOURCES = list(MAIN_SOURCES)
 # ---------------------------------------------------------------------------
 # ULTIMATE LIST SELECTION (Jorgensen Omni)
 # ---------------------------------------------------------------------------
-ULTIMATE_SOURCES = [
+ULTIMATE_SOURCES = ['''
     # --- HaGeZi Umbrella Engines ---
     "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
@@ -96,6 +98,8 @@ ULTIMATE_SOURCES = [
     # --- Core Content Tiers ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
+    "https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt",
 
     # --- High-Yield Blocklist Project Components ---
     "https://blocklistproject.github.io/Lists/abuse.txt",
@@ -121,7 +125,7 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",'''
 ]
 
 # Shared Core Resources
