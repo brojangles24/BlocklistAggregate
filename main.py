@@ -23,7 +23,7 @@ ENABLE_MAIN_RELEVANCE = False
 ENABLE_MAIN_TLD = True
 ENABLE_MAIN_KW = True  # Drops literal keyword matches to offload to the trailing regex rule
 
-ENABLE_MOBILE_RELEVANCE = False  
+ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = True
 ENABLE_MOBILE_KW = True
 
