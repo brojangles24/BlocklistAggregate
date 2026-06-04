@@ -32,15 +32,15 @@ ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
-ENABLE_MAIN_REBIND = False
-ENABLE_MAIN_SAFESEARCH = False
-ENABLE_MAIN_NSFW_REGEX = False
-ENABLE_MAIN_SPAM_TLDS = False
+ENABLE_MAIN_REBIND = True
+ENABLE_MAIN_SAFESEARCH = True
+ENABLE_MAIN_NSFW_REGEX = True
+ENABLE_MAIN_SPAM_TLDS = True
 
-ENABLE_MOBILE_REBIND = False
-ENABLE_MOBILE_SAFESEARCH = False
-ENABLE_MOBILE_NSFW_REGEX = False
-ENABLE_MOBILE_SPAM_TLDS = False
+ENABLE_MOBILE_REBIND = True
+ENABLE_MOBILE_SAFESEARCH = True
+ENABLE_MOBILE_NSFW_REGEX = True
+ENABLE_MOBILE_SPAM_TLDS = True
 
 ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
@@ -72,9 +72,6 @@ MAIN_SOURCES = ['''
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",'''
 ]
-
-MOBILE_SOURCES = list(ULTIMATE_SOURCES)
-
 # ---------------------------------------------------------------------------
 # ULTIMATE LIST SELECTION (Jorgensen Omni)
 # ---------------------------------------------------------------------------
@@ -119,6 +116,8 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
 ]
+
+MOBILE_SOURCES = list(ULTIMATE_SOURCES)
 
 # Shared Core Resources
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
