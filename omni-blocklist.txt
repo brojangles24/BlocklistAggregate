@@ -1,6 +1,6 @@
 ! Jorgensen OMNI List | Version: 2026.05.27.OMNI_PRO_TRIE
-! Generated: 2026-06-05 05:39:52 AM MST
-! Stats: Kept 759137 | Badware-Pruned 24472 | General-Pruned 1225618 | Whitelisted 18 | Irrelevant 0 | Duplicates 311029 | TLD 725278 | Regex-Offloaded 285581
+! Generated: 2026-06-05 08:56:04 AM MST
+! Stats: Kept 759170 | Badware-Pruned 24472 | General-Pruned 1225728 | Whitelisted 18 | Irrelevant 0 | Duplicates 311064 | TLD 725325 | Regex-Offloaded 285640
 !
 ! --- Source Contributions (Pre-Pruning) ---
 ! https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt -> 1400
@@ -9,9 +9,9 @@
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt -> 124958
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt -> 13920
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt -> 14304
-! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 163630
-! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 22603
-! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 318455
+! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 163766
+! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 22600
+! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 318424
 ! https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt -> 0
 ! https://blocklistproject.github.io/Lists/abuse.txt -> 213011
 ! https://blocklistproject.github.io/Lists/crypto.txt -> 11864
@@ -19,7 +19,7 @@
 ! https://blocklistproject.github.io/Lists/fraud.txt -> 89237
 ! https://blocklistproject.github.io/Lists/phishing.txt -> 95680
 ! https://phishing.army/download/phishing_army_blocklist_extended.txt -> 39069
-! https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt -> 8062
+! https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt -> 8092
 ! https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt -> 1865
 ! https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt -> 36
 ! https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt -> 85
@@ -27,10 +27,10 @@
 ! https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts -> 4896
 ! https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts -> 736
 ! https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt -> 26518
-! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 370
-! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 34801
+! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 389
+! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 34805
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 834
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 20645
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 20633
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 177
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 50
 !
@@ -13646,6 +13646,7 @@
 ||17369.xyz^
 ||1737028582.cloud^
 ||17384.xyz^
+||17390.xyz^
 ||17394.xyz^
 ||1739dodge.info^
 ||173jiasu.cn^
@@ -26434,6 +26435,7 @@
 ||320btc.net^
 ||320btc.org^
 ||320ffa1c63c1.org^
+||320kbit.net^
 ||320tt.net^
 ||321.jintang114.org^
 ||3211976.ru^
@@ -28355,6 +28357,7 @@
 ||3a44ba27.lvcshgchydcguahha.pages.dev^
 ||3a4538c4b223ddbc369b3fb59c823dad.xyz^
 ||3a5cab8d9651a03c4018096f80da3b92.xyz^
+||3a5mhx6f3e75.xyz^
 ||3a613b82211d10032e6b64e2ce98e51f.org^
 ||3a7f8e3b3ba66ffbb734381aa7f9fb34.info^
 ||3a80a90baacde0b831acd64a8c680992.org^
@@ -28536,7 +28539,6 @@
 ||3d.tc^
 ||3d1.gmobb.jp^
 ||3d14300656dd765c.xyz^
-||3d17-050k-1vwa.brentt-gfwdsupply-com-s-account.workers.dev^
 ||3d1d6f82.documentreviews.pages.dev^
 ||3d2ai-zww25-yqicgg.xyz^
 ||3d2print.net^
@@ -32993,6 +32995,7 @@
 ||4k-star.jp^
 ||4k-streaming.net^
 ||4k.game^
+||4k.mk^
 ||4k.to^
 ||4kant.nl^
 ||4kaomdf1.ints.f5.si^
@@ -33136,7 +33139,6 @@
 ||4r272ptd8p.ufs.sh^
 ||4rabetaviator.xyz^
 ||4ralolg.xyz^
-||4rbh-zqg8-clq3.accounts-dynamech-ca-s-account.workers.dev^
 ||4rchive.org^
 ||4realamateurs.net^
 ||4realswingers.net^
@@ -37441,6 +37443,7 @@
 ||643039787.becompany.org^
 ||64308.xyz^
 ||64321879.xyz^
+||643332a4.xyz^
 ||6434ac77428ac1c5c84518ccaaebba16.org^
 ||643646.me^
 ||643724.me^
@@ -37844,6 +37847,7 @@
 ||66879be8414c.info^
 ||6688440.xyz^
 ||6688m.xyz^
+||6688yingyuandianshijumianfeiguankanzaix4.org.cn^
 ||66890.xyz^
 ||6689b31cdd575ea3354bc539ef9e141d.net^
 ||668dg.org^
@@ -49779,6 +49783,7 @@
 ||89757.net^
 ||89757.x.gg^
 ||89765.xyz^
+||89786482utrr738.xyz^
 ||89787.xyz^
 ||89792.xyz^
 ||897983247igsp.xyz^
@@ -52994,6 +52999,7 @@
 ||9xmovie.dev^
 ||9xmovie.direct^
 ||9xmovie.estate^
+||9xmovie.fail^
 ||9xmovie.farm^
 ||9xmovie.ing^
 ||9xmovies.bayern^
@@ -62237,7 +62243,6 @@
 ||adi.loris.tv^
 ||adi.swiss^
 ||adiabetic.ru^
-||adiaditi-priya17.github.io^
 ||adial.co.uk^
 ||adialbi.eu^
 ||adiam.tech^
@@ -62421,7 +62426,6 @@
 ||adityachaurasia1676.github.io^
 ||adityahiremath449.github.io^
 ||adityait.in^
-||adityakumar712.github.io^
 ||adityanursing.in^
 ||adityaportofolio.xyz^
 ||adityaranjan05.github.io^
@@ -86786,7 +86790,6 @@
 ||amazon-clone-inceptioncodes.vercel.app^
 ||amazon-clone-indol-two.vercel.app^
 ||amazon-clone-ivory-beta.vercel.app^
-||amazon-clone-jade-eight.vercel.app^
 ||amazon-clone-jade-ten.vercel.app^
 ||amazon-clone-jade-three.vercel.app^
 ||amazon-clone-jet-eight-44.vercel.app^
@@ -87339,6 +87342,7 @@
 ||ambutec.it^
 ||ambvvl.info^
 ||ambyenta.hr^
+||ambystic.my.id^
 ||amc-sonthofen.de^
 ||amc.co.ke^
 ||amc.gov.co^
@@ -89620,6 +89624,7 @@
 ||anallovers.info^
 ||anallust.us^
 ||anallyasian.net^
+||anallyse.free.fr^
 ||analmaster.net^
 ||analmature.net^
 ||analmatureorgies.net^
@@ -93646,6 +93651,7 @@
 ||anfitrion.mx^
 ||anfivir.de^
 ||anfkpk.gov.pk^
+||anflaty.github.io^
 ||anfliegen.de^
 ||anfora.co^
 ||anfrage-annehmen.info^
@@ -104360,7 +104366,6 @@
 ||armaments.stream^
 ||armanaryapour.ca^
 ||armandaily.ir^
-||armande.docu301299.pro^
 ||armandopassaro.it^
 ||armanet.co^
 ||armanet.us^
@@ -129699,7 +129704,6 @@
 ||bg.tc^
 ||bg.topoin.info^
 ||bg0.link^
-||bg2-n11.global.ssl.fastly.net^
 ||bg3.link^
 ||bg3applezh3syorg.mpabexgw.xyz^
 ||bg4-5rw.pages.dev^
@@ -129729,7 +129733,6 @@
 ||bgc55.neoplus.adsl.tpnet.pl^
 ||bgc93.neoplus.adsl.tpnet.pl^
 ||bgcash.co.in^
-||bgcb-3wfu-2x0k.rdials-compasslabservices-com-s-account.workers.dev^
 ||bgcgreaternwii.org^
 ||bgcinqcbb3.web.app^
 ||bgcivilsociety.org^
@@ -138807,6 +138810,7 @@
 ||bn55gameapk.info^
 ||bn6.xyz^
 ||bn71.ru^
+||bn7cg1t23ov7y.xyz^
 ||bna-gov.co^
 ||bnadfbql.info^
 ||bnamro.info^
@@ -164726,7 +164730,6 @@
 ||caxenubuminvestments.digital^
 ||caxeyaloquissolutions.digital^
 ||caxnewpanem.info^
-||caxqlnz.gmkg7a.cn^
 ||caxxkemip.in^
 ||cay-consulting.de^
 ||cay-paketi-al0l.xyz^
@@ -172293,6 +172296,7 @@
 ||cheepgru.stream^
 ||cheer.nu^
 ||cheer.ws^
+||cheerbaby.hk^
 ||cheerbase.digital^
 ||cheerbox.in^
 ||cheerchile.cl^
@@ -180382,7 +180386,6 @@
 ||clone-github.info^
 ||clone-instagram-by-enju.vercel.app^
 ||clone-login-insta.vercel.app^
-||clone-netflix-alpha-two.vercel.app^
 ||clone-netflix-debs.vercel.app^
 ||clone-six-iota.vercel.app^
 ||clone-ui-instagram-psi.vercel.app^
@@ -222383,6 +222386,7 @@
 ||deeprub.net^
 ||deeprush.net^
 ||deeps.net^
+||deeps0408.github.io^
 ||deepsabr.host^
 ||deepsacpanex.info^
 ||deepsea-update.live^
@@ -227410,6 +227414,7 @@
 ||devukaqidexholdings.forum^
 ||devupdate.de^
 ||devuqakexanalytics.digital^
+||devusb.us^
 ||devushka-iz-niotkuda-dorama.ru^
 ||devushka-iz-niotkuda-doramadrama.ru^
 ||devushka-iz-niotkuda-doramalive.ru^
@@ -251063,6 +251068,7 @@
 ||eco-zagar-spb.ru^
 ||eco.escoffierrecipes.org^
 ||eco.ocm.co.il^
+||eco.sapo.pt^
 ||eco101matrix.digital^
 ||eco101vault.digital^
 ||eco1digital.digital^
@@ -264771,6 +264777,7 @@
 ||erotikfilme.rocken.de^
 ||erotikfilme.tv^
 ||erotikfilme24.net^
+||erotikfilmegratis.org^
 ||erotikfilmizle.net^
 ||erotikfilmizlevip.org^
 ||erotikfilmsitesi.cv^
@@ -277850,6 +277857,7 @@
 ||f228.in.net.pl^
 ||f22photography.co.uk^
 ||f24-zfcloud.zdn.vn^
+||f240y.xyz^
 ||f245f.xyz^
 ||f25.in^
 ||f2542d1206.ru^
@@ -301763,7 +301771,6 @@
 ||fr.am^
 ||fr.ceritalucah.info^
 ||fr.dalockd.net^
-||fr.erotikfilmegratis.org^
 ||fr.gp^
 ||fr.jolly.me^
 ||fr.lucahmelayu.org^
@@ -315895,7 +315902,6 @@
 ||gdtot.nl^
 ||gdtot.one^
 ||gdtot.xyz^
-||gdttanb.cn^
 ||gdvelletri.it^
 ||gdvid.info^
 ||gdvs-fidas.it^
@@ -324572,6 +324578,7 @@
 ||gnk.zaural.ru^
 ||gnkiwvtksl7hlahybr-noreply-netflix.info^
 ||gnkzs.ehplabs.co.uk^
+||gnlgroup.net^
 ||gnmhyuy8ve-ca-netflix.info^
 ||gnminiusloginsz.dorik.io^
 ||gnmznbck.web.app^
@@ -335827,6 +335834,7 @@
 ||gwegvfgpxlq.net^
 ||gweikcee.zaeiranio.maxgrowth.ru^
 ||gweis.xyz^
+||gweissrs.github.io^
 ||gwejrh.info^
 ||gwen-stefani.ru^
 ||gwen.121escorts.us^
@@ -355122,6 +355130,7 @@
 ||htemplatehelper.co^
 ||htemplatehub.co^
 ||htemplateshere.co^
+||htenepsigbi.atspace.org^
 ||htesports.com.br^
 ||htex-panel.at^
 ||htextfrompc.co^
@@ -355666,6 +355675,7 @@
 ||hub5718534.pro^
 ||hub5723511.pro^
 ||hub5723534.pro^
+||hub5724557.pro^
 ||hub5btmain.v6.shub.sandai.net^
 ||hub5emu.v6.shub.sandai.net^
 ||hub5idx.v6.shub.sandai.net^
@@ -360047,6 +360057,7 @@
 ||icloud.org.tr^
 ||icloud.pm^
 ||icloudaccounts.net^
+||icloudbuscar.id^
 ||icloudbypass.pro^
 ||iclouddata.org^
 ||iclouddispositivo.us^
@@ -364322,6 +364333,7 @@
 ||impacted.host^
 ||impactergridco.digital^
 ||impactfactorsearch.org^
+||impactgames.kr^
 ||impactgrasses.com.au^
 ||impacthealthnow.net^
 ||impactify.io^
@@ -369550,7 +369562,6 @@
 ||instagramis.ru^
 ||instagramkin.ru^
 ||instagramlike.ru^
-||instagramlogin-accounts-logintocontinue.github.io^
 ||instagramlogin-eta.vercel.app^
 ||instagramlogin.blog.br^
 ||instagramlogin.co.uk^
@@ -371290,6 +371301,7 @@
 ||intoan.xyz^
 ||intoday.nl^
 ||intodreamsofluck.accountant^
+||intokem.com.cn^
 ||intoku.info^
 ||intolerablenessescontemzzporized.info^
 ||intolove.co.uk^
@@ -381464,6 +381476,7 @@
 ||javhdvip.info^
 ||javhdz.pro^
 ||javhentai.com.br^
+||javhey.org^
 ||javhihi.me^
 ||javhiv.xyz^
 ||javhot.pro^
@@ -381628,6 +381641,7 @@
 ||javsubbed.net^
 ||javsubid.bz^
 ||javsubid.cv^
+||javsubid.cx^
 ||javsubid.tv^
 ||javsubidn.tv^
 ||javsubindo.cv^
@@ -389656,6 +389670,7 @@
 ||jycxxmz.info^
 ||jycztv.royp.maxgrowth.ru^
 ||jye.me^
+||jye.one^
 ||jye.zfutio.maxgrowth.ru^
 ||jyertijaer.xyz^
 ||jyev.cn^
@@ -390860,6 +390875,7 @@
 ||kalshi.run^
 ||kalsilaw.bluehat.hosting^
 ||kalsoer.web.app^
+||kaltern.org^
 ||kalterskin.digital^
 ||kaltesholz.de^
 ||kalti-9torvam.digital^
@@ -402354,6 +402370,7 @@
 ||kralcan.pro^
 ||kralenhut.nl^
 ||kralink.at^
+||kralistanbul.pro^
 ||kralken.co^
 ||kralogin-cc.pages.dev^
 ||kralonuvite.my^
@@ -403414,7 +403431,6 @@
 ||kt.okhcugiuo.fastsize.ru^
 ||kt168.org^
 ||kt1pq.fontediluce.it^
-||kt75.one^
 ||kt860.xyz^
 ||kta.krakow.pl^
 ||kta.vc^
@@ -404608,6 +404624,7 @@
 ||kumykhaven.digital^
 ||kumzgne.sua.fastsize.ru^
 ||kunal-w07.github.io^
+||kunal4137.github.io^
 ||kunalcodes447.github.io^
 ||kunbasprolgzn.gitbook.io^
 ||kunbeila.cn^
@@ -407091,6 +407108,7 @@
 ||ladyboyass.net^
 ||ladyboyblog.info^
 ||ladyboychat.ca^
+||ladyboycock.net^
 ||ladyboycocks.net^
 ||ladyboycontacts.co.uk^
 ||ladyboycum.net^
@@ -407102,6 +407120,7 @@
 ||ladyboygold.me^
 ||ladyboygold.net^
 ||ladyboygold.org^
+||ladyboyguide.net^
 ||ladyboyladyboy.net^
 ||ladyboyladyboy.org^
 ||ladyboymint.net^
@@ -407737,6 +407756,7 @@
 ||lamatuquexpartners.digital^
 ||lamaxukutakof.pro^
 ||lamazefamilycenter.org^
+||lamb.w395.info^
 ||lamb276-claim.org^
 ||lambackbase.digital^
 ||lambadistudio.digital^
@@ -408198,6 +408218,7 @@
 ||langleyindependentscollective.org^
 ||langleyprogress.org^
 ||langlinx.com.cn^
+||langmei.xyz^
 ||langok.biz.id^
 ||langoonstudio.digital^
 ||langry.info^
@@ -409755,7 +409776,6 @@
 ||laurance-primeurs.fr^
 ||lauraperverse.net^
 ||lauraprivat.de^
-||laurarosajeans.com.br^
 ||lauras-girl.org^
 ||lauras-girls.de^
 ||lauras-girls.net^
@@ -410907,7 +410927,6 @@
 ||le1864.fr^
 ||le194.fr^
 ||le2f92ace32887b238d9f84d26167f3505.ws^
-||le49.one^
 ||le4net00.net^
 ||le6.fr^
 ||le7-nice.fr^
@@ -411407,7 +411426,6 @@
 ||learn-startt-ledgerr.pages.dev^
 ||learn-suiite.pages.dev^
 ||learn-suitees---app.gitbook.io^
-||learn-suitstrezr.framer.ai^
 ||learn-trezorwallt.webflow.io^
 ||learn-trezr-bridge-ion.pages.dev^
 ||learn-trezr-suite-web.pages.dev^
@@ -415454,6 +415472,7 @@
 ||lesbian-videos.org^
 ||lesbian-vision.de^
 ||lesbian-watersports.ex8.org^
+||lesbian.academy^
 ||lesbian.at^
 ||lesbian.ch^
 ||lesbian.ctg.pl^
@@ -416979,10 +416998,8 @@
 ||lgzoido.me^
 ||lh-linz.at^
 ||lh.webrnail.info^
-||lh03.one^
 ||lh182.at^
 ||lh41.isolutions.ae^
-||lh66.one^
 ||lhacb.ws^
 ||lhadanworldwide.org^
 ||lhaham.cn^
@@ -417064,7 +417081,6 @@
 ||li0qotvpr.xyz^
 ||li122.cn^
 ||li5.pro^
-||li50.one^
 ||li7.net^
 ||li8bero.it^
 ||li9bero.it^
@@ -418817,7 +418833,6 @@
 ||limas.live^
 ||limasan.web.id^
 ||limascorts.blogspot.comvideorudi.at^
-||limasensual.net^
 ||limatecinformatica.com.br^
 ||limatur.com.tr^
 ||limawoodspace.digital^
@@ -423045,6 +423060,7 @@
 ||livetienerwebcams.maakjestart.nl^
 ||livetienerwebcams.nl^
 ||livetiktokshop.net^
+||livetiles.io^
 ||liveto100.org^
 ||livetokens-mints600.vercel.app^
 ||livetokens-mints601.vercel.app^
@@ -423378,7 +423394,6 @@
 ||ljb.es^
 ||ljbero.it^
 ||ljbh0203.xyz^
-||ljbh0607.xyz^
 ||ljbh117.xyz^
 ||ljbh325.xyz^
 ||ljbh531.xyz^
@@ -423428,6 +423443,7 @@
 ||ljwimyk.info^
 ||ljyp1205.xyz^
 ||ljyp327.xyz^
+||ljzgw.net^
 ||ljzx512.xyz^
 ||ljzx523.xyz^
 ||ljzxspe.xyz^
@@ -423458,7 +423474,6 @@
 ||lk21official.info^
 ||lk21semi.org^
 ||lk3.ru^
-||lk71.one^
 ||lkalite.info^
 ||lkauxiqpwlsfr.rocks^
 ||lkawgjx.info^
@@ -423554,7 +423569,6 @@
 ||ll6.in^
 ||ll6.us^
 ||ll818.net^
-||ll86.one^
 ||llaa11.xyz^
 ||llabanquepostale.fr^
 ||lladpuu.ws^
@@ -423641,7 +423655,6 @@
 ||llfacwd.info^
 ||llfbdxc.ru^
 ||llg-whatsapp.com.cn^
-||llh-bd.org^
 ||llhd.jp^
 ||llhotmail.fr^
 ||llhuhqp.property^
@@ -430175,7 +430188,6 @@
 ||lp2ki.ac.id^
 ||lp3.ilyasov-bis.ru^
 ||lp4.io^
-||lp60.one^
 ||lp9.ru^
 ||lpad7sv54xyq-noreply-netflix.info^
 ||lpalwinsstar.xt.pl^
@@ -430272,7 +430284,6 @@
 ||lq-online.com.cn^
 ||lq.kmoci.fastsize.ru^
 ||lq0.de^
-||lq06.one^
 ||lq8xnir0vf430jssip7p.maherstcottage.com.au^
 ||lqao-defender.pro^
 ||lqbgkx.gay^
@@ -430412,7 +430423,6 @@
 ||ls.dycdn.net^
 ||ls0.net^
 ||ls1wgi.horse^
-||ls40.one^
 ||ls792648.softwareprotection.info^
 ||lsa.com.ua^
 ||lsa.dev.tuut.com.br^
@@ -431440,7 +431450,6 @@
 ||ludo073.centerblog.net^
 ||ludo2931.centerblog.net^
 ||ludocorp.com.br^
-||ludodubi.z36.web.core.windows.net^
 ||ludoenergia.com.br^
 ||ludogame.net^
 ||ludoji.pro^
@@ -431595,7 +431604,6 @@
 ||luja.ch^
 ||lujayepaiamanagementinc.digital^
 ||lujelokexservicesltd.digital^
-||lujiji.me^
 ||lujin.ro^
 ||lujksyzx.xyz^
 ||lujuhijalu.info^
@@ -431608,7 +431616,6 @@
 ||lukar-invest.ru^
 ||lukas-whatsapp.cloud^
 ||lukas.over-blog.net^
-||lukasfapso.cz^
 ||lukasjanik.de^
 ||lukasridgeston.co.uk^
 ||lukasridgeston.eu^
@@ -431671,6 +431678,8 @@
 ||lularoyisservices.forum^
 ||luleburgazzob.org.tr^
 ||lulekaacademy.co.za^
+||lulemspaa.xyz^
+||lulemspab.xyz^
 ||lulich.se^
 ||lulikandihighschool.edu.bd^
 ||lulinjereet.blogse.nl^
@@ -433350,7 +433359,6 @@
 ||lvzhiyun.net^
 ||lw4j77uju8pp.live^
 ||lw6pwx7.cryptoslam.net^
-||lw99.one^
 ||lwaziinstitute.org^
 ||lwazitech.co.za^
 ||lwbo.cn^
@@ -440430,6 +440438,7 @@
 ||map.ax^
 ||map.czechtrade.net^
 ||map.fairscale.in^
+||map.google.no^
 ||map.id-kudrovo.ru^
 ||map.oceanlegacy.ca^
 ||mapa-protect.pro^
@@ -440575,7 +440584,6 @@
 ||maps-track.cloud^
 ||maps-uk.sc.omtrdc.net^
 ||maps.googe.ca^
-||maps.google.rs^
 ||maps.id-kudrovo.ru^
 ||maps.lclouds.co^
 ||maps.org^
@@ -452626,7 +452634,6 @@
 ||meta-business-supportcenters.pages.dev^
 ||meta-business-supports-lceland.pages.dev^
 ||meta-business-supports.pages.dev^
-||meta-carlivon.pages.dev^
 ||meta-carvon.pages.dev^
 ||meta-cascade-a0n.pages.dev^
 ||meta-castle-c4d.pages.dev^
@@ -452798,7 +452805,6 @@
 ||meta-mask.xyz^
 ||meta-master-cwf.pages.dev^
 ||meta-matrix.pages.dev^
-||meta-mavnidor.pages.dev^
 ||meta-mconnect.web.app^
 ||meta-menra.pages.dev^
 ||meta-merklogi.pages.dev^
@@ -452815,12 +452821,10 @@
 ||meta-navigator-6q0.pages.dev^
 ||meta-navor-girin.pages.dev^
 ||meta-navor-lyzen.pages.dev^
-||meta-negotiation.pages.dev^
 ||meta-nelvinar.pages.dev^
 ||meta-network.pages.dev^
 ||meta-nexus-16b.pages.dev^
 ||meta-nivra-tolix-fero.pages.dev^
-||meta-nolvarin.pages.dev^
 ||meta-nomadx-4kl.pages.dev^
 ||meta-north-bgj.pages.dev^
 ||meta-nova-e41.pages.dev^
@@ -452910,7 +452914,6 @@
 ||meta-summitx.pages.dev^
 ||meta-support-center.bolt.host^
 ||meta-support-contact.pages.dev^
-||meta-support-network.pages.dev^
 ||meta-support-platform.pages.dev^
 ||meta-support-subject.pages.dev^
 ||meta-support-subregistry.pages.dev^
@@ -457372,6 +457375,7 @@
 ||mijp7imvzc2vudglhbci6dhj1zswidmfsdwuioiixnzqyntixnj.xyz^
 ||mijygutqw.us^
 ||mik-pesni.ru^
+||mik-space.github.io^
 ||mik.ru^
 ||mika.net^
 ||mikadigital.org^
@@ -481203,6 +481207,7 @@
 ||neqihetocomutyd.info^
 ||neqihulezaindustries.digital^
 ||neqm.le.guidegoods.net^
+||neqpropulsor.blob.core.windows.net^
 ||nequeerrunde.xyz^
 ||nequfe.pro^
 ||nequi.email^
@@ -483324,7 +483329,6 @@
 ||netflix-clone-cyan-nu.vercel.app^
 ||netflix-clone-cyan-six.vercel.app^
 ||netflix-clone-d9498.web.app^
-||netflix-clone-delta-hazel.vercel.app^
 ||netflix-clone-delta-red-23.vercel.app^
 ||netflix-clone-drab-ten.vercel.app^
 ||netflix-clone-eight-alpha.vercel.app^
@@ -483357,7 +483361,6 @@
 ||netflix-clone-lilac-eight.vercel.app^
 ||netflix-clone-lovat-theta.vercel.app^
 ||netflix-clone-mauve-beta.vercel.app^
-||netflix-clone-mu-hazel.vercel.app^
 ||netflix-clone-mu-opal.vercel.app^
 ||netflix-clone-mu-seven.vercel.app^
 ||netflix-clone-navy-beta.vercel.app^
@@ -483461,7 +483464,6 @@
 ||netflix-infoidverification.co.uk^
 ||netflix-iptv.net^
 ||netflix-kh-one.vercel.app^
-||netflix-lake.vercel.app^
 ||netflix-landing-clone.vercel.app^
 ||netflix-landing-page-one-kohl.vercel.app^
 ||netflix-landingpage-beta.vercel.app^
@@ -489263,6 +489265,7 @@
 ||nightcms.ru^
 ||nightcomics.net^
 ||nightcopper.info^
+||nightcord.ru^
 ||nightdream.live^
 ||nightf0rest.ru^
 ||nightf0rm.ru^
@@ -490201,6 +490204,7 @@
 ||nitie.edu^
 ||nitika.info^
 ||nitikaphorma.co^
+||nitish-04.github.io^
 ||nitishwarcollege.in^
 ||nitkazlota.pl^
 ||nitnine.stream^
@@ -497092,7 +497096,6 @@
 ||nufasidiorcollectiveltd.digital^
 ||nufdi.net^
 ||nufer-office.ch^
-||nufesafew.z1.web.core.windows.net^
 ||nufetish.us^
 ||nuffieldhealth.sc.omtrdc.net^
 ||nuffieldtwo.stream^
@@ -501119,6 +501122,7 @@
 ||officetablntry.org^
 ||officetalk.co.uk^
 ||officetech.xyz^
+||officetoday.org.cn^
 ||officetoday.xyz^
 ||officetrading.xyz^
 ||officetrial.net^
@@ -504504,6 +504508,7 @@
 ||omservice.es^
 ||omshantiguesthouse.in^
 ||omsis.ca^
+||omsk-igd.info^
 ||omsk-osma.ru^
 ||omskmonolit.ru^
 ||omsktut.ru^
@@ -511876,6 +511881,7 @@
 ||osegore.net^
 ||osekvoya.ru^
 ||oseninal.atspace.us^
+||oseninc.com.cn^
 ||osepet.net^
 ||osetinki.link^
 ||osetr.media^
@@ -521073,7 +521079,6 @@
 ||paypao.me^
 ||paypay-5sg.pages.dev^
 ||paypay-bank-fpy.github.io^
-||paypay-bank-loginusercenter-fyp.github.io^
 ||paypay-card.aqvgnzr.cn^
 ||paypay-card.dqcyszq.cn^
 ||paypay-card.dtxvgvj.cn^
@@ -525856,6 +525861,7 @@
 ||pc24.app^
 ||pc2a.info^
 ||pc2sms.eu^
+||pc3.idv.tw^
 ||pc4maintainance.theperfectupdate.org^
 ||pc50-37.epdo-d.teiion.gr^
 ||pc6.down.123ch.cn^
@@ -532075,6 +532081,7 @@
 ||pickup-chronopost.fr^
 ||pickup-colis.fr^
 ||pickup-livraison.fr^
+||pickup.e-docssign.net^
 ||pickupchronopost.fr^
 ||pickupone.stream^
 ||pickuprelais.fr^
@@ -538150,6 +538157,7 @@
 ||plugue.com.br^
 ||plugugly.host^
 ||plugwise.senne.tech^
+||plugya.com.au^
 ||pluhbruh.mctwisted.pro^
 ||plukkenhavsted.info^
 ||plukventhorn.pro^
@@ -548088,6 +548096,7 @@
 ||profile-x.net^
 ||profile.email^
 ||profile.htl502.tech^
+||profile.set-huilier.fr^
 ||profile.ssp.rambler.ru^
 ||profile01-ledger.live^
 ||profileclickings.us^
@@ -549768,6 +549777,7 @@
 ||prostitutkibryanskavip.info^
 ||prostitutkicheboksarybest.net^
 ||prostitutkicheboksarydosug.net^
+||prostitutkicheboksarysee.info^
 ||prostitutkicheboksaryslip.net^
 ||prostitutkicheboksaryvisit.net^
 ||prostitutkicheboksaryvisit.org^
@@ -550134,6 +550144,7 @@
 ||prostitutkiryazani.stream^
 ||prostitutkiryazanicasa.info^
 ||prostitutkiryazanidear.net^
+||prostitutkiryazanishe.info^
 ||prostitutkiryazanisoft.info^
 ||prostitutkiryazanisweet.net^
 ||prostitutkisamary.me^
@@ -550161,6 +550172,7 @@
 ||prostitutkisaratovawant.org^
 ||prostitutkisevastopolya.net^
 ||prostitutkisevastopolya2026.net^
+||prostitutkisevastopolyaafter.info^
 ||prostitutkisevastopolyaeexcite.net^
 ||prostitutkisevastopolyaexcite.net^
 ||prostitutkisevastopolyagid.info^
@@ -550182,6 +550194,7 @@
 ||prostitutkisevastopolyaxx.net^
 ||prostitutkisimferopolya.stream^
 ||prostitutkisimferopolyaaget.net^
+||prostitutkisimferopolyadeep.net^
 ||prostitutkisimferopolyaget.net^
 ||prostitutkisimferopolyagid.info^
 ||prostitutkisimferopolyagid.net^
@@ -552570,7 +552583,6 @@
 ||pub-2c46bcab89f842499649b44fa7c29193.r2.dev^
 ||pub-2c4b3690a6594baeb0be57a6c5f72951.r2.dev^
 ||pub-2c59cd39a47f45d08c8fc69eabb36741.r2.dev^
-||pub-2c80b976b931416dbc7ce026547f8203.r2.dev^
 ||pub-2cd796e07737407a9447e3735195d740.r2.dev^
 ||pub-2cdee1613ecb4412af6d8596351bbd87.r2.dev^
 ||pub-2d00d6546b834fd497e839604eb88d16.r2.dev^
@@ -553639,6 +553651,7 @@
 ||pub-c53d218c4f704f2495ca7a15b052e24c.r2.dev^
 ||pub-c53df6b07e7d4d3782a88fbd25b65f95.r2.dev^
 ||pub-c56ac0852cc84b72bd8e7afff5610030.r2.dev^
+||pub-c56bca134f274de6b02d532435dd1540.r2.dev^
 ||pub-c59eb821b45841dcba1315f3d69fa281.r2.dev^
 ||pub-c5d10c3f6d9f495d824c5477d292e445.r2.dev^
 ||pub-c61ff2b47fcb4ec0ae8f96cfa58e3735.r2.dev^
@@ -565012,7 +565025,6 @@
 ||rashidkhalid.pk^
 ||rashikhanna.in^
 ||rashil.digital^
-||rashithakoppurouthu.github.io^
 ||rashmidesai.in^
 ||rashmika.co.in^
 ||rashmishipping.in^
@@ -575600,6 +575612,7 @@
 ||riggingnet.co.uk^
 ||right-livelihoods.org^
 ||right-move.com.hk^
+||right-otter-800818.framer.app^
 ||right-points-940085.framer.app^
 ||right-spot.pro^
 ||right.courtindental.info^
@@ -578641,7 +578654,6 @@
 ||roboticsworld.com.pk^
 ||roboticsworldh.info^
 ||roboticverse.xyz^
-||robotiikka-dialogo-sociedade-asuminen.pages.dev^
 ||robotikcerrahider.org^
 ||robotikegitim.xyz^
 ||robotiseringnieuws.nl^
@@ -590078,7 +590090,6 @@
 ||sbcglobal-8b5cf0.webflow.io^
 ||sbcglobal-att-signing-0d2124.webflow.io^
 ||sbcglobal-att-signing-1a0013.webflow.io^
-||sbcglobal-att-signing-2ea599.webflow.io^
 ||sbcglobal-att-signing-506a15.webflow.io^
 ||sbcglobal-att-signing-7ebc02.webflow.io^
 ||sbcglobal-att-signing-b5d5e6.webflow.io^
@@ -593732,6 +593743,7 @@
 ||sebar.thand.info^
 ||sebasic.stream^
 ||sebastian-stenzel.de^
+||sebastian-web-whatsapp.com.cn^
 ||sebastianai.xyz^
 ||sebastianashleigh.net^
 ||sebastiangayoso.cl^
@@ -594403,6 +594415,7 @@
 ||secure-shaadow-exchange.pages.dev^
 ||secure-shop-apple.cloud^
 ||secure-sign-in-coinbase.pages.dev^
+||secure-site-editor--mnt1094.replit.app^
 ||secure-so-blockfi-io-cdn.webflow.io^
 ||secure-society.app^
 ||secure-soft.net^
@@ -604470,6 +604483,7 @@
 ||shaikhrrida.github.io^
 ||shaiksuk.net^
 ||shailene-tris.xyz^
+||shainacopines.free.fr^
 ||shaipearai.live^
 ||shairntech.digital^
 ||shaishavchildrights.org^
@@ -622556,17 +622570,26 @@
 ||sp0m.net^
 ||sp1-brevo.net^
 ||sp1-d.jp^
-||sp10ct6-drolvik-biz-qarnor-slutex.pages.dev^
+||sp10ct6-dranvox-biz-plurnek-slatir.pages.dev^
+||sp10ct6-dravrix-biz-fralnor-pluntex.pages.dev^
 ||sp10ct6-froltek-biz-slanvor-drunex.pages.dev^
+||sp10ct6-frurnik-biz-platem-dravnor.pages.dev^
+||sp10ct6-glanvik-biz-qurnex-vroltor.pages.dev^
+||sp10ct6-glarnik-biz-frunor-plavtex.pages.dev^
+||sp10ct6-glatem-biz-vrolnix-plurnor.pages.dev^
+||sp10ct6-glavtor-biz-tranvik-qolnex.pages.dev^
+||sp10ct6-glornex-biz-vratik-plurnax.pages.dev^
+||sp10ct6-glurnor-biz-platem-dravnik.pages.dev^
 ||sp10ct6-plortik-biz-glanex-vrutex.pages.dev^
-||sp10ct6-tronvik-biz-qalnex-frutor.pages.dev^
+||sp10ct6-slanvik-biz-fraltor-qurnex.pages.dev^
+||sp10ct6-slorvik-biz-fratem-vrolnax.pages.dev^
+||sp10ct6-slurnor-biz-vratem-glunix.pages.dev^
+||sp10ct6-vrolvik-biz-qortem-glurnax.pages.dev^
 ||sp10ct6-vrontek-biz-slarnix-framor.pages.dev^
 ||sp10ct6-zarnex-biz-fralvik-qortem.pages.dev^
 ||sp10siedlce.pl^
 ||sp1ct6-drament-biz-glarnor-fravnix.pages.dev^
-||sp1ct6-dravtek-biz-vraqlor-slurnik.pages.dev^
 ||sp1ct6-fravlor-biz-plornax-tramnex.pages.dev^
-||sp1ct6-qravnix-biz-vroltek-plornax.pages.dev^
 ||sp1ct6-slapnix-biz-qravtek-plovrax.pages.dev^
 ||sp1ct6-slarnor-biz-qravtek-vromnix.pages.dev^
 ||sp1ct6-slurnax-biz-trapnix-plovtek.pages.dev^
@@ -622583,31 +622606,25 @@
 ||sp5.us^
 ||sp53wr.kki.pl^
 ||sp572711.sitewiz.co.nz^
-||sp5ct6-dralvor-biz-glavnik-qoltex.pages.dev^
-||sp5ct6-dranqax-biz-slortik-vralnik.pages.dev^
-||sp5ct6-dranqor-biz-vralnik-gluntex.pages.dev^
-||sp5ct6-dravtex-biz-plaqvor-glurnax.pages.dev^
 ||sp5ct6-fraltek-biz-glarnor-vraqnik.pages.dev^
-||sp5ct6-fraltor-biz-vrolqor-qarnex.pages.dev^
 ||sp5ct6-framnik-biz-plaqtor-glortex.pages.dev^
-||sp5ct6-glamtex-biz-dravlor-fruntik.pages.dev^
-||sp5ct6-glavqor-biz-slortik-frantex.pages.dev^
-||sp5ct6-glavtex-biz-fruntor-vranik.pages.dev^
-||sp5ct6-glurnik-biz-plortor-fraltex.pages.dev^
+||sp5ct6-fruntex-biz-vraxnik-plaqtor.pages.dev^
+||sp5ct6-glortex-biz-slurnor-plamnik.pages.dev^
+||sp5ct6-glurnax-biz-qolvik-plarnor.pages.dev^
 ||sp5ct6-plamnik-biz-glortex-dravtor.pages.dev^
 ||sp5ct6-plaqtex-biz-dravlor-sluntik.pages.dev^
-||sp5ct6-plortor-biz-glurnex-vralnik.pages.dev^
-||sp5ct6-qarnax-biz-slurnik-plaqtor.pages.dev^
+||sp5ct6-plurnex-biz-dranqor-glavnik.pages.dev^
+||sp5ct6-plurnor-biz-fruntax-slortik.pages.dev^
+||sp5ct6-qoltex-biz-framvor-dravnik.pages.dev^
 ||sp5ct6-qravlor-biz-slurnik-framvor.pages.dev^
+||sp5ct6-qravnor-biz-plaqtex-slavnik.pages.dev^
 ||sp5ct6-slarnik-biz-vroltor-framtex.pages.dev^
-||sp5ct6-slortor-biz-framnik-glarnex.pages.dev^
-||sp5ct6-slurnor-biz-plaqtex-glavnik.pages.dev^
+||sp5ct6-slortex-biz-fralnik-vramtor.pages.dev^
 ||sp5ct6-tramtek-biz-vraqnix-slarnor.pages.dev^
-||sp5ct6-tranqax-biz-plurnor-qravtek.pages.dev^
-||sp5ct6-tranvik-biz-dravqor-vroltex.pages.dev^
-||sp5ct6-vralnik-biz-qoltex-plurnor.pages.dev^
-||sp5ct6-vraxtor-biz-fralqor-dravnix.pages.dev^
-||sp5ct6-vrolqor-biz-plarnex-slortik.pages.dev^
+||sp5ct6-tramtex-biz-slortik-fralnex.pages.dev^
+||sp5ct6-vrolqor-biz-plaqnik-glurnor.pages.dev^
+||sp5ct6-vroltex-biz-plurnik-dravqor.pages.dev^
+||sp5ct6-vromqor-biz-plavnik-draltex.pages.dev^
 ||sp5zip.kei.pl^
 ||sp61.one^
 ||sp666.co^
@@ -643176,7 +643193,6 @@
 ||support-nd68.stream^
 ||support-nd8.stream^
 ||support-nd88.stream^
-||support-ndax-io-docs.pages.dev^
 ||support-net08.stream^
 ||support-net25.stream^
 ||support-nh68.stream^
@@ -644303,6 +644319,7 @@
 ||supportly.au^
 ||supportmachine.ru^
 ||supportmail.xyz^
+||supportmail2026.github.io^
 ||supportmailapp.2bd.net^
 ||supportmailservice.info^
 ||supportmailyandex.ru^
@@ -684648,6 +684665,7 @@
 ||tuku26012023.xyz^
 ||tukukukixoiamanagement.digital^
 ||tukurtukur.xyz^
+||tula-igd.info^
 ||tula.mebel-domu.ru^
 ||tuladicloud.digital^
 ||tulamubeumservices.digital^
@@ -690840,7 +690858,6 @@
 ||umo.io^
 ||umobile.com.ph^
 ||umobile.ru^
-||umobu.com.br^
 ||umocabulx.aezevzi.fastsize.ru^
 ||umodae.run^
 ||umohx.xyz^
@@ -694984,6 +695001,7 @@
 ||upx.co.il^
 ||upx.mobi^
 ||upx01fpw.cn^
+||upxholdlogun.gitbook.io^
 ||upxvion.info^
 ||upy767q5sl.live^
 ||upyerkilt.net^
@@ -695270,6 +695288,7 @@
 ||uregov.pl^
 ||ureinon.net^
 ||urelanderpurg.org^
+||uren-igd.info^
 ||urenacried.stream^
 ||ures.co.kr^
 ||urest.org^
@@ -696678,7 +696697,6 @@
 ||usefelxi.xyz^
 ||usefieldawarezone.info^
 ||usefinan.info^
-||useforhuzaifa-wq.github.io^
 ||usefularticles.pro^
 ||usefulfeednews.pro^
 ||usefulflow.digital^
@@ -700070,6 +700088,7 @@
 ||vanaheimtech.digital^
 ||vanajamaagro.in^
 ||vanaken.nu^
+||vanalize.ru^
 ||vanalp.pl^
 ||vanamalaarts.org^
 ||vanamindiafoundation.org^
@@ -701196,6 +701215,7 @@
 ||vcsoluciones.com.ve^
 ||vcsrbrg.art^
 ||vcsresearch.org^
+||vcsz-18573.wasmer.app^
 ||vctech.vn^
 ||vctrans.com.br^
 ||vctzx.org^
@@ -708191,6 +708211,7 @@
 ||vintovoy-kompressor.ru^
 ||vintryhub.digital^
 ||vintryworks.digital^
+||vinuka17.github.io^
 ||vinumcore.digital^
 ||vinuxau.pro^
 ||vinvgroup.ru^
@@ -716173,6 +716194,7 @@
 ||wahlundhub.digital^
 ||wahoo-predict.pages.dev^
 ||wahrmund.de^
+||wahtatsrapp-cs.io^
 ||wahtsapp.hk^
 ||wahun.org^
 ||wahutton.co.uk^
@@ -722317,6 +722339,7 @@
 ||web-git-05-08-featwebenhancedepthchartwithflipto-60762c-uniswap.vercel.app^
 ||web-git-05-08-trystagingbutprobwillfailbcunauthe-c7b77b-uniswap.vercel.app^
 ||web-git-10-01-tempswapfinalbugbash-uniswap.vercel.app^
+||web-git-brnunes-web-auction-allow-sepolia-uniswap.vercel.app^
 ||web-git-erin-update-numericalinputs-uniswap.vercel.app^
 ||web-git-featwebearntdpdeposit-uniswap.vercel.app^
 ||web-git-mp-fe-local-chained-actions-earn-uniswap.vercel.app^
@@ -733425,6 +733448,8 @@
 ||wordpress-211399-0.cloudclusters.net^
 ||wordpress-211683-0.cloudclusters.net^
 ||wordpress-211839-0.cloudclusters.net^
+||wordpress-212173-0.cloudclusters.net^
+||wordpress-212255-0.cloudclusters.net^
 ||wordpress-developer.us^
 ||wordpress-hosting-deutschland.de^
 ||wordpress-info-32.ru^
@@ -741342,6 +741367,7 @@
 ||xn--0etv60l.ws^
 ||xn--0tr63uzoznqf.xyz^
 ||xn--1-2y0fs5yhte7lldo51i.kr^
+||xn--1-wxfc3gwbi.net^
 ||xn--12c2bi2g2eza.xyz^
 ||xn--12c3bn1nma.net^
 ||xn--12cl2bca0a9jsa8a7e1dc3gd.tv^
@@ -741861,8 +741887,10 @@
 ||xn--l3c1a3f3a.net^
 ||xn--l3c1abuap1f1dc2e.net^
 ||xn--l3car8bzaq6f.xyz^
+||xn--l3cb1ea6bib.net^
 ||xn--l3cb1eaa4cjbb.net^
 ||xn--l3cb1eaaa2dkbbb.net^
+||xn--l3cbh8b3bycj4j.net^
 ||xn--l3cg7a8a0cwa3f.net^
 ||xn--l3cwhg4gtc7b.net^
 ||xn--l5xa.net^
@@ -745210,8 +745238,11 @@
 ||xxparceroxx.xpg.com.br^
 ||xxphap.net^
 ||xxphim.blog^
+||xxphim.info^
 ||xxphim.live^
 ||xxphim.me^
+||xxphim.moi^
+||xxphim.my^
 ||xxphim.xyz^
 ||xxpictures.eu^
 ||xxpp.net^
@@ -748242,6 +748273,7 @@
 ||yj728x7pu3o4-pages-dev.translate.goog^
 ||yjaglkgi.ru^
 ||yjaqx31aiyr.xyz^
+||yjasur039-cyber.github.io^
 ||yjb.kr^
 ||yjbpmtmkirzdyddch.net^
 ||yjcckvcaln.net^
@@ -748822,6 +748854,7 @@
 ||yoneyuwiorinvestmentsco.digital^
 ||yonghu-whatsapp.com.cn^
 ||yongjiu7.net^
+||yongjumianfeiguankandedianshijuwangzhand4.org.cn^
 ||yongkangtcm.co.id^
 ||yongli250627linecfg.xyz^
 ||yongqingxiang.cn^
