@@ -1,6 +1,6 @@
 ! Jorgensen OMNI List | Version: 2026.05.27.OMNI_PRO_TRIE
-! Generated: 2026-06-05 01:00:27 PM MST
-! Stats: Kept 738002 | Badware-Pruned 24478 | General-Pruned 1218431 | Whitelisted 18 | Irrelevant 0 | Duplicates 305642 | TLD 662813 | Regex-Offloaded 282946
+! Generated: 2026-06-05 02:41:32 PM MST
+! Stats: Kept 738020 | Badware-Pruned 24478 | General-Pruned 1218466 | Whitelisted 18 | Irrelevant 0 | Duplicates 305662 | TLD 662830 | Regex-Offloaded 282966
 !
 ! --- Source Contributions (Pre-Pruning) ---
 ! https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt -> 1400
@@ -9,9 +9,9 @@
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt -> 125066
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt -> 14444
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt -> 14219
-! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 164180
-! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 22594
-! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 318361
+! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 164245
+! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 22591
+! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 318348
 ! https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt -> 0
 ! https://blocklistproject.github.io/Lists/abuse.txt -> 213010
 ! https://blocklistproject.github.io/Lists/crypto.txt -> 11863
@@ -27,10 +27,10 @@
 ! https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts -> 4895
 ! https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts -> 734
 ! https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt -> 26554
-! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 256
+! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 264
 ! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 34809
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 834
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 19561
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 19557
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 177
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 50
 !
@@ -39008,6 +39008,7 @@
 ||80dx3.info^
 ||80e0fccd718975e631878e06b5aacfba837459e2.xyz^
 ||80gays.info^
+||80h.org.cn^
 ||80jiliph.info^
 ||80w19v.cn^
 ||80win.net^
@@ -51122,6 +51123,7 @@
 ||ad-cdn.qingting.fm^
 ||ad-cdn.qtfm.cn^
 ||ad-cdn.technoratimedia.com.edgesuite.net^
+||ad-clan.ru^
 ||ad-client-in.skuyapi.my.id^
 ||ad-client.mediafe-dev.s.joyn.de^
 ||ad-client.mediafe-prd.s.joyn.de^
@@ -86642,6 +86644,7 @@
 ||antmedia.cloud^
 ||antminers.cloud^
 ||antmom.com.cn^
+||antnblanchy.eu^
 ||antoanthucpham.binhphuoc.vn^
 ||antobi-shop.de^
 ||antocean.net^
@@ -138473,6 +138476,7 @@
 ||burtonsnowboard.de^
 ||burtreegrid.digital^
 ||burts.beach.fsn.net^
+||burtschers.at^
 ||buruchacloudco.digital^
 ||buruianaromaneasca.ro^
 ||burundi-sugar.net^
@@ -179101,6 +179105,7 @@
 ||comme-des-garcons.co.at^
 ||comme-des-garcons.cz^
 ||commedesanges.fr^
+||commedesgarcons.ca^
 ||commedesgarconsshop.fr^
 ||commedesgarconsstore.de^
 ||commemomails.ru^
@@ -261691,6 +261696,7 @@
 ||exclusivetechova-labs.pro^
 ||exclusiveteens.net^
 ||exclusivevibes.info^
+||exclusivo.digital^
 ||exclusivobonus.digital^
 ||exclusivoparacliente.app^
 ||exclusivoparacliente.digital^
@@ -337257,6 +337263,7 @@
 ||hotcamgirls.org^
 ||hotcamguys.net^
 ||hotcamlive.net^
+||hotcamlive.org^
 ||hotcamo.net^
 ||hotcams.co^
 ||hotcams.co.il^
@@ -411123,6 +411130,7 @@
 ||look.anixa.tv^
 ||look.in^
 ||look.mancave.ws^
+||look.pat.free.fr^
 ||look.seeu.eu.org^
 ||look.xshentx.org^
 ||look4cams.live^
@@ -443520,6 +443528,7 @@
 ||mistressglam.net^
 ||mistresshelena.de^
 ||mistresshellena.co.uk^
+||mistresshot.it^
 ||mistresshybrid.co.uk^
 ||mistresshybrid.net^
 ||mistressincontrol.it^
@@ -492512,6 +492521,7 @@
 ||org-rxz.bio^
 ||org-skd.bio^
 ||org-start--en-ledge-x.pages.dev^
+||org-tof.bio^
 ||org-uphulld-com-x-nav-auth.pages.dev^
 ||org-vjhiu.bio^
 ||org-vjhwq.bio^
@@ -531584,6 +531594,7 @@
 ||prostitutkisochichange.info^
 ||prostitutkisochigid.info^
 ||prostitutkisochigirl.net^
+||prostitutkisochiher.net^
 ||prostitutkisochiintim.net^
 ||prostitutkisochilike.net^
 ||prostitutkisochinew.info^
@@ -531598,6 +531609,7 @@
 ||prostitutkistavropolyamuch.net^
 ||prostitutkistavropolyaneed.net^
 ||prostitutkistavropolyaonline.info^
+||prostitutkistavropolyaslip.net^
 ||prostitutkistavropolyastart.info^
 ||prostitutkistavropolyastart.net^
 ||prostitutkistavropolyatask.info^
@@ -531676,6 +531688,7 @@
 ||prostitutkiufylike.info^
 ||prostitutkiufylike.net^
 ||prostitutkiufysite.info^
+||prostitutkiufystay.net^
 ||prostitutkiufystop.net^
 ||prostitutkiufytask.net^
 ||prostitutkiufywithin.info^
@@ -564852,6 +564865,7 @@
 ||ryansplace.net^
 ||ryanyoung.co^
 ||ryarshtaxis.co.uk^
+||ryazan-igd.info^
 ||ryazan-office.ru^
 ||rybachok.com.ua^
 ||rybalka-opt.ru^
@@ -648370,6 +648384,7 @@
 ||thtteologising.info^
 ||thtxhu.xyz^
 ||thu-san-world-challenges.org^
+||thua.xyz^
 ||thuan.xyz^
 ||thuanbase.digital^
 ||thuanphu.com.vn^
@@ -693838,6 +693853,7 @@
 ||vrbo.invitations-reservations-guests-properties-315539274.live^
 ||vrbondage.net^
 ||vrc-modding-team.net^
+||vrcamboys.net^
 ||vrcams.io^
 ||vrcamshow.net^
 ||vrcamsites.net^
@@ -696656,6 +696672,7 @@
 ||wank.to^
 ||wank24.net^
 ||wank24.org^
+||wankbabes.co.uk^
 ||wankchat.co.uk^
 ||wanker-adultdatalink-com.pages.dev^
 ||wanker.xyz^
@@ -719782,6 +719799,7 @@
 ||xiui.net^
 ||xiuren.cloud^
 ||xiuren.hk^
+||xiuren.mobi^
 ||xiuren.org^
 ||xiuunc.info^
 ||xiuxiu8.cn^
