@@ -1,6 +1,6 @@
 ! Jorgensen MOBILE List | Version: 2026.05.27.OMNI_PRO_TRIE
-! Generated: 2026-06-05 08:56:04 AM MST
-! Stats: Kept 265791 | Badware-Pruned 24044 | General-Pruned 242389 | Whitelisted 18 | Irrelevant 1726560 | Duplicates 61650 | TLD 725325 | Regex-Offloaded 285640
+! Generated: 2026-06-05 10:57:13 AM MST
+! Stats: Kept 265810 | Badware-Pruned 24051 | General-Pruned 242406 | Whitelisted 18 | Irrelevant 1726520 | Duplicates 61676 | TLD 725245 | Regex-Offloaded 285703
 !
 ! --- Source Contributions (Pre-Pruning) ---
 ! https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt -> 645
@@ -9,28 +9,28 @@
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt -> 70011
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt -> 3518
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt -> 5099
-! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 61751
-! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 8313
-! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 162839
+! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 61803
+! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 8312
+! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 162826
 ! https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt -> 0
 ! https://blocklistproject.github.io/Lists/abuse.txt -> 55450
 ! https://blocklistproject.github.io/Lists/crypto.txt -> 7975
 ! https://blocklistproject.github.io/Lists/drugs.txt -> 1137
 ! https://blocklistproject.github.io/Lists/fraud.txt -> 5319
 ! https://blocklistproject.github.io/Lists/phishing.txt -> 16884
-! https://phishing.army/download/phishing_army_blocklist_extended.txt -> 5297
-! https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt -> 7386
+! https://phishing.army/download/phishing_army_blocklist_extended.txt -> 5314
+! https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt -> 7374
 ! https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt -> 130
 ! https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt -> 14
 ! https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt -> 53
-! https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware -> 525
+! https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware -> 526
 ! https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts -> 656
 ! https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts -> 353
 ! https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt -> 10291
-! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 38
-! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 30380
+! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 32
+! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 30381
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 508
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 6680
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 6677
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 100
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 14
 !
@@ -5547,6 +5547,7 @@
 ||34c2ba41.ripsyr.pages.dev^
 ||34erfdxbc.firebaseapp.com^
 ||34erfdxbc.web.app^
+||34flilymay.co.uk^
 ||34nda.com^
 ||34qf42y.eu.org^
 ||34sfr23.unicornplatform.com^
@@ -23263,6 +23264,7 @@
 ||adult-movie-store.co.uk^
 ||adult-movies.co.uk^
 ||adult-movies.startspot.nl^
+||adult-navisale.pages.dev^
 ||adult-only-aur.pages.dev^
 ||adult-only10-cfu.pages.dev^
 ||adult-only2-ywb.pages.dev^
@@ -23657,6 +23659,7 @@
 ||adultlivecam.co.uk^
 ||adultlivesites.co.uk^
 ||adultlivevideo.co.uk^
+||adultlivewebcams.co.uk^
 ||adultload.info^
 ||adultload.net^
 ||adultload.org^
@@ -37137,6 +37140,7 @@
 ||apps-token-chains.pages.dev^
 ||apps-traezor-io.pages.dev^
 ||apps-trexiostart.wixstudio.com^
+||apps-trezosuite.wixstudio.com^
 ||apps-trezr-suites.wixstudio.com^
 ||apps-trzori.wixstudio.com^
 ||apps-trzosuit-en.wixstudio.com^
@@ -43063,6 +43067,7 @@
 ||baisenet.free.fr^
 ||baisenette.free.fr^
 ||baisenous.over-blog.com^
+||baiserdefille.free.fr^
 ||baisers.free.fr^
 ||baisesalope.blog.hr^
 ||baisesalope.infogami.com^
@@ -45914,6 +45919,7 @@
 ||belgique-coquine.over-blog.com^
 ||belgiquecoquine.over-blog.com^
 ||belgiquelibertine.allmyblog.com^
+||belgirl.free.fr^
 ||belgische-swingers-v101.startspot.nl^
 ||belgische-webcam-sletjes.startspot.nl^
 ||belgische-webcams.startspot.nl^
@@ -47617,7 +47623,6 @@
 ||bigdickgirls.blogdrive.com^
 ||bigdickwishes.com^
 ||bigdogagency.com^
-||bigelsinindirimkodu.amazingcoupons.co.uk^
 ||bigenpakistan.com^
 ||bigevilbooleanlogic--five-nine.repl.co^
 ||bigface.co.kr^
@@ -50372,7 +50377,6 @@
 ||bmke9kfr3a.neliver.com^
 ||bmkidqunvq.neliver.com^
 ||bmkrybzpnf.neliver.com^
-||bmktdigital.com.br^
 ||bml1.co^
 ||bmlink.com^
 ||bmly.impots.gouv.fr^
@@ -62355,6 +62359,7 @@
 ||celebritychatroom.co.uk^
 ||celebritycruises.com.ssl.sc.omtrdc.net^
 ||celebritycumshot.pages.dev^
+||celebritycumshots.pages.dev^
 ||celebritydeeplink.com^
 ||celebrityerotic.about.com^
 ||celebrityf.net^
@@ -66872,6 +66877,7 @@
 ||client.stats.yinyuetai.com^
 ||client24.shared.atcihosting.com^
 ||client83-68-200-41.abo.net2000.ch^
+||clientdesktop-live.wixstudio.com^
 ||cliente-base-kiosco.pages.dev^
 ||cliente.f.mcu.com.br^
 ||cliente.initweb.com.br^
@@ -67521,7 +67527,6 @@
 ||cloverhillwinery.com^
 ||cloverisland.co.nz^
 ||clovisitconsultants.com^
-||clowncomputing.co.uk^
 ||clownfish.philipkiely.com^
 ||clownstrike.co.uk^
 ||clozer.io^
@@ -71916,7 +71921,6 @@
 ||connection-being-fixed-now.firebaseapp.com^
 ||connection-being-fixed-now.web.app^
 ||connection.arrow.com^
-||connection.co.kr^
 ||connectionassist.com^
 ||connectionmax.com.br^
 ||connectionresolve.github.io^
@@ -80637,6 +80641,7 @@
 ||damag.net^
 ||damagedface.com^
 ||damanoffice.github.io^
+||damanthinestochastic-f6bcgzgya3cggqct.z03.azurefd.net^
 ||damaresmedina.com.br^
 ||damariscosmeticos.com.br^
 ||damaru.co.in^
@@ -85564,6 +85569,7 @@
 ||desktop-gvd3u7o-nj.at.remote.it^
 ||desktop-help.pages.dev^
 ||desktop-host.wixstudio.com^
+||desktop-introweb.wixstudio.com^
 ||desktop-ladgarr-live.pages.dev^
 ||desktop-lagar-tn-hub.pages.dev^
 ||desktop-ldgerlive-web.pages.dev^
@@ -85664,6 +85670,7 @@
 ||desktop-secure-ledjor.pages.dev^
 ||desktop-server.wixstudio.com^
 ||desktop-startd-live.wixstudio.com^
+||desktop-startdcom.wixstudio.com^
 ||desktop-startsen.wixstudio.com^
 ||desktop-suitps.wixstudio.com^
 ||desktop-trexersuit.wixstudio.com^
@@ -85693,8 +85700,10 @@
 ||desktoplive-platform.wixstudio.com^
 ||desktoplive-started.wixstudio.com^
 ||desktoplivex.wixstudio.com^
+||desktoplves.wixstudio.com^
 ||desktopopen.wixstudio.com^
 ||desktopp-ledgerlive.pages.dev^
+||desktops-client.wixstudio.com^
 ||desktops-en-live-ledgr.pages.dev^
 ||desktops-en-us.wixstudio.com^
 ||desktops-explored.wixstudio.com^
@@ -87657,6 +87666,7 @@
 ||direct-login-update.webflow.io^
 ||direct.corporatefinanceinstitute.com^
 ||direct.dy-api.eu^
+||direct.infirmiere.free.fr^
 ||direct.mhw-intl.com^
 ||direct2u-escorts.co.uk^
 ||direct4gardenmachinery.co.uk^
@@ -88845,7 +88855,6 @@
 ||dna.uol.com.br^
 ||dna2day.com^
 ||dna8twue3dlxq.cloudfront.net^
-||dnaapsat-payllterxidz.bestxzor.biz.id^
 ||dnaav.com^
 ||dnacdn.net^
 ||dnadoc.com.br^
@@ -98269,6 +98278,7 @@
 ||eng-wallet-leger.pages.dev^
 ||eng-web3--exxods.pages.dev^
 ||eng-web3-exxods.pages.dev^
+||eng-webintro-logon.wixstudio.com^
 ||eng-webstart.ghost.io^
 ||eng.euroexpert.ru^
 ||eng.gov.spb.ru^
@@ -105032,6 +105042,7 @@
 ||facebookpasswordhackerdownload.blogspot.co.uk^
 ||facebookphonenumber8448598.wordpress.com^
 ||facebookphonenumbercom.blogspot.co.uk^
+||facebookprompt.com^
 ||facebookproxy.co.uk^
 ||facebookpsw.tr.gg^
 ||facebookrecreation.webflow.io^
@@ -129469,6 +129480,7 @@
 ||hxgj.dnip.net^
 ||hxhani.com^
 ||hxload.to^
+||hxqkl.com.cn^
 ||hxsame.hexun.com^
 ||hxsav.com^
 ||hxt.50webs.com^
@@ -134471,6 +134483,7 @@
 ||intro-ledggestarted.wixstudio.com^
 ||intro-ledgrcom.wixstudio.com^
 ||intro-livedesktop.wixstudio.com^
+||intro-livedesktopp.wixstudio.com^
 ||intro-liveleder.wixstudio.com^
 ||intro-startd.ghost.io^
 ||intro-started.ghost.io^
@@ -135931,6 +135944,7 @@
 ||isabella-j1.web.app^
 ||isabella-k1.firebaseapp.com^
 ||isabella-k1.web.app^
+||isabellacoquine.free.fr^
 ||isabellaspassion.com.au^
 ||isabelle23ans.centerblog.net^
 ||isabelleescort.centerblog.net^
@@ -142337,7 +142351,6 @@
 ||kiranverma.in^
 ||kirazescort.com^
 ||kirbyandco.com.au^
-||kirchy.co.uk^
 ||kirdik.no.sapo.pt^
 ||kirech.com.ua^
 ||kirei.over-blog.com^
@@ -145810,6 +145823,7 @@
 ||lalai.co.uk^
 ||lalala.geenstijl.nl^
 ||lalala001.orge.pl^
+||lalamasa.com^
 ||lalc.info^
 ||lalcg.com^
 ||laleh.itrc.ac.ir^
@@ -146464,7 +146478,6 @@
 ||layanan-offcial.biz.id^
 ||layanan.tech.blog^
 ||layananinformasibaru2025.biz.id^
-||layannz-newpnjaman.bestxzor.biz.id^
 ||layarkaca21.my.id^
 ||laybypay.com.au^
 ||layconf80-boop.github.io^
@@ -148794,6 +148807,7 @@
 ||ledzor-io-live.pages.dev^
 ||ledzor-log-en.pages.dev^
 ||ledzorlogn.pages.dev^
+||ledzr-apps.wixstudio.com^
 ||ledzr-cmstart.wixstudio.com^
 ||ledzr-com-starrt.pages.dev^
 ||ledzr-com-strt-io.pages.dev^
@@ -149335,7 +149349,6 @@
 ||lepapillon33.free.fr^
 ||leparadisduhentai.free.fr^
 ||leparadisduvoyeur.centerblog.net^
-||leparc.com.br^
 ||lepellereview.co.za^
 ||lepetittrianon.es.tl^
 ||lepetitvoyeur.com^
@@ -149351,6 +149364,7 @@
 ||leqrumsrti.gitbook.io^
 ||ler.app.br^
 ||lerbix.xyz^
+||lerdger-desktop.wixstudio.com^
 ||lereveresidence.com.br^
 ||lerger-us-logoz-live-access.pages.dev^
 ||lerina.com.br^
@@ -166304,6 +166318,7 @@
 ||microsoft-windows-blocked-40680.bitballoon.com^
 ||microsoft.188966347.xyz^
 ||microsoft.co.za^
+||microsoft.com.cobblestonesw.com^
 ||microsoft.com.org^
 ||microsoft.design^
 ||microsoft.devq.workers.dev^
@@ -179457,6 +179472,7 @@
 ||ocean-data-govbv.soup.io^
 ||ocean.gigatron.rs^
 ||ocean.ne.jp^
+||oceanacokine.free.fr^
 ||oceancloudhosts.com^
 ||oceane.erotique.over-blog.com^
 ||oceaneinf.free.fr^
@@ -189214,7 +189230,6 @@
 ||pip-semarang.ac.id^
 ||pipaffiliates.com^
 ||pipapark.com.br^
-||pipatooa.co.uk^
 ||pipayst.eu.org^
 ||pipe-chaude.infogami.com^
 ||pipe-collect.ebu.io^
@@ -190415,6 +190430,7 @@
 ||platform-starts.wixstudio.com^
 ||platform-sui-tes.pages.dev^
 ||platform-suit-es.pages.dev^
+||platform-suiteapps.wixstudio.com^
 ||platform-suites.pages.dev^
 ||platform-tanggem.wixstudio.com^
 ||platform-template-nft-marketplace-dapp-front-end.vercel.app^
@@ -197215,6 +197231,7 @@
 ||publicdomaintorrents.com^
 ||publicdomaintorrents.info^
 ||publice--coin-base.pages.dev^
+||publicen-suite-apps.wixstudio.com^
 ||publicflix.org^
 ||publichousealbury.com.au^
 ||publichub.ghost.io^
@@ -228686,6 +228703,7 @@
 ||suitap-trez.wixstudio.com^
 ||suitapp-started.wixstudio.com^
 ||suitapp-treser.wixstudio.com^
+||suitapp-trexozr.wixstudio.com^
 ||suitapp-trez.wixstudio.com^
 ||suitapp-trezo.wixstudio.com^
 ||suitapp-trezzor.wixstudio.com^
@@ -228910,6 +228928,7 @@
 ||sujeetkumar3956.github.io^
 ||sujznqrapzugi.firebaseapp.com^
 ||sujznqrapzugi.web.app^
+||sukabugil.com^
 ||sukadia.my.id^
 ||sukagoogle.no.sapo.pt^
 ||sukaraja-pesawaran.desa.id^
@@ -238101,7 +238120,6 @@
 ||todaykorea.co.kr^
 ||todaymix.ru^
 ||todaymoney.co.kr^
-||todayolayer.mrhealerbd.com^
 ||todayprofit.org^
 ||todaysgroup-my.sharepoint.com^
 ||tode-sk.com.cn^
@@ -243218,6 +243236,7 @@
 ||trzorr-suits.pages.dev^
 ||trzorsui-tes.wixstudio.com^
 ||trzorsuite-iio.pages.dev^
+||trzorsuite-intro.wixstudio.com^
 ||trzorsuite.pages.dev^
 ||trzorsuite.wixstudio.com^
 ||trzosuite.wixstudio.com^
@@ -252528,6 +252547,7 @@
 ||voyeurvision.free.fr^
 ||voyeurweb.com^
 ||voyeurx.free.fr^
+||voyeurzone.free.fr^
 ||voyeurzz.com^
 ||voyeuse.centerblog.net^
 ||voyeyrist.com^
@@ -263758,6 +263778,7 @@
 ||zaisapo.jp^
 ||zaitaipo.com.de^
 ||zaitoni.com.de^
+||zaixianguankandianshijumianfeiquanjgaoqing4.org.cn^
 ||zaixianyongjumianfeikanbushoufeidedianshi.com.cn^
 ||zaixmeigy.my.id^
 ||zaizoki.biz.id^
@@ -263852,7 +263873,6 @@
 ||zapads.zapak.com^
 ||zapdental.com.br^
 ||zapelai.internet.in^
-||zapform.com.br^
 ||zapier.app^
 ||zapitano.com^
 ||zapmeme.com^
@@ -264822,7 +264842,6 @@
 ||zjbsbm1w7e.neliver.com^
 ||zjbsupqx6t.neliver.com^
 ||zjda2nhrhy8mrf-pages-dev.translate.goog^
-||zjdc-22038.wasmer.app^
 ||zjdwrplti8.neliver.com^
 ||zjflf9epfe.com^
 ||zjgilcmgcz.neliver.com^
