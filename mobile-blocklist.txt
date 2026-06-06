@@ -1,6 +1,6 @@
 ! Jorgensen MOBILE List | Version: 2026.05.27.OMNI_PRO_TRIE
-! Generated: 2026-06-06 04:28:35 AM MST
-! Stats: Kept 265080 | Badware-Pruned 24044 | General-Pruned 242590 | Whitelisted 18 | Irrelevant 1691696 | Duplicates 62127 | TLD 659190 | Regex-Offloaded 280977
+! Generated: 2026-06-06 06:46:59 AM MST
+! Stats: Kept 265102 | Badware-Pruned 24076 | General-Pruned 242546 | Whitelisted 18 | Irrelevant 1691742 | Duplicates 62172 | TLD 659249 | Regex-Offloaded 281038
 !
 ! --- Source Contributions (Pre-Pruning) ---
 ! https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt -> 644
@@ -9,9 +9,9 @@
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt -> 70177
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt -> 3520
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt -> 5077
-! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 62340
-! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 8295
-! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 162696
+! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 62403
+! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 8288
+! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 162686
 ! https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt -> 0
 ! https://blocklistproject.github.io/Lists/abuse.txt -> 55413
 ! https://blocklistproject.github.io/Lists/crypto.txt -> 7960
@@ -19,18 +19,18 @@
 ! https://blocklistproject.github.io/Lists/fraud.txt -> 5315
 ! https://blocklistproject.github.io/Lists/phishing.txt -> 16876
 ! https://phishing.army/download/phishing_army_blocklist_extended.txt -> 5354
-! https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt -> 7384
+! https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt -> 7377
 ! https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt -> 131
 ! https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt -> 14
 ! https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt -> 53
 ! https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware -> 521
 ! https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts -> 655
 ! https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts -> 352
-! https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt -> 10167
-! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 26
-! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 30390
+! https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt -> 10099
+! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 27
+! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 30397
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 507
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 6625
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 6624
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 100
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 14
 !
@@ -1535,6 +1535,7 @@
 ||13pigs.com^
 ||13r.lg.ua^
 ||13wwwqishuiyinyue.com.cn^
+||14-0-204-188.static.pccw-hkt.com^
 ||14-107-133-95.pool.ukrtel.net^
 ||14-19thumbs.8m.net^
 ||14-235-124-91.pool.ukrtel.net^
@@ -18339,7 +18340,6 @@
 ||adorch.makemytrip.com^
 ||adoreclothing.co.uk^
 ||adored-customer-389411.framer.app^
-||adored-slider-728943.framer.app^
 ||adoregames.com^
 ||adoremon.vn^
 ||adoric-om.com^
@@ -23320,6 +23320,7 @@
 ||adultcartoonsuk.co.uk^
 ||adultcase.com^
 ||adultcatfinder.com^
+||adultcelebrity.pages.dev^
 ||adultcentro.com^
 ||adultchamber.com^
 ||adultchat-line.co.uk^
@@ -25632,6 +25633,7 @@
 ||agribisnis.faperta.ulm.ac.id^
 ||agricolajhz.com.br^
 ||agricolasa.com.br^
+||agricole-activation1.bolt.host^
 ||agricole.bolt.host^
 ||agricularly.com^
 ||agriculturalcoyhose.com^
@@ -39018,6 +39020,7 @@
 ||asics-1103.myshoplaza.com^
 ||asics-store.myshoplaza.com^
 ||asicso.com^
+||asiexx.free.fr^
 ||asifaa.com^
 ||asignacion.quantum.com.mx^
 ||asignaciondeproductosyservicios.lovable.app^
@@ -67415,6 +67418,7 @@
 ||clubclassique.co.uk^
 ||clubcollector.com^
 ||clubcooee.com^
+||clubcoquines.free.fr^
 ||clubcorvettemontreal.com^
 ||clubdasgarotas.com.br^
 ||clubdeopinion.com.mx^
@@ -74065,6 +74069,7 @@
 ||cplcoquin.over-blog.com^
 ||cplcoquin67.over-blog.com^
 ||cpldunord.over-blog.com^
+||cple.kokin85.free.fr^
 ||cple17charme.over-blog.com^
 ||cple67.over-blog.com^
 ||cpleapo.over-blog.com^
@@ -76829,6 +76834,7 @@
 ||czechcasting.com^
 ||czechfantasy.com^
 ||czechgays.com^
+||czechgaytwins-nude.pages.dev^
 ||czechhunter.com^
 ||czechmassage.com^
 ||czechmegaswingers.com^
@@ -77491,6 +77497,7 @@
 ||d1hp6ufzqrj3xv.cloudfront.net^
 ||d1hpofzsaxmzog.cloudfront.net^
 ||d1hq2jdy5kdrma.cloudfront.net^
+||d1htnyaomcy35a.cloudfront.net^
 ||d1hwgqswo3ntzz.cloudfront.net^
 ||d1hyarjnwqrenh.cloudfront.net^
 ||d1hz893juffo0h.cloudfront.net^
@@ -77600,6 +77607,7 @@
 ||d1lzoljld5a2bc.cloudfront.net^
 ||d1m383qkjwdfx0.cloudfront.net^
 ||d1m4ettuq4ezj0.cloudfront.net^
+||d1m5n8mq68f839.cloudfront.net^
 ||d1m65n7jd8cznd.cloudfront.net^
 ||d1m6l9dfulcyw7.cloudfront.net^
 ||d1mahxde95gw5l.cloudfront.net^
@@ -77690,6 +77698,7 @@
 ||d1owuvqs9tkert.cloudfront.net^
 ||d1oxtx5inp4p07.cloudfront.net^
 ||d1oykxszdrgjgl.cloudfront.net^
+||d1ozcur424jxud.cloudfront.net^
 ||d1ozhxavg62ia7.cloudfront.net^
 ||d1p0vowokmovqz.cloudfront.net^
 ||d1p3zboe6tz3yy.cloudfront.net^
@@ -79314,6 +79323,7 @@
 ||d3cy20ss8oxn3o.cloudfront.net^
 ||d3cynajatn2qbc.cloudfront.net^
 ||d3d0wndor0l4xe.cloudfront.net^
+||d3d14d4js0a2q6.cloudfront.net^
 ||d3d1gkntf28dyd.cloudfront.net^
 ||d3d52lhoy0sh2w.cloudfront.net^
 ||d3d54j7si4woql.cloudfront.net^
@@ -85128,6 +85138,7 @@
 ||desfilles69.free.fr^
 ||desgao1zt7irn.cloudfront.net^
 ||desgou.free.fr^
+||desgrosses.free.fr^
 ||desh-en-ledger-live.pages.dev^
 ||deshabilletoi.over-blog.com^
 ||deshboard.it.com^
@@ -91766,6 +91777,7 @@
 ||drwkyazgpblod.cloudfront.net^
 ||drwps.com^
 ||drx-support.pages.dev^
+||drx3oimvgo6dg.cloudfront.net^
 ||dry-arugula-8aamh19sw82nuimqnc9za02k.herokudns.com^
 ||dry-google.com.cn^
 ||dry-unit-6df5.buytron.workers.dev^
@@ -105445,6 +105457,7 @@
 ||fapset.com^
 ||fapshots.com^
 ||fapstorm.com^
+||fapstory.net^
 ||faptap.net^
 ||faptape.com^
 ||faptitans.com^
@@ -110099,6 +110112,7 @@
 ||formulario-cita-2026-ajyh.cr-web.workers.dev^
 ||formulario-digital-2026-amnj.cr-web.workers.dev^
 ||formulario-digital-2026-apknm.cr-web.workers.dev^
+||formulario-digital-amnj-2026.cr-web.workers.dev^
 ||formulario-digital-anmkl-2026.cr-web.workers.dev^
 ||formulario-digital-aokm-2026.cr-web.workers.dev^
 ||formulario-digital-apkj-2026.cr-web.workers.dev^
@@ -112348,6 +112362,7 @@
 ||funsizeboys.com^
 ||funsmiles.com.au^
 ||funspot.nl^
+||funsriya.co.in^
 ||funtasia.com.au^
 ||funtimepartyhire.com.au^
 ||funtoyplanet.com^
@@ -113274,6 +113289,7 @@
 ||gamez.karelia.ru^
 ||gamezer.com^
 ||gamezone-3si.pages.dev^
+||gamil.com^
 ||gamingadlt.com^
 ||gamingadult.com^
 ||gamingbeasts.com^
@@ -117236,7 +117252,6 @@
 ||glowee.com.cn^
 ||glowell.co.in^
 ||glowhub.com^
-||glowing-customer-034374.framer.app^
 ||glowing-muffin-5d5c39.netlify.app^
 ||glowing-pie-dac1e0.netlify.app^
 ||glowing-square-620488.framer.app^
@@ -125273,6 +125288,7 @@
 ||hitwise.co.uk^
 ||hitwise.com^
 ||hitx.net^
+||hitxhot.org^
 ||hiuioh391sfwe.oss-accelerate.aliyuncs.com^
 ||hiut.co.uk^
 ||hivecom.hiveconnect.com.br^
@@ -127618,6 +127634,7 @@
 ||hotelreginamuriae.com.br^
 ||hotels-cloudbeds.bolt.host^
 ||hotelsandakan.com.my^
+||hotelsaocharbel.com.br^
 ||hotelscombined.com.au^
 ||hotelterraviva.com.br^
 ||hoteltonelli.com.br^
@@ -134323,7 +134340,6 @@
 ||io-brige-terzr.pages.dev^
 ||io-cdn-trezor-support.pages.dev^
 ||io-changelly.wixstudio.com^
-||io-chengally.wixstudio.com^
 ||io-coinbase-pro-login.typedream.app^
 ||io-coinbaseprologin.framer.ai^
 ||io-coinbese-start.pages.dev^
@@ -137952,6 +137968,7 @@
 ||jgtu-casefb316735.vercel.app^
 ||jguery.com^
 ||jguhvqky.imess.net^
+||jgycos.com.cn^
 ||jgyv.com.cn^
 ||jh-kuailian.com.cn^
 ||jh1230.com^
@@ -138681,6 +138698,7 @@
 ||jolimakeup.com^
 ||jolis.bikinis.free.fr^
 ||jolisseinsfr.centerblog.net^
+||jolly-bread-f04e.deborahbmuellerziytqsjw7623.workers.dev^
 ||jolly-independence-027922.framer.app^
 ||jolly-light.cloudvent.net^
 ||jolly-people-181366.framer.app^
@@ -141589,6 +141607,7 @@
 ||killbillsbrowser.com^
 ||killdevilhill.com^
 ||killerjeff.free.fr^
+||killinghope.org^
 ||killingkittens.com^
 ||killmeuinstagram.com.br^
 ||killsometime.com^
@@ -156758,7 +156777,6 @@
 ||mageants.com^
 ||magedmagdy2000.github.io^
 ||magenta-arrow-611200.framer.app^
-||magenta-card-167171.framer.app^
 ||magenta-lab.webflow.io^
 ||magenta-narwhal-06f5a6.netlify.app^
 ||magenta-pineapples-819543.framer.app^
@@ -165607,6 +165625,7 @@
 ||mgd-adengine.elasticbeanstalk.com^
 ||mgepodownload.mediatek.com^
 ||mgfcapital.com.au^
+||mgfq.net^
 ||mghelectricalgroup.com.au^
 ||mghkpg.com^
 ||mgid.com^
@@ -195071,6 +195090,7 @@
 ||pub-33054b3ee4bc4f55858100870544d683.r2.dev^
 ||pub-33172110f57a4bbfa0c089261c8b7d4d.r2.dev^
 ||pub-332e25ac40fe42d5af737ce9b83b83d2.r2.dev^
+||pub-334a6be7ee8b454c80d466d86642d2f1.r2.dev^
 ||pub-339ed1e572c44e38b332b62b38f3360c.r2.dev^
 ||pub-33bffc01b8af423d8ee5acb2a32a9c79.r2.dev^
 ||pub-33e32f673ff541698d9ea2873aeedf01.r2.dev^
@@ -195253,7 +195273,6 @@
 ||pub-4b857e143fb64003a534ea2ef1a84400.r2.dev^
 ||pub-4b872896122147a2bd9f55937cdcf892.r2.dev^
 ||pub-4bc3921a0ee84b3d8a0fafde3382f8b3.r2.dev^
-||pub-4c182737706e41d29aee6cc5517f834d.r2.dev^
 ||pub-4c21f9ae11ad4cd99bef29a7124c22ce.r2.dev^
 ||pub-4c47ee8a86ef4f7698f7cf8e54a0d983.r2.dev^
 ||pub-4cfb1f4e409743118a78c83ff9d8587e.r2.dev^
@@ -224389,7 +224408,6 @@
 ||startedcom.framer.media^
 ||startedcryptocom.wixstudio.com^
 ||starteddesktoplive.wixstudio.com^
-||startedhubs.ghost.io^
 ||startedio-trexo.wixstudio.com^
 ||startedio-treze.framer.media^
 ||startedio-trezo.wixstudio.com^
@@ -225168,6 +225186,7 @@
 ||static.zbcdn3.net^
 ||static.zdbb.net^
 ||static.ziftsolutions.com^
+||static.zongheng.com^
 ||static1.1000ps.ch^
 ||static1.gum.ru^
 ||static1thisvidcom.cachefly.net^
@@ -240159,6 +240178,7 @@
 ||trackingplan.com^
 ||trackingprd.hwwt8.com^
 ||trackingsea.zingplay.com^
+||trackingservice.monday.com^
 ||trackingsoft.com^
 ||trackingssl.aginsurance.be^
 ||trackingtraffo.com^
@@ -246418,6 +246438,7 @@
 ||upush.res.meizu.com^
 ||upwave.com^
 ||upx.co.il^
+||upxholdlogun.gitbook.io^
 ||upxxfhirn2.data.adobedc.net^
 ||uqbip.supplyhouse.com^
 ||uqd.io^
@@ -246884,9 +246905,9 @@
 ||us1.dns.lavate.ch^
 ||us1033.com^
 ||us11.besteml.com^
+||us11.campaign-archive.com^
 ||us12.campaign-archive.com^
 ||us12web-zoom-us-j-9043562891.pages.dev^
-||us13.campaign-archive.com^
 ||us15.campaign-archive.com^
 ||us16.campaign-archive.com^
 ||us17.campaign-archive.com^
@@ -246895,6 +246916,7 @@
 ||us2-browse.startpage.com^
 ||us2-zoom905086098696867577567567655467563455555.pages.dev^
 ||us2.bot-hosting.net^
+||us20.campaign-archive.com^
 ||us21.campaign-archive.com^
 ||us22.campaign-archive.com^
 ||us2webmeet.it.com^
