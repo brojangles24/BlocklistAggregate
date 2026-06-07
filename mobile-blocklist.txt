@@ -1,6 +1,6 @@
 ! Jorgensen MOBILE List | Version: 2026.05.27.OMNI_PRO_TRIE
-! Generated: 2026-06-07 08:26:14 AM MST
-! Stats: Kept 271092 | Badware-Pruned 24179 | General-Pruned 242721 | Whitelisted 18 | Irrelevant 1874142 | Duplicates 63521 | TLD 792178 | Regex-Offloaded 281995
+! Generated: 2026-06-07 10:18:55 AM MST
+! Stats: Kept 271119 | Badware-Pruned 24177 | General-Pruned 242738 | Whitelisted 18 | Irrelevant 1874321 | Duplicates 63536 | TLD 792307 | Regex-Offloaded 282069
 !
 ! --- Source Contributions (Pre-Pruning) ---
 ! https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt -> 647
@@ -9,17 +9,17 @@
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt -> 70362
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt -> 3543
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt -> 5065
-! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 62835
-! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 8290
-! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 162647
+! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 62894
+! https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts -> 8288
+! https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt -> 162632
 ! https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt -> 0
 ! https://blocklistproject.github.io/Lists/abuse.txt -> 55419
 ! https://blocklistproject.github.io/Lists/crypto.txt -> 7968
 ! https://blocklistproject.github.io/Lists/drugs.txt -> 1136
 ! https://blocklistproject.github.io/Lists/fraud.txt -> 5317
 ! https://blocklistproject.github.io/Lists/phishing.txt -> 16861
-! https://phishing.army/download/phishing_army_blocklist_extended.txt -> 5426
-! https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt -> 7402
+! https://phishing.army/download/phishing_army_blocklist_extended.txt -> 5431
+! https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt -> 7398
 ! https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt -> 131
 ! https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt -> 14
 ! https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt -> 53
@@ -28,9 +28,9 @@
 ! https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts -> 352
 ! https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt -> 9933
 ! https://codeberg.org/xRuffKez/tif/raw/branch/main/adblock.txt -> 30
-! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 30403
+! https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt -> 30405
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 508
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 6603
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 6602
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 100
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 14
 !
@@ -2643,6 +2643,7 @@
 ||1923756479.rsc.cdn77.org^
 ||1925299.jelastic.elastx.net^
 ||192so3245.vybrelease.cn.com^
+||193-168-175-235.cloud-xip.com^
 ||193.107.151.202.cc9.ne.jp^
 ||193.122.49.60.cbj03-home.tm.net.my^
 ||193.226.238.82.pool.invitel.hu^
@@ -23494,6 +23495,7 @@
 ||adult-dating-5ye.pages.dev^
 ||adult-dating-5yea.pages.dev^
 ||adult-dating-online.imess.net^
+||adult-dating-service.co.uk^
 ||adult-dating.co.za^
 ||adult-deals-com.pages.dev^
 ||adult-delights.co.uk^
@@ -39563,6 +39565,7 @@
 ||asiancandy-2-live-webcam.startspot.nl^
 ||asiancandy-live-webcam.startspot.nl^
 ||asianconnections.com^
+||asiancumshot.pages.dev^
 ||asiancuties.blogter.hu^
 ||asiandate.com^
 ||asiandating.co.za^
@@ -48835,6 +48838,7 @@
 ||biohosp.com.br^
 ||biokanetics.wpenginepowered.com^
 ||bioland-yun.com.cn^
+||biolanix.co.uk^
 ||biologia.uem.mz^
 ||biologic.excluvia.com.br^
 ||biologiclabs.com.au^
@@ -62518,6 +62522,7 @@
 ||ccurrencyweb.com^
 ||ccw448pz2y.neliver.com^
 ||ccweb1.free.fr^
+||ccweb2.free.fr^
 ||ccweb4.free.fr^
 ||ccweb6.free.fr^
 ||ccxhcuwvp3.neliver.com^
@@ -64732,6 +64737,7 @@
 ||chat.patrimoniointeligente.com.br^
 ||chat.pm^
 ||chat.quickcep.com^
+||chat.standardbroadband.ca^
 ||chat.startspot.nl^
 ||chat.taotao158.eu.org^
 ||chat.travlang.com^
@@ -66579,6 +66585,7 @@
 ||cirdecd.free.fr^
 ||cirgllp8db.neliver.com^
 ||cirillas.com^
+||cirsc.com.cn^
 ||cirurgiapediatricariopreto.com.br^
 ||cirurgicarocha.com.br^
 ||cirzuabes7.biz.id^
@@ -68421,7 +68428,6 @@
 ||cloud-uphold-eng.pages.dev^
 ||cloud-view-ledgr.pages.dev^
 ||cloud-web-whatsapp.net.cn^
-||cloud-xip.com^
 ||cloud-xtnsion-metaa-msk.pages.dev^
 ||cloud.appcelerator.com^
 ||cloud.appscan.com^
@@ -73991,6 +73997,7 @@
 ||copper6.com^
 ||copperchips.com^
 ||copperegg.com^
+||coprin.free.fr^
 ||coprofam.org^
 ||coproxy.io^
 ||copsnue.over-blog.com^
@@ -74035,6 +74042,7 @@
 ||coquine68100.over-blog.com^
 ||coquineannie.over-blog.com^
 ||coquinebbw.over-blog.com^
+||coquinecathy.free.fr^
 ||coquinedegrenoble.centerblog.net^
 ||coquineeva.over-blog.net^
 ||coquineidf.over-blog.com^
@@ -89190,6 +89198,7 @@
 ||dirtycamgirls.co.uk^
 ||dirtychat.app^
 ||dirtychat.com.au^
+||dirtycheap.co.uk^
 ||dirtycomics.com^
 ||dirtycomics.net^
 ||dirtycomyeni.pages.dev^
@@ -92165,6 +92174,7 @@
 ||doucekarine.over-blog.com^
 ||doucekatihia.over-blog.com^
 ||doucelibertine.over-blog.com^
+||douces.free.fr^
 ||douceurdo2charme.site.voila.fr^
 ||douceuretplaisirs.centerblog.net^
 ||douceurrousse.over-blog.com^
@@ -107709,6 +107719,7 @@
 ||farmcostingsolutions.co.za^
 ||farmcuming.startspot.nl^
 ||farmed.ca^
+||farmerdating.co.za^
 ||farmerdating.com.au^
 ||farmerdatingsite.co.uk^
 ||farmerpublishing.com^
@@ -130954,7 +130965,6 @@
 ||hsadv.com.br^
 ||hsapidllsignlnssluidcoetyneridsiteidruhttp.aba.vg^
 ||hsat.hipr.org.in^
-||hsbc-batalkan.transaksi.biz.id^
 ||hsbc-online-banking.co.uk^
 ||hsbc-security.co.uk^
 ||hsbc.co.uk.online.logon.update.directnursesolutions.co.uk^
@@ -131816,6 +131826,7 @@
 ||hwww1.masterconsultas.com.ar.dellshowroominhyderabad.co.in^
 ||hwxs.uk.com^
 ||hx-telegram.com.cn^
+||hxchain.com.cn^
 ||hxcx-28952.pages.dev^
 ||hxdef.czweb.org^
 ||hxdoll.com^
@@ -140983,6 +140994,7 @@
 ||jilifree100.ph^
 ||jilishta.bg^
 ||jilkatha.com^
+||jill.kelly.free.fr^
 ||jill.kelly.sodomie.free.fr^
 ||jillmcgown.co.uk^
 ||jillmckeith.co.za^
@@ -160334,6 +160346,7 @@
 ||mahsanabbasi.github.io^
 ||mahsunsports13.xyz^
 ||mahua.com^
+||mahua.pro^
 ||mahuampivzla.org^
 ||mahyar-bandegie82.github.io^
 ||mai-tel.jp^
@@ -176751,6 +176764,7 @@
 ||narkoman-publik.at.ua^
 ||narnohan-49304070.hubspotpagebuilder.com^
 ||narod.ru^
+||narodua.com^
 ||narranderagolfclub.com.au^
 ||narrativ.ai^
 ||narrative-brake-class-script.pages.dev^
@@ -199505,6 +199519,7 @@
 ||pub-362a7a63af874906b5a852f8d1b739ed.r2.dev^
 ||pub-364ea8788b684a76867bee81a5b962c3.r2.dev^
 ||pub-365ad51d2d81418e8d5fb85815040ecf.r2.dev^
+||pub-3681f47e7d324a3cba2141b188ed6aca.r2.dev^
 ||pub-368902b231094c049027f8c70eba8349.r2.dev^
 ||pub-36ad9f0ba5ac48abafb6762745b544f0.r2.dev^
 ||pub-36f075228b5e4c7e8dc7b16a89adccce.r2.dev^
@@ -199578,6 +199593,7 @@
 ||pub-40ad58af455047d9a464b18a5f622876.r2.dev^
 ||pub-40c0d7c71b0f4861a56766078cb6f223.r2.dev^
 ||pub-40ea7438bede4d77bad8f6c9675b1885.r2.dev^
+||pub-4106757ffadd4696bfa963a0b6955e4f.r2.dev^
 ||pub-411c3b2f7aa84062822e3b0a2b1e2e50.r2.dev^
 ||pub-4129285e770f406b8d6a35560ebdfacc.r2.dev^
 ||pub-41bd2945a75e4a608d621f664b0202fc.r2.dev^
@@ -200427,6 +200443,7 @@
 ||pub-b808d49393464900ab418430c76582aa.r2.dev^
 ||pub-b8121b8e047e42df82e487d7e47e1ef8.r2.dev^
 ||pub-b8735748a9474ef684b83941ce4cdb65.r2.dev^
+||pub-b88f0146811942dd95bf7888b6c21af6.r2.dev^
 ||pub-b8aece6410254e0eafbd860997dcc12f.r2.dev^
 ||pub-b8b952d8a505484ab427aa76ccb1b407.r2.dev^
 ||pub-b90e589e43d646f684e78d7904647e68.r2.dev^
@@ -200438,6 +200455,7 @@
 ||pub-ba357d95075c4d879b3d01b38b24ecc6.r2.dev^
 ||pub-ba58548dfbe64481b9df87933103c064.r2.dev^
 ||pub-ba65764a4dee4e76bb488ceb0920eee0.r2.dev^
+||pub-ba929d2ab1f04e75869e394f6d120bba.r2.dev^
 ||pub-bac46a963cc448e7a85ea2814d04293f.r2.dev^
 ||pub-bb403275e61d4b5bbfa3820c808423cb.r2.dev^
 ||pub-bb55aedf0ff24aa5883cbfa402ea4ed7.r2.dev^
@@ -200779,6 +200797,7 @@
 ||pub-ed9a7c303a65428b82f6089516d7fd71.r2.dev^
 ||pub-ede8feacc3bb4c1e84b1378ac2e3972d.r2.dev^
 ||pub-ee00d0cc29ef4440bd5f86189ee819a4.r2.dev^
+||pub-ee08f885b3b54c15942ded9e8db4b0b5.r2.dev^
 ||pub-ee199fb6eeb24e078bbe948f199a2302.r2.dev^
 ||pub-ee2c75607542482ca5ab528e0499c3db.r2.dev^
 ||pub-ee3ddc06c1e64c1eaae39d808e0da698.r2.dev^
@@ -200843,6 +200862,7 @@
 ||pub-f5f6eab7eccf4608b3a7b23eb15a4a60.r2.dev^
 ||pub-f609c7afb2cb4b10825d617d49d1d847.r2.dev^
 ||pub-f611d274df8e4f67b68b0b360a31cedc.r2.dev^
+||pub-f61d5eb08b6f461eb0310ed71224f01c.r2.dev^
 ||pub-f6267a1907b44a078354e073bd286e20.r2.dev^
 ||pub-f629f9eff5c742ab9493f73c421a617a.r2.dev^
 ||pub-f62c162b56594358978550e6b7fdea83.r2.dev^
@@ -202526,6 +202546,7 @@
 ||qr.cp31.ott.cibntv.net^
 ||qr.de^
 ||qr.elrahmacourse.biz.id^
+||qr.link^
 ||qr.motul.com^
 ||qr.net^
 ||qr.paps.jp^
@@ -207927,6 +207948,7 @@
 ||rizqiworker.my.id^
 ||rizuki.my.id^
 ||rizziaja.my.id^
+||rizzliness.com^
 ||rizzmasclaim.pages.dev^
 ||rizzmassrewardbonus.pages.dev^
 ||rizzuymail.my.id^
@@ -212856,6 +212878,7 @@
 ||sccmaintenance.com.au^
 ||sccombank.com^
 ||sccp.co.uk^
+||sccrediario.com.br^
 ||scdata.51job.com^
 ||scdkey.com^
 ||scdn.cxense.com^
@@ -214183,7 +214206,6 @@
 ||secure-sso-kraken--auth.webflow.io^
 ||secure-sso-ndax-hub-cdn-auth.webflow.io^
 ||secure-sso-robinhood-com--org.webflow.io^
-||secure-static-host--trena1snfmaz.replit.app^
 ||secure-stats.pingdom.com^
 ||secure-store-apple-id.co.uk^
 ||secure-strato.webflow.io^
@@ -221586,6 +221608,7 @@
 ||silibatheatre.co.uk^
 ||silicagel.com.ua^
 ||silicone-feet.com^
+||siliconecarne.free.fr^
 ||siliconegirl.free.fr^
 ||siliconelovers.co.uk^
 ||siliconelovers.com^
@@ -232927,6 +232950,7 @@
 ||sublytics-600afc6bd3e89.com^
 ||submaindapp.pages.dev^
 ||submanhwa.net^
+||submilf.com^
 ||submissionthemecolonialism.com^
 ||submissive1.homestead.com^
 ||submissived.com^
@@ -247543,6 +247567,7 @@
 ||trozr-kjsdu.deylaa12.workers.dev^
 ||trozr-nxciw.arienne.workers.dev^
 ||trozr-sf8d.brionnaa4.workers.dev^
+||trozu.my.id^
 ||trozzxstowallet.webflow.io^
 ||trpwdg.com^
 ||trqwqwsxasdtssqw.com.de^
@@ -248111,7 +248136,6 @@
 ||trzzr-briidge.pages.dev^
 ||trzzr-strt-io.pages.dev^
 ||trzzrsuites.wixstudio.com^
-||trzzsuiited.wixstudio.com^
 ||trzzsuit.wixstudio.com^
 ||ts-analysis.shoalter.com^
 ||ts-baileyjay.com^
@@ -254691,6 +254715,7 @@
 ||venez.fr^
 ||venez.net^
 ||venezuela-singles-swingers-dating.sinfree.net^
+||venezuelahorny6.pages.dev^
 ||venezuelasolidarity.co.uk^
 ||venezuelatoday.net^
 ||vengeanceofbane.byethost24.com^
@@ -263721,6 +263746,7 @@
 ||wpapi.geotechsolucoes.com.br^
 ||wparadise.virtualave.net^
 ||wpb.shueisha.co.jp^
+||wpc902.com^
 ||wpcdn1.herokuapp.com^
 ||wpcomwidgets.com^
 ||wpconte.heliohost.org^
@@ -266803,6 +266829,7 @@
 ||xvideo001.com^
 ||xvideo69.net^
 ||xvideo999.com^
+||xvideogirl.free.fr^
 ||xvideohd.com.br^
 ||xvideoindian.org^
 ||xvideonovinha.com.br^
