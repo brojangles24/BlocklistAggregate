@@ -64,7 +64,6 @@ MAIN_SOURCES = [
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
-    "https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt",
 
     # --- 2. Enforcement & Behavioral Blocks ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -88,7 +87,6 @@ ULTIMATE_SOURCES = ['''
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
-    "https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt",
 
     # --- High-Yield Blocklist Project Components ---
     "https://blocklistproject.github.io/Lists/abuse.txt",
