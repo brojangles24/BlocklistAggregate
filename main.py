@@ -59,23 +59,23 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 # ---------------------------------------------------------------------------
 # MAIN LIST SELECTION
 # ---------------------------------------------------------------------------
-MAIN_SOURCES = ['''
+MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
-    #"https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt",
+    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
+    "https://raw.githubusercontent.com/Bon-Appetit/porn-domains/main/block.txt",
 
     # --- 2. Enforcement & Behavioral Blocks ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",'''
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
 ]
 # ---------------------------------------------------------------------------
 # ULTIMATE LIST SELECTION (Jorgensen Omni)
 # ---------------------------------------------------------------------------
-ULTIMATE_SOURCES = [
+ULTIMATE_SOURCES = ['''
     # --- HaGeZi Umbrella Engines ---
     "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
@@ -114,10 +114,10 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",'''
 ]
 
-MOBILE_SOURCES = list(ULTIMATE_SOURCES)
+MOBILE_SOURCES = list(MAIN_SOURCES)
 
 # Shared Core Resources
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
