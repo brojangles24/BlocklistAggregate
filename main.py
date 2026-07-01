@@ -77,19 +77,21 @@ MAIN_SOURCES = ['''
 # ---------------------------------------------------------------------------
 ULTIMATE_SOURCES = [
     # --- HaGeZi Umbrella Engines ---
-    "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/dyndns.txt",
+    "https://filters.adtidy.org/dns/filter_54.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt",
+    "https://filters.adtidy.org/dns/filter_44.txt",
+    "https://filters.adtidy.org/dns/filter_51.txt",
+    "https://filters.adtidy.org/dns/filter_46.txt",
+    "https://filters.adtidy.org/dns/filter_52.txt",
 
     # --- Core Content Tiers ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
+    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
 
     # --- High-Yield Blocklist Project Components ---
+    "https://filters.adtidy.org/dns/filter_50.txt",
+    "https://filters.adtidy.org/dns/filter_55.txt",
     #"https://blocklistproject.github.io/Lists/abuse.txt",
     #"https://blocklistproject.github.io/Lists/crypto.txt",
     #"https://blocklistproject.github.io/Lists/drugs.txt",
@@ -118,8 +120,8 @@ ULTIMATE_SOURCES = [
 MOBILE_SOURCES = list(ULTIMATE_SOURCES)
 
 # Shared Core Resources
-SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
-REBIND_URL = "https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/adguard/dns-rebind-protection.txt"
+SPAM_TLD_URL = "https://filters.adtidy.org/dns/filter_56.txt"
+REBIND_URL = "https://filters.adtidy.org/dns/filter_71.txt"
 ADGUARD_SAFESEARCH_URLS = [
     "https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt",
 ]
