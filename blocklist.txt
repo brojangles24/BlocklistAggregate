@@ -1,11 +1,11 @@
 ! Jorgensen MAIN List | Version: 2026.05.27.OMNI_PRO_TRIE
-! Generated: 2026-07-01 04:04:26 PM MST
-! Stats: Kept 242329 | Badware-Pruned 0 | General-Pruned 886 | Whitelisted 0 | Irrelevant 0 | Duplicates 21521 | TLD 75207 | Regex-Offloaded 142051
+! Generated: 2026-07-01 04:59:54 PM MST
+! Stats: Kept 242489 | Badware-Pruned 0 | General-Pruned 886 | Whitelisted 0 | Irrelevant 0 | Duplicates 21524 | TLD 75070 | Regex-Offloaded 142057
 !
 ! --- Source Contributions (Pre-Pruning) ---
-! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 200731
+! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 200894
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 873
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 25700
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 25697
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 188
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 15723
 !
@@ -23,6 +23,7 @@
 ||0000114.com^
 ||0000120.xyz^
 ||0000121.xyz^
+||0000125.xyz^
 ||0000180.fortunecity.ws^
 ||0000526.com^
 ||0001p.com^
@@ -50,6 +51,8 @@
 ||001zmr.com^
 ||002560.xyz^
 ||0029a.com^
+||003022.xyz^
+||003107.xyz^
 ||003114.xyz^
 ||003416.xyz^
 ||003kf.com^
@@ -153,6 +156,7 @@
 ||022ydlanyin.com^
 ||023dyfs.com^
 ||023gykj.com^
+||023lyc.com^
 ||023vcc.com^
 ||024119.com^
 ||024pp.com^
@@ -165,6 +169,7 @@
 ||025xx.com^
 ||025yhdzp.com^
 ||026city.com^
+||027026.com.cn^
 ||027jckj.com^
 ||027ju.com^
 ||027jym.com^
@@ -177,6 +182,7 @@
 ||028cdhy.com^
 ||028cdztmy.com^
 ||028dahuoji.com^
+||028jczs.com^
 ||028net.net^
 ||028qzbw.com^
 ||028shutong.com^
@@ -264,6 +270,7 @@
 ||0512paper.com^
 ||0512zf.com^
 ||0515jc.com^
+||0516ws.com^
 ||0518hy.com^
 ||051jj.com^
 ||052963.com^
@@ -298,6 +305,7 @@
 ||0571ai.com^
 ||0571blg.com^
 ||0571bs.com^
+||0574china.com^
 ||05750575.com^
 ||0575edu.com^
 ||0575yiqi.com^
@@ -327,13 +335,16 @@
 ||068rr.com^
 ||069maninstockings.over-blog.com^
 ||06bp.com^
+||06kk.com^
 ||06se.com^
+||0707aa.com^
 ||0707kk.com^
 ||0707zz.com^
 ||0710zx.com^
 ||0711w.com^
 ||0713sq.com^
 ||0716yy.com^
+||072374.com^
 ||0728dy.com^
 ||072erodouga.com^
 ||072project.com^
@@ -344,6 +355,7 @@
 ||0735mj.com^
 ||0736sw.com^
 ||0737cdc.com^
+||0737newjob.cn^
 ||0738seo.com^
 ||075-55.uk^
 ||0750huiyuan.com^
@@ -394,6 +406,7 @@
 ||08296.hk^
 ||08363.hk^
 ||08431.hk^
+||0851gztq.com^
 ||0851yy.com^
 ||0853fdc.com^
 ||085rr.com^
@@ -416,6 +429,7 @@
 ||090cs.com^
 ||0910sfw.com^
 ||0911hr.com^
+||0915ankang.com^
 ||0915tao.com^
 ||0917sy.com^
 ||092219.com^
@@ -426,6 +440,7 @@
 ||0954u.com^
 ||095se2.com^
 ||095se5.com^
+||09647.com.cn^
 ||0974bc9816e9.com^
 ||097mm.com^
 ||0987j.com^
@@ -434,9 +449,11 @@
 ||098862.com^
 ||099-hd.com^
 ||0991cx.com^
+||0993f.com^
 ||0993j.com^
 ||0994.org.cn^
 ||099627.com^
+||0999735.com^
 ||099i.com^
 ||099jc.com^
 ||099rc.com^
@@ -445,6 +462,8 @@
 ||09parent.com^
 ||09stream.com^
 ||0a38.com^
+||0a59.com^
+||0a73c.com^
 ||0a8a9376227f.com^
 ||0ameliaflowerx.blogspot.com^
 ||0angelnoble0.com^
@@ -456,6 +475,7 @@
 ||0chong.net^
 ||0cili.com^
 ||0cili.org^
+||0cs3ti.com^
 ||0d1ao5.com^
 ||0d5g5ysa486s.xyz^
 ||0dayhentai.blogspot.com^
@@ -464,8 +484,10 @@
 ||0dgwn.bemobtrcks.com^
 ||0dph.com^
 ||0dzn.com^
+||0e-28slnd7z4.com^
 ||0el-preiswert-kaufen.de^
 ||0ff1ce-l0gin.com^
+||0hbmx.com^
 ||0hhx.com^
 ||0hyzxx-rc.myshopify.com^
 ||0interestrate.com^
@@ -488,17 +510,21 @@
 ||0rgasme.com^
 ||0rifooyz.6ecz8f.com^
 ||0ry2rk.com^
+||0shouzhuan.com^
 ||0smm.xyz^
 ||0t76.com^
 ||0tq4-6rw5b8u.com^
 ||0video2cul.free.fr^
 ||0witter.com^
 ||0x0.free.fr^
+||0x7121.com^
+||0xdaily.com^
 ||0xhamster.com^
 ||0xo.xyz^
 ||0xroots.com^
 ||0y02.com^
 ||0z6tm6.com^
+||0zgwya.huxiaoyan8.com.cn^
 ||0zt3.com^
 ||0ztie.com^
 ||1-12asianpops7stourism.blogspot.com^
@@ -582,6 +608,7 @@
 ||1006playlist.com^
 ||1007-dxlove.com^
 ||1007.tw^
+||1008h.com^
 ||100adult.com^
 ||100amateur-videos.blogspot.com^
 ||100amateur.com^
@@ -642,14 +669,17 @@
 ||100video.com.br^
 ||100vod.net^
 ||100voyeur.com^
+||100waibao.com^
 ||100wk.com^
 ||100x100pamela.com^
 ||100yixin.com^
 ||1010-china.com^
 ||1010013.com^
+||1010ben.com^
 ||1010shemales.blogspot.com^
 ||1012k.com^
 ||1014epp.com^
+||1014trr.com^
 ||1014yff.com^
 ||1014yuu.com^
 ||1019ly.com^
@@ -720,9 +750,14 @@
 ||108read.com^
 ||1091j.com^
 ||1094i.com^
+||1094l.com^
 ||109972.com^
+||109d4q.com^
 ||109n.com^
+||10a11b.com^
 ||10adultdating.com^
+||10afiogold.com^
+||10beersmax.com^
 ||10bestbuysforyou.com^
 ||10buy.co.il^
 ||10caoab.com^
@@ -770,6 +805,7 @@
 ||11-movie.blogspot.com^
 ||11-q.ru^
 ||110-kaisuo.com^
+||110d.free.fr^
 ||110n00.com^
 ||111029.xyz^
 ||1111bmw.com^
@@ -818,6 +854,7 @@
 ||114av.one^
 ||114dian.com^
 ||114xtfc.com^
+||1153x.com^
 ||11631.com.cn^
 ||116avs.com^
 ||117700.xyz^
@@ -826,6 +863,7 @@
 ||117xe.com^
 ||118114ok.com^
 ||1188jc.com^
+||1189d.com^
 ||118acs2.com^
 ||118bt.com^
 ||118gcjx.com^
@@ -837,6 +875,7 @@
 ||11adultseeking.com^
 ||11afa.com^
 ||11aitt.com^
+||11aoaos.com^
 ||11av.app^
 ||11av.me^
 ||11baokuan.com^
@@ -999,6 +1038,7 @@
 ||127mall8.xyz^
 ||127mall9.xyz^
 ||128157.com^
+||1288china.com^
 ||128av.app^
 ||128av.me^
 ||128bokepwalet.blogspot.com^
@@ -1037,6 +1077,7 @@
 ||12ne.com^
 ||12on14.com^
 ||12room.com^
+||12sucai.com^
 ||12thblog.com^
 ||12vb.blogspot.com^
 ||12vids.com^
@@ -1052,6 +1093,7 @@
 ||12xinterracial.com^
 ||12xlesbians.com^
 ||12ymall.com^
+||130g.com.cn^
 ||130kilos.free.fr^
 ||1312ad.com^
 ||131dh.com^
@@ -1069,6 +1111,7 @@
 ||136fuli.com^
 ||136qq.com^
 ||137wap.com^
+||1380475.com^
 ||13810035962.com^
 ||1384858.com^
 ||13884898312.com^
@@ -1085,6 +1128,7 @@
 ||13girls.blogspot.com^
 ||13huab.com^
 ||13jav.com^
+||13jian.com^
 ||13leg.xyz^
 ||13maoax.com^
 ||13maobk.com^
@@ -1183,6 +1227,7 @@
 ||160gps.com^
 ||160o.com^
 ||160vv.com^
+||161614.xyz^
 ||1626.com^
 ||16273849510.com^
 ||162va.com^
@@ -1251,6 +1296,7 @@
 ||17553.blogspot.com^
 ||176888msc.com^
 ||1769tube.com^
+||177pic.info^
 ||177pica.com^
 ||177picyy.com^
 ||177xe.com^
@@ -1267,11 +1313,15 @@
 ||17av.me^
 ||17b7.com^
 ||17bctech.com^
+||17chig1.com^
 ||17chig11.com^
 ||17chig12.com^
+||17chig2.com^
 ||17chig3.com^
 ||17chig4.com^
+||17chig7.com^
 ||17chig8.com^
+||17chig9.com^
 ||17chigua.org^
 ||17dazi.com^
 ||17fd5.com^
@@ -1288,6 +1338,7 @@
 ||17jpav.com^
 ||17ku.blogspot.com^
 ||17kunlun.com^
+||17lao.com^
 ||17lb43cnh8ec26.tjs97.xyz^
 ||17lieqi.cn^
 ||17maobf.com^
@@ -1375,6 +1426,7 @@
 ||188baiyin.com^
 ||188fls.com^
 ||188hbj.com^
+||188sky.org^
 ||188travel.com^
 ||189na.com^
 ||189ts.com^
@@ -1486,6 +1538,7 @@
 ||18dreams.net^
 ||18dsc.com.hk^
 ||18dvd.com^
+||18e833887670.com^
 ||18eighteen.com^
 ||18eighteengirls.com^
 ||18eighteenyo.com^
@@ -1564,6 +1617,7 @@
 ||18let.cz^
 ||18letnie.com^
 ||18letniedevushki.blogspot.com^
+||18lhc.com^
 ||18linkscollecting.blogspot.com^
 ||18lulu.com^
 ||18lust.com^
@@ -1660,6 +1714,7 @@
 ||18sw.xyz^
 ||18sxgamez.blogspot.com^
 ||18tahoen.blogspot.com^
+||18taozi.com^
 ||18teen-tube.com^
 ||18teen-tube.me^
 ||18teen.tv^
@@ -1762,6 +1817,7 @@
 ||196ii.com^
 ||196w.com^
 ||1974b937f608.com^
+||197wyt.com^
 ||1980china.com^
 ||1983it.com^
 ||198aa.com^
@@ -1770,9 +1826,11 @@
 ||198pme.com^
 ||198tv.xyz^
 ||199856.com^
+||199case.com^
 ||199zs.com^
 ||19andhorny.com^
 ||19asdjkl6666.com^
+||19av.tv^
 ||19breath.blogspot.com^
 ||19daoaa.com^
 ||19dh.xyz^
@@ -1928,6 +1986,7 @@
 ||1janacova.com^
 ||1jaoav.com^
 ||1johnx.com^
+||1jtwang.com^
 ||1jz.org^
 ||1kuss.de^
 ||1l9p.com^
@@ -2233,6 +2292,8 @@
 ||2026-bokep.com.de^
 ||2027solareclipseegypt.com^
 ||202camgirlz.com^
+||202webfind.com.cn^
+||202yey.com^
 ||203ff.com^
 ||204855.xyz^
 ||2048btbt.xyz^
@@ -2349,6 +2410,7 @@
 ||222822.xyz^
 ||222gmv.com^
 ||223.de.com^
+||2233339.com^
 ||223mou.com^
 ||223zou.com^
 ||2244ff.com^
@@ -2359,6 +2421,8 @@
 ||224gei.com^
 ||224gen.com^
 ||224gui.com^
+||224jin.com^
+||224tan.com^
 ||2257.info^
 ||2257compliance.com^
 ||2257compliance.org^
@@ -2373,6 +2437,7 @@
 ||226j.com^
 ||226n.com^
 ||226p.com^
+||227cfd275f68.com^
 ||227yu.com^
 ||228jw.com^
 ||228kkk.com^
@@ -2581,6 +2646,7 @@
 ||255qq.com^
 ||255r.com^
 ||255vv.com^
+||25626km.com^
 ||256789.com.cn^
 ||256zz.com^
 ||25767.me^
@@ -2899,6 +2965,7 @@
 ||2bondage.com^
 ||2boo.free.fr^
 ||2boysinsaciaveis.blogspot.com^
+||2bpfma3.huxiaoyan8.com.cn^
 ||2brokesluts.com^
 ||2busty.net^
 ||2busty2hide.com^
@@ -3023,7 +3090,9 @@
 ||2maota.com^
 ||2meiju.com^
 ||2mev.com^
+||2mmtw.com^
 ||2much.com^
+||2n1pg.huxiaoyan8.com.cn^
 ||2n5c.com^
 ||2n606.com^
 ||2nastychicks.com^
@@ -3093,6 +3162,7 @@
 ||3.cdnxsalty9.com^
 ||3.rus-xvibeos.me^
 ||3000cams.com^
+||3004gg.com^
 ||3004xx.com^
 ||300cams.blogspot.com^
 ||300caocao.com^
@@ -3140,7 +3210,9 @@
 ||30vorbei.ch^
 ||30yiko.xyz^
 ||31-vakti.blogspot.com^
+||310105.xyz^
 ||3103z.com^
+||3110.com.cn^
 ||311yu.com^
 ||312mm.com^
 ||313xe.com^
@@ -3332,6 +3404,7 @@
 ||359nn.com^
 ||35avtang.com^
 ||35bi.com^
+||35buy.com^
 ||35crmojingmiguan.com^
 ||35etplus.free.fr^
 ||35maoaw.com^
@@ -3395,6 +3468,7 @@
 ||365tiyu.net.cn^
 ||365virtualtour.com^
 ||365xhamster.com^
+||365ys.pro^
 ||366614.xyz^
 ||36717.info^
 ||3676156b.blogspot.com^
@@ -3528,12 +3602,14 @@
 ||39maocv.com^
 ||39maonn.com^
 ||39mpt.xyz^
+||39peers.net^
 ||39seaa.com^
 ||39sefa.com^
 ||39yiko.xyz^
 ||3a11.com^
 ||3a3a9.com^
 ||3a4.23pas.com^
+||3a46.nvfremzup.com^
 ||3a6r8.com^
 ||3agene.com^
 ||3am.co.uk^
@@ -3542,6 +3618,7 @@
 ||3aransia.com^
 ||3area.free.fr^
 ||3arf.org^
+||3audit.org.cn^
 ||3av.app^
 ||3av.co^
 ||3barw.com^
@@ -3568,6 +3645,7 @@
 ||3d-milf-toons.blogspot.com^
 ||3d-toon.com^
 ||3d3d3d.net^
+||3d47.com^
 ||3d797.com^
 ||3dacpt.com^
 ||3dadultchatbots.blogspot.com^
@@ -3805,6 +3883,7 @@
 ||3some.org^
 ||3somefun.com^
 ||3somerapp.com^
+||3sp4y.com^
 ||3stardating.blogspot.com^
 ||3sum4fun.blogspot.com^
 ||3sumfinder.com^
@@ -3816,6 +3895,7 @@
 ||3vids.com^
 ||3vil.co.uk^
 ||3w.exhibvoyeur.free.fr^
+||3w3wcom.net.cn^
 ||3w8n.com^
 ||3wetpussies.com^
 ||3wickedwomen.com^
@@ -4085,6 +4165,7 @@
 ||42gaogg.com^
 ||42gaoxx.com^
 ||42huab.com^
+||42kb.com^
 ||42lost-causes.blogspot.com^
 ||42maobt.com^
 ||42maoby.com^
@@ -4150,6 +4231,7 @@
 ||444tte.com^
 ||444wwb.com^
 ||445184.com^
+||445bai.com^
 ||445lie.com^
 ||445ss.com^
 ||445tt.com^
@@ -4268,6 +4350,7 @@
 ||47gaobb.com^
 ||47gaogg.com^
 ||47gaoxx.com^
+||47hy.cn^
 ||47maoff.com^
 ||47maokw.com^
 ||47maonp.com^
@@ -4915,6 +4998,7 @@
 ||4womenpk.blogspot.com^
 ||4x2b.com^
 ||4x6x.com^
+||4xhyp.com^
 ||4xnxn.net^
 ||4xsq.com^
 ||4xunchang.com.cn^
@@ -4966,6 +5050,7 @@
 ||50plusflirts.com^
 ||50plusmilf.com^
 ||50plusmilfs.com^
+||50plusmilfs.info^
 ||50plusmilfs.org^
 ||50plusmilfschat.com^
 ||50plusmilfsmovies.com^
@@ -5020,6 +5105,7 @@
 ||51avw.com^
 ||51aw.com^
 ||51awn3.com^
+||51awn4.com^
 ||51baoliao01.com^
 ||51bxgfhb.com^
 ||51caimi.com^
@@ -5032,6 +5118,7 @@
 ||51cg10.com^
 ||51cg2.com^
 ||51cg3.com^
+||51cg365.com^
 ||51cg4.co^
 ||51cg4.com^
 ||51cg5.com^
@@ -5042,51 +5129,80 @@
 ||51cga22.com^
 ||51cga23.com^
 ||51cga24.com^
+||51cga27.com^
 ||51cga28.com^
+||51cga29.com^
+||51cga31.com^
+||51cga33.com^
 ||51cga34.com^
 ||51cga36.com^
 ||51cga37.com^
+||51cge3.com^
 ||51cgf2.com^
 ||51cgg10.com^
+||51cgg17.com^
 ||51cgg30.com^
 ||51cgg32.com^
 ||51cgg35.com^
+||51cgg38.com^
 ||51cgg4.com^
 ||51cgg42.com^
 ||51cghl.xyz^
 ||51cgi365.com^
 ||51cgk41.com^
+||51cgm10.com^
+||51cgm13.com^
 ||51cgm16.com^
 ||51cgm19.com^
 ||51cgm22.com^
 ||51cgm28.com^
 ||51cgm3.com^
 ||51cgm30.com^
+||51cgm33.com^
+||51cgm39.com^
 ||51cgm41.com^
 ||51cgn365.com^
 ||51cgo1.com^
 ||51cgw.com^
 ||51cgwcg.com^
+||51cgy1.com^
 ||51cgy11.com^
 ||51cgy12.com^
+||51cgy13.com^
+||51cgy14.com^
 ||51cgy16.com^
 ||51cgy18.com^
 ||51cgy2.com^
+||51cgy20.com^
 ||51cgy21.com^
 ||51cgy22.com^
 ||51cgy25.com^
 ||51cgy27.com^
 ||51cgy29.com^
+||51cgy3.com^
+||51cgy30.com^
 ||51cgy33.com^
+||51cgy34.com^
 ||51cgy35.com^
+||51cgy36.com^
+||51cgy37.com^
 ||51cgy38.com^
 ||51cgy39.com^
 ||51cgy40.com^
+||51cgy7.com^
+||51cgy9.com^
 ||51cgz1.com^
 ||51cgz10.com^
+||51cgz11.com^
 ||51cgz13.com^
+||51cgz15.com^
+||51cgz17.com^
 ||51cgz18.com^
 ||51cgz2.com^
+||51cgz3.com^
+||51cgz4.com^
+||51cgz8.com^
+||51cgz9.com^
 ||51ch1.com^
 ||51chachacha.com^
 ||51chigua.hk^
@@ -5163,8 +5279,13 @@
 ||51hjds26.com^
 ||51hjds27.com^
 ||51hjds28.com^
+||51hlw07.com^
+||51hlw13.com^
 ||51hlw5.com^
 ||51hlw6.com^
+||51hlwz06.com^
+||51hlwz07.com^
+||51hlwz08.com^
 ||51hnsy.com^
 ||51hzsc.com^
 ||51ibmbb.com^
@@ -5206,6 +5327,7 @@
 ||51mav.com^
 ||51md.me^
 ||51mou.com^
+||51mydao.com^
 ||51our.com^
 ||51papaya.live^
 ||51pc.me^
@@ -5221,6 +5343,7 @@
 ||51seff.com^
 ||51sejie.com^
 ||51shipin1.com^
+||51shipin12.com^
 ||51shipin13.com^
 ||51shipin15.com^
 ||51shipin16.com^
@@ -5231,6 +5354,7 @@
 ||51shipin24.com^
 ||51shipin25.com^
 ||51shipin26.com^
+||51shipin27.com^
 ||51shipin30.com^
 ||51shipin32.com^
 ||51shipin33.com^
@@ -5246,6 +5370,7 @@
 ||51tanyou.com^
 ||51tgzq.com^
 ||51tiaohao.com^
+||51tt25.com^
 ||51ttpj.com^
 ||51vfr.com^
 ||51wbm.com^
@@ -5411,6 +5536,7 @@
 ||53x.ca^
 ||53xe.com^
 ||53xtoys.ca^
+||54089.com^
 ||540q.com^
 ||541z.com^
 ||54465543.com^
@@ -5480,6 +5606,7 @@
 ||55ezez.com^
 ||55f6f.com^
 ||55gaoaa.com^
+||55gem.com^
 ||55k4.com^
 ||55maoak.com^
 ||55maofk.com^
@@ -5677,6 +5804,7 @@
 ||5ftc.com^
 ||5gaoab.com^
 ||5gays.com^
+||5ghour.com^
 ||5girl.live^
 ||5gkino.com^
 ||5gmifi.com.cn^
@@ -5765,6 +5893,9 @@
 ||5xvod.com^
 ||5xvod.net^
 ||5yblw11.com^
+||5yblw13.com^
+||5yblw4.com^
+||5yblw5.com^
 ||5yblw8.com^
 ||5yblw9.com^
 ||5ye.ca^
@@ -5827,6 +5958,7 @@
 ||616lv.com^
 ||616xe.com^
 ||617ww.com^
+||6180001.xyz^
 ||6180002.xyz^
 ||6180004.xyz^
 ||6180005.xyz^
@@ -5839,6 +5971,7 @@
 ||6180054.xyz^
 ||6180055.xyz^
 ||6180062.xyz^
+||6180063.xyz^
 ||6180064.xyz^
 ||618081.com^
 ||618797.xyz^
@@ -5980,6 +6113,8 @@
 ||666yv.com^
 ||667129.com^
 ||6677hj.com^
+||6678av.com^
+||667fen.com^
 ||668188800.com^
 ||6688qq.com^
 ||668hui.com^
@@ -6060,7 +6195,6 @@
 ||686xe.com^
 ||687976.com^
 ||687yu.com^
-||6888.ee^
 ||6888x.com^
 ||688bt.com^
 ||688ck.com^
@@ -6114,6 +6248,7 @@
 ||698pp.com^
 ||698xx.com^
 ||699129.myshopify.com^
+||6997789.com^
 ||69adulttoys.com^
 ||69amateur.blogspot.com^
 ||69angbang.blogspot.com^
@@ -6432,7 +6567,6 @@
 ||712r.com^
 ||7136.info^
 ||714c.com^
-||714mofa1.xyz^
 ||714windows.com^
 ||715mm.com^
 ||715wm.com^
@@ -6564,6 +6698,7 @@
 ||739yu.com^
 ||73gaoxx.com^
 ||73iii.com^
+||73j77.net.cn^
 ||73kbe.com.cn^
 ||73maonn.com^
 ||73maott.com^
@@ -6604,6 +6739,7 @@
 ||74maoad.com^
 ||74maoag.com^
 ||74maoap.com^
+||74s0s.com^
 ||750008.com.cn^
 ||750bb.com^
 ||750j.com^
@@ -6678,7 +6814,6 @@
 ||767dd.com^
 ||767jj.com^
 ||767yyy.com^
-||767z.com^
 ||768dy.com^
 ||768r.com^
 ||768t.com^
@@ -6688,6 +6823,7 @@
 ||769yy.com^
 ||76bm.com^
 ||76caopp.com^
+||76ccv.com^
 ||76hhab.com^
 ||76intim.com^
 ||76maoap.com^
@@ -6771,6 +6907,7 @@
 ||77unishop.com^
 ||77win1go.com^
 ||77xcv.com^
+||77ys.co^
 ||77yue.com^
 ||780134.com^
 ||780878.com^
@@ -6890,10 +7027,12 @@
 ||7dayorgasm.com^
 ||7daz.com^
 ||7dealdays.de^
+||7dga.huxiaoyan8.com.cn^
 ||7e3c.com^
 ||7econds.com^
 ||7ef.com^
 ||7ek2.com^
+||7eu2zv.xyz^
 ||7feel.net^
 ||7figurespermonth.com^
 ||7g7y.com^
@@ -6903,6 +7042,7 @@
 ||7h8h9h.com^
 ||7h9u.com^
 ||7heavendoors.blogspot.com^
+||7huwwefo9o14.com^
 ||7ici.fr.free.fr^
 ||7infi.com^
 ||7jeunes.free.fr^
@@ -6912,6 +7052,7 @@
 ||7koz.com^
 ||7labios.com^
 ||7ladyboy.com^
+||7le5qiong.com^
 ||7liu8liu.com^
 ||7lll.net.cn^
 ||7maia.com^
@@ -6926,6 +7067,7 @@
 ||7nzy.com^
 ||7ok7cqks.com^
 ||7papa.com^
+||7pip7r0.huxiaoyan8.com.cn^
 ||7pz61.com^
 ||7q29.com^
 ||7qwg3.live^
@@ -6972,6 +7114,7 @@
 ||7uw.net^
 ||7vgs.com^
 ||7vids.com^
+||7vogue.com^
 ||7wjx.com^
 ||7wwtv.com^
 ||7x3.net^
@@ -7014,6 +7157,7 @@
 ||807pp.com^
 ||807qq.com^
 ||807z.com^
+||8080126.com^
 ||8090369.com^
 ||809e.com^
 ||809f.com^
@@ -7036,6 +7180,7 @@
 ||810kk.com^
 ||810oo.com^
 ||810t.com^
+||8114114.com^
 ||811sa.com^
 ||812125.xyz^
 ||812girls.blogspot.com^
@@ -7126,6 +7271,7 @@
 ||82ph4craswaf.blogspot.com^
 ||82qqq.com^
 ||82xnxx.com^
+||830k.com^
 ||830nn.com^
 ||830qq.com^
 ||831tube.com^
@@ -7242,7 +7388,6 @@
 ||855168.xyz^
 ||855668.xyz^
 ||855ll.com^
-||855n.com^
 ||856qq.com^
 ||856rr.com^
 ||856xx.com^
@@ -7259,7 +7404,6 @@
 ||858613.xyz^
 ||858905.xyz^
 ||858nn.com^
-||859av.com^
 ||859kk.com^
 ||859uu.com^
 ||859zz.com^
@@ -7276,6 +7420,7 @@
 ||85po.com^
 ||85po.net^
 ||85st.us^
+||85st1.i246.info^
 ||85stapp.com^
 ||85stt.com^
 ||85tube.com^
@@ -7300,7 +7445,6 @@
 ||861x.com^
 ||861yu.com^
 ||861zz.com^
-||862cp55f.com^
 ||862ee.com^
 ||862ll.com^
 ||862mm.com^
@@ -7337,7 +7481,6 @@
 ||869jj.com^
 ||869qq.com^
 ||869rr.com^
-||86b9a3.com^
 ||86bet.gay^
 ||86bi.com^
 ||86cams.com^
@@ -7543,6 +7686,7 @@
 ||8bss.com^
 ||8bude.com^
 ||8bzp.com^
+||8c89e08471d1.com^
 ||8c8q.com^
 ||8camz.com^
 ||8caoaa.com^
@@ -7555,7 +7699,7 @@
 ||8d7t.com^
 ||8d99.com^
 ||8dgo.idv.tw^
-||8dw3n.com^
+||8eb.huxiaoyan8.com.cn^
 ||8erotica.com^
 ||8evlcbsuk3cm9agc-49220550809.shopifypreview.com^
 ||8fe5.vywaax.com^
@@ -7564,11 +7708,11 @@
 ||8freecams.com^
 ||8fzokdjpod.blogspot.com^
 ||8gff.com^
+||8ghh.com^
 ||8ghl.com^
 ||8gw8.com^
 ||8gw8.net^
 ||8h01.com^
-||8huanxiang.com.cn^
 ||8icpp.com^
 ||8inall.com^
 ||8inchdicks.com^
@@ -7601,7 +7745,6 @@
 ||8prn.com^
 ||8q0r7.com^
 ||8qucao.com^
-||8rbdu3rzz.com^
 ||8redchili.blogspot.com^
 ||8s42.com^
 ||8se.me^
@@ -7634,7 +7777,6 @@
 ||8x79p.com^
 ||8x8x.com^
 ||8x8x.io^
-||8x8x.net^
 ||8x8x.one^
 ||8xfazh.xyz^
 ||8xnxn.net^
@@ -7645,16 +7787,12 @@
 ||8xx.info^
 ||8xx0.com^
 ||8xxnxxnxx.blogspot.com^
-||8y.net^
 ||8yjipin888.xyz^
 ||8ynav03.xyz^
 ||8yrnugr.xyz^
-||8ytop001.xyz^
-||8ytop002.xyz^
 ||8z-example-keyword-2-ol.blogspot.com^
 ||8z5h.com^
 ||8z9n.com^
-||8zhouzhi.com.cn^
 ||8zoo.net^
 ||9-mobile.com^
 ||9-teens.com^
@@ -7671,7 +7809,6 @@
 ||901uu.com^
 ||901ww.com^
 ||901zz.com^
-||902010.com^
 ||902e.com^
 ||902kk.com^
 ||902uu.com^
@@ -7739,11 +7876,26 @@
 ||911asians.com^
 ||911bl.com^
 ||911bl.live^
+||911bl01.com^
+||911bl06.com^
+||911bl09.com^
+||911bl16.com^
+||911bl2.com^
+||911bl23.com^
+||911bl26.com^
 ||911blw.com^
+||911blw12.com^
+||911blw3.com^
+||911blw4.com^
 ||911cg.net^
 ||911cg.org^
+||911cg1.com^
+||911cg11.com^
+||911cg15.com^
+||911cg28.com^
 ||911cg4.net^
 ||911cg5.net^
+||911cg7.com^
 ||911dirtyout.com^
 ||911dsj.com^
 ||911dsj1.com^
@@ -7776,12 +7928,12 @@
 ||916xe.com^
 ||9177tv.com^
 ||917gg.com^
-||917kf.com^
 ||917yk.com^
 ||917zz.com^
 ||918523.com^
 ||918dy.com^
 ||918oo.com^
+||9191191.com.cn^
 ||919127.xyz^
 ||919129.xyz^
 ||919185.xyz^
@@ -7798,7 +7950,6 @@
 ||919tt.com^
 ||919yu.com^
 ||91ago.com^
-||91aiaixx.com^
 ||91aise.xyz^
 ||91anxin.com^
 ||91asmr.live^
@@ -7821,8 +7972,13 @@
 ||91cc.app^
 ||91cg.app^
 ||91cg.com^
+||91cg07.com^
 ||91cg1.com^
+||91cg10.com^
 ||91cg11.com^
+||91cg7.com^
+||91cgb06.com^
+||91cgb09.com^
 ||91cgc.com^
 ||91cggg.com^
 ||91cgsp.com^
@@ -7830,6 +7986,11 @@
 ||91chigua.hk^
 ||91chigua.live^
 ||91chigua.tw^
+||91chigua17.com^
+||91chigua18.com^
+||91chigua21.com^
+||91chigua23.com^
+||91chigua24.com^
 ||91chiguaw.org^
 ||91chiguaw2.com^
 ||91chiguaw3.com^
@@ -7859,16 +8020,23 @@
 ||91duanvideo.net^
 ||91dz.mobi^
 ||91f4.com^
-||91fqtv.com^
 ||91free.tv^
 ||91freedz.com^
 ||91gag.com^
 ||91gaoqingheiliao.com^
 ||91gc.pro^
+||91gua02.com^
+||91gua04.com^
+||91gua05.com^
+||91gua06.com^
+||91gua07.com^
+||91gua08.com^
+||91gua09.com^
+||91gua10.com^
+||91gua15.com^
 ||91gua17.com^
 ||91haijiao.com^
 ||91haolaoshi.com^
-||91hdav.net^
 ||91heiliao.me^
 ||91hhe.com^
 ||91hliao.com^
@@ -7899,7 +8067,6 @@
 ||91kpw1.com^
 ||91lanqiu.com^
 ||91lol.im^
-||91loli8.com^
 ||91lsj.com^
 ||91lulukan.com^
 ||91madou.me^
@@ -7924,6 +8091,7 @@
 ||91mianfeivod.com^
 ||91ncy.com^
 ||91nt.com^
+||91nt36.com^
 ||91p004.com^
 ||91p007.com^
 ||91p008.com^
@@ -7968,7 +8136,12 @@
 ||91soo.com^
 ||91soul.com^
 ||91splt.app^
+||91spw12.com^
+||91spw14.com^
 ||91spx.com^
+||91spx10.com^
+||91spx5.com^
+||91spx8.com^
 ||91sqdh.com^
 ||91sw78.study^
 ||91tab.com^
@@ -7980,6 +8153,7 @@
 ||91tv.co^
 ||91update.com^
 ||91url.info^
+||91vip11.com^
 ||91vippro.com^
 ||91vippro.org^
 ||91websp.github.io^
@@ -7994,7 +8168,6 @@
 ||91xse.com^
 ||91xxmm.com^
 ||91yingshihub.com^
-||91ymtv.com^
 ||91zaixianvideo.com^
 ||91zaixianvideo.net^
 ||91zhanbu.com^
@@ -8017,7 +8190,6 @@
 ||923ww.com^
 ||924536.blogspot.com^
 ||924pp.com^
-||924xx.com^
 ||925c25.com^
 ||925jj.com^
 ||925u.com^
@@ -8039,6 +8211,7 @@
 ||92caobk.com^
 ||92caofa.com^
 ||92db.com^
+||92isim.com^
 ||92lll.com^
 ||92maobk.com^
 ||92maogk.com^
@@ -8091,7 +8264,6 @@
 ||93ku.com^
 ||93maoah.com^
 ||93putuo.com^
-||93vnp.net.cn^
 ||93www.com^
 ||940dd.com^
 ||940vv.com^
@@ -8187,7 +8359,6 @@
 ||959ww.com^
 ||95caoka.com^
 ||95hhab.com^
-||95jbuv.com^
 ||95maoaw.com^
 ||95maofk.com^
 ||95maomm.com^
@@ -8214,7 +8385,6 @@
 ||965rr.com^
 ||965ss.com^
 ||9666av.com^
-||966866.net^
 ||966bo.com^
 ||968901.com^
 ||968ll.com^
@@ -8287,6 +8457,7 @@
 ||976oo.com^
 ||976wm.com^
 ||977656.com^
+||97788.com.cn^
 ||977896.com^
 ||977906.com^
 ||977ll.com^
@@ -8311,8 +8482,6 @@
 ||97maoff.com^
 ||97maofk.com^
 ||97maomm.com^
-||97qqp.com^
-||97qqp.info^
 ||97sbb.info^
 ||97sp.me^
 ||97x.ai^
@@ -8320,16 +8489,15 @@
 ||9806555.com^
 ||980a.com^
 ||980aa.com^
+||980ef1eac758.com^
 ||98141.blogspot.com^
 ||981gg.com^
 ||981h.com^
 ||981mm.com^
 ||981ww.com^
-||981z.com^
 ||982pp.com^
 ||982ww.com^
 ||983282.com^
-||983z.com^
 ||984cc.com^
 ||984hh.com^
 ||984jj.com^
@@ -8339,7 +8507,6 @@
 ||985az.com^
 ||986162.com^
 ||986ff.com^
-||987654.info^
 ||9898zem.blogspot.com^
 ||989907.com^
 ||989dd.com^
@@ -8355,6 +8522,7 @@
 ||98maoff.com^
 ||98maofk.com^
 ||98maomm.com^
+||98yfw.com^
 ||99-degrees.blogspot.com^
 ||9901game.com^
 ||991639.com.cn^
@@ -8511,8 +8679,6 @@
 ||9avse.com^
 ||9bav.com^
 ||9bss.com^
-||9buxi.com.cn^
-||9c2s8e.com^
 ||9cache.com^
 ||9cao.org^
 ||9caoaa.com^
@@ -8522,6 +8688,7 @@
 ||9ccjz.com^
 ||9chenyun.com^
 ||9d2d.com^
+||9dhulmgziuxc.com^
 ||9dizhi.com^
 ||9eleven.info^
 ||9escorts.com^
@@ -8567,11 +8734,9 @@
 ||9night.in^
 ||9oor.in^
 ||9pjtoacto.xyz^
-||9qrxkeh.com^
 ||9qub.com^
 ||9qusesewan.com^
 ||9rac.com^
-||9rc.org.cn^
 ||9s137.com^
 ||9sdh.com^
 ||9se2.xyz^
@@ -8590,14 +8755,11 @@
 ||9win.me^
 ||9wm9.info^
 ||9wm9ccc.xyz^
-||9wushu.com.cn^
 ||9x8d.com^
 ||9xbuddy.io^
 ||9xfilmy.com^
 ||9xflix.care^
-||9xflix.chat^
 ||9xflix.delhi.in^
-||9xflix.io.in^
 ||9xkj.com^
 ||9xlove.xyz^
 ||9xmovie.design^
@@ -8621,7 +8783,6 @@
 ||9xsp.com^
 ||9y3d.com^
 ||9ydh.com^
-||9zhicai.com.cn^
 ||9zjh.com^
 ||a-a1absoluteperfect10.com^
 ||a-a1perfect10.com^
@@ -8666,7 +8827,6 @@
 ||a-stil.com^
 ||a-table.paris^
 ||a-teens-shirtless.blogspot.com^
-||a-to-sub-bee.com^
 ||a-vibrator.com^
 ||a-vod.com^
 ||a-zmanga.com^
@@ -8707,7 +8867,6 @@
 ||a1z6d2m9.com^
 ||a2-analytics.xyz^
 ||a289.info^
-||a2b3c4.info^
 ||a2bellydeli.com^
 ||a2bgal.blogspot.com^
 ||a2e.ai^
@@ -8752,7 +8911,6 @@
 ||a7d0c.xyz^
 ||a7larab.net^
 ||a7mjosge.com^
-||a7vrb52.com^
 ||a892.info^
 ||a8a805.com^
 ||a8fuli.pro^
@@ -8848,7 +9006,7 @@
 ||aa694.com^
 ||aa695.com^
 ||aa697.com^
-||aa6a8.com^
+||aa6l6.com.cn^
 ||aa720.com^
 ||aa726.com^
 ||aa728.com^
@@ -8902,6 +9060,7 @@
 ||aaacock.com^
 ||aaaelidaaaap.blogspot.com^
 ||aaaktv.com^
+||aaalanyard.com^
 ||aaanovel.com^
 ||aaarealfantasies.com^
 ||aaascat.blogspot.com^
@@ -8914,7 +9073,6 @@
 ||aab77.com.cn^
 ||aabbcc678.com^
 ||aabj.net^
-||aabk.com.cn^
 ||aac23.com.cn^
 ||aaca.org.cn^
 ||aacele2.free.fr^
@@ -8967,7 +9125,6 @@
 ||aagmaal1.live^
 ||aagmaal2.com^
 ||aagmaal2.com.co^
-||aagmaal24.com^
 ||aagmaal3.com^
 ||aagmaal5.com^
 ||aagmaalhd.net^
@@ -8976,13 +9133,13 @@
 ||aagmaaltube.com^
 ||aagmaaluncut.com^
 ||aagmaalx.org^
-||aagmaalx24.com^
 ||aagolden.com^
 ||aagvdo.xyz^
 ||aah76.com^
 ||aahanagulia.mobirisesite.com^
 ||aahanaguliaa.mobirisesite.com^
 ||aahotgirls.free.fr^
+||aaicang.cn^
 ||aak131.com^
 ||aak134.com^
 ||aakino.ru^
@@ -9038,12 +9195,14 @@
 ||aavvtt.com^
 ||aawolf.uh-oh.jp^
 ||aaxs5.xyz^
+||aaxxasoft.com^
 ||aay83.com^
 ||aayadultdayservices.org^
 ||aayah.in^
 ||ab-elect.ru^
 ||ab-gay.com^
 ||ab18.de^
+||ab18.net^
 ||ab21.de^
 ||ab3g3tua.blogspot.com^
 ||abacas.free.fr^
@@ -9206,6 +9365,7 @@
 ||abgayahukhti.pages.dev^
 ||abgbandung17.blogspot.com^
 ||abgbispakbandung.blogspot.com^
+||abgbs.com^
 ||abgbugilz.blogspot.com^
 ||abgceritadewasa.blogspot.com^
 ||abgcewekmontok.blogspot.com^
@@ -9317,6 +9477,7 @@
 ||abouttwinks.com^
 ||aboutyou.ee^
 ||aboveallshop.com^
+||aboveandbeyondverbier.com^
 ||aboveinvesting.pro^
 ||abowned.com^
 ||aboylovegarden4.blogspot.com^
@@ -9527,7 +9688,6 @@
 ||accsaas.com^
 ||accsmarket.net^
 ||acctrixchina.com^
-||accu-therm.com.cn^
 ||accumulatown.gay^
 ||accuseracii.blogspot.com^
 ||acdc-strom.de^
@@ -9545,7 +9705,6 @@
 ||aceloset.gay^
 ||acemassage.net^
 ||acemkele.blogspot.com^
-||acemoldproof.com^
 ||acemont.com^
 ||acemoter.gay^
 ||aceofart.blogspot.com^
@@ -9606,6 +9765,7 @@
 ||achingtocum.com^
 ||achinsk-dd.com^
 ||achinsk-igd.info^
+||achinsklust.com^
 ||achinsksm.com^
 ||achivoaie.ro^
 ||achttien.nl^
@@ -9940,6 +10100,7 @@
 ||adanamodern.com^
 ||adanapatent.com^
 ||adanarehberi.net^
+||adanasoforlerodasi.org^
 ||adanasohbeti.com^
 ||adanasosyalhizmetlervakfi.com^
 ||adanatercihgayrimenkul.com.tr^
@@ -238462,7 +238623,6 @@
 ||ylfby.com^
 ||ylg315.com^
 ||ylgldvideos.blogspot.com^
-||yljsn.com.cn^
 ||ylmnzk.com^
 ||yln280.com^
 ||yloils.com^
