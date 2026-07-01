@@ -19,9 +19,9 @@ VERSION = "2026.05.27.OMNI_PRO_TRIE"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
-ENABLE_MAIN_RELEVANCE = False
-ENABLE_MAIN_TLD = True
-ENABLE_MAIN_KW = True  # Drops literal keyword matches to offload to the trailing regex rule
+ENABLE_MAIN_RELEVANCE = True
+ENABLE_MAIN_TLD = False
+ENABLE_MAIN_KW = False  # Drops literal keyword matches to offload to the trailing regex rule
 
 ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = True
@@ -32,15 +32,15 @@ ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
-ENABLE_MAIN_REBIND = False
-ENABLE_MAIN_SAFESEARCH = False
+ENABLE_MAIN_REBIND = True
+ENABLE_MAIN_SAFESEARCH = True
 ENABLE_MAIN_NSFW_REGEX = False
 ENABLE_MAIN_SPAM_TLDS = False
 
-ENABLE_MOBILE_REBIND = False
-ENABLE_MOBILE_SAFESEARCH = False
-ENABLE_MOBILE_NSFW_REGEX = False
-ENABLE_MOBILE_SPAM_TLDS = False
+ENABLE_MOBILE_REBIND = True
+ENABLE_MOBILE_SAFESEARCH = True
+ENABLE_MOBILE_NSFW_REGEX = True
+ENABLE_MOBILE_SPAM_TLDS = True
 
 ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
@@ -65,6 +65,7 @@ MAIN_SOURCES = [
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
     "https://filters.adtidy.org/dns/filter_34.txt", #HaGeZi's Normal Blocklist
+    "https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
 
     # --- 2. Enforcement & Behavioral Blocks ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -225,8 +226,11 @@ def extract_host(clean: str) -> str | None:
             body = clean[2:-1]
             if "/" not in body and "^" not in body:
                 return body.lower().strip('.')
-        m = ADBLOCK_EXACT_RE.search(clean) or ADBLOCK_BASIC_RE.search(clean)
+        m = ADBLOCK_EXACT_RE.search(clean)
         if m: return m.group(1).lower().strip('.')
+
+    m = ADBLOCK_BASIC_RE.search(clean)
+    if m: return m.group(1).lower().strip('.')
 
     if clean.startswith(("0.0.0.0", "127.0.0.1")):
         parts = clean.split(None, 1)
