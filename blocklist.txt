@@ -1,10 +1,10 @@
 ! Jorgensen MAIN List | Version: 2026.05.27.OMNI_PRO_TRIE
-! Generated: 2026-07-01 03:31:58 PM MST
-! Stats: Kept 141724 | Badware-Pruned 0 | General-Pruned 2980 | Whitelisted 2 | Irrelevant 1773952 | Duplicates 4333 | TLD 0 | Regex-Offloaded 0
+! Generated: 2026-07-01 03:40:49 PM MST
+! Stats: Kept 141726 | Badware-Pruned 0 | General-Pruned 2980 | Whitelisted 2 | Irrelevant 1773956 | Duplicates 4333 | TLD 0 | Regex-Offloaded 0
 !
 ! --- Source Contributions (Pre-Pruning) ---
-! https://filters.adtidy.org/dns/filter_34.txt -> 51926
-! https://filters.adtidy.org/dns/filter_44.txt -> 65107
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt -> 51926
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt -> 65109
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 27525
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 118
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 28
@@ -2511,6 +2511,7 @@
 ||5fdb2331d9d15.site123.me^
 ||5fufnp-cdn-settings.appsflyersdk.com^
 ||5fufnp-launches.appsflyersdk.com^
+||5g.in^
 ||5gays.com^
 ||5gfixedip.com.my^
 ||5gkuailian.com.cn^
@@ -2737,6 +2738,7 @@
 ||6f0247be0c.com^
 ||6fdhgbtreh.oss-accelerate.aliyuncs.com^
 ||6fytwq-cdn-settings.appsflyersdk.com^
+||6g.in^
 ||6gjnan.eu.cc^
 ||6i7y3i.ru^
 ||6indianxxx.mobi^
@@ -141736,32 +141738,47 @@
 ||zzzzzzzzzz.emil.zip^
 
 ! --- DYNAMIC REBIND PROTECTION ---
-!
 ! Title: HaGeZi's DNS Rebind Protection
 ! Description: DNS Rebind Protection is a security mechanism that prevents attackers from manipulating DNS responses to make a domain resolve to private or local IP addresses, thereby blocking malicious scripts from accessing internal networks through DNS rebinding attacks.
-! Version: 1.0.0.7
 ! Homepage: https://github.com/hagezi/dns-blocklists
-! Last modified: 2026-05-26T13:15:16.644Z
-!
-! Compiled by @adguard/hostlist-compiler v2.1.0
-!
+! License: https://github.com/hagezi/dns-blocklists/blob/main/LICENSE
+! Issues: https://github.com/hagezi/dns-blocklists/issues
+! Syntax: AdGuard (Regex)
+! 
+! IPv4
+! Private
 /^10\.(?:\d{1,3})\.(?:\d{1,3})\.(?:\d{1,3})$/
 /^172\.(?:1[6-9]|2\d|3[0-1])\.(?:\d{1,3})\.(?:\d{1,3})$/
 /^192\.168\.(?:\d{1,3})\.(?:\d{1,3})$/
+! Link-Local
 /^169\.254\.(?:\d{1,3})\.(?:\d{1,3})$/
+! Loopback
 /^127\.(?:\d{1,3})\.(?:\d{1,3})\.(?:\d{1,3})$/
+! Unspecified / block response
 /^0\.0\.0\.(?:\d{1,3})$/
+! DNS4EU block response
 /^51\.15\.69\.11$/
+! OpenDNS block response
 /^146\.112\.61\.108$/
+! IPv6
+! Unique Local Address (ULA)
 /^f[cd][0-9a-f]{2}:/
+! Link-Local
 /^fe80:/
+! Loopback
 /^::1$/
+! Unspecified
 /^::$/
+! Host
 /^([a-z0-9\-]+\.)?(localhost|localdomain|ip6-localhost)$/
+! Allow
+! Fritz!Box
 @@||fritz.box^
 @@||fritz.nas^
 @@||fritz.local^
+! Microsoft Windows network status
 @@||dns.msftncsi.com^
+
 ! --- DYNAMIC SAFESEARCH ---
 |edgeservices.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
 |www.bing.com^$dnsrewrite=NOERROR;CNAME;strict.bing.com
