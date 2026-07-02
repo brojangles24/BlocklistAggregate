@@ -78,7 +78,7 @@ MAIN_SOURCES = [
 # ---------------------------------------------------------------------------
 # ULTIMATE LIST SELECTION (Jorgensen Omni)
 # ---------------------------------------------------------------------------
-ULTIMATE_SOURCES = ['''
+ULTIMATE_SOURCES = [
     # --- HaGeZi Umbrella Engines ---
     #"https://filters.adtidy.org/dns/filter_54.txt", #HaGeZi's DynDNS Blocklist
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
@@ -123,7 +123,7 @@ ULTIMATE_SOURCES = ['''
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-''']
+]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
 
