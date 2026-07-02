@@ -61,7 +61,7 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
     #"https://filters.adtidy.org/dns/filter_34.txt", #HaGeZi's Normal Blocklist
@@ -80,23 +80,23 @@ MAIN_SOURCES = [
 # ---------------------------------------------------------------------------
 ULTIMATE_SOURCES = [
     # --- HaGeZi Umbrella Engines ---
-    #"https://filters.adtidy.org/dns/filter_54.txt", #HaGeZi's DynDNS Blocklist
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
-    #"https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
-    #"https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
+    "https://filters.adtidy.org/dns/filter_54.txt", #HaGeZi's DynDNS Blocklist
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    "https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
+    "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", #TIF Full
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", #TIF Medium 
-    #"https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
-    #"https://filters.adtidy.org/dns/filter_46.txt", #HaGeZi's Anti-Piracy Blocklist
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    #"https://filters.adtidy.org/dns/filter_52.txt", #HaGeZi's Encrypted DNS/VPN/TOR/Proxy Bypass
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt",
+    "https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
+    "https://filters.adtidy.org/dns/filter_46.txt", #HaGeZi's Anti-Piracy Blocklist
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    "https://filters.adtidy.org/dns/filter_52.txt", #HaGeZi's Encrypted DNS/VPN/TOR/Proxy Bypass
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt",
     
     # --- Core Content Tiers ---
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
 
