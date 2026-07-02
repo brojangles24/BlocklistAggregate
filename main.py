@@ -86,7 +86,8 @@ ULTIMATE_SOURCES = [
     #"https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", #TIF Full
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", #TIF Medium 
     #"https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.plus.txt",
     #"https://filters.adtidy.org/dns/filter_46.txt", #HaGeZi's Anti-Piracy Blocklist
