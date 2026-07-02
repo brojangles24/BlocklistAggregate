@@ -85,9 +85,9 @@ ULTIMATE_SOURCES = [
     "https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
     "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    "https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
+    #"https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", #TIF Full
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", #TIF Medium 
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", #TIF Medium 
     "https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     "https://filters.adtidy.org/dns/filter_46.txt", #HaGeZi's Anti-Piracy Blocklist
@@ -330,7 +330,7 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
     source_stats = {}
     hoster_active = set()
 
-    urls_sorted = sorted(urls, key=lambda u: 0 if "hoster.txt" in u else 1)
+    urls_sorted = sorted(urls, key=lambda u: 0 if "hoster.txt" in u or "filter_55.txt" in u or "filter_50.txt" in u else 1)
     for u in urls_sorted: 
         source_stats[u] = 0
 
@@ -486,7 +486,7 @@ async def run_pipeline() -> None:
                     print(f"[-] Debug write fault for {url}: {e}")
                 print(f"[*] Fetched and parsed {len(hosts)} clean domains from {url}")
 
-        spam_patterns_set, denyallow_map, spam_text = set(), {}, None
+        spam_patterns_set, denyallow_map, spam_text = set(), None, None
         if spam_task:
             try:
                 spam_res = await spam_task
