@@ -335,7 +335,7 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
         source_stats[u] = 0
 
     for url in urls_sorted:
-        is_hoster = "hoster.txt" in url
+        is_hoster = "hoster.txt" in url or "filter_55.txt" in url or "filter_50.txt" in url
         added_from_source = 0
 
         for host in source_data.get(url, set()):
