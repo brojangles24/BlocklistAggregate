@@ -59,8 +59,8 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
-    #"https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
-    #"https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
+    "https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
+    "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     "https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
@@ -88,9 +88,9 @@ ULTIMATE_SOURCES = [
     "https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
     "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    "https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
+    #"https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", #TIF Full
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", #TIF Medium 
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", #TIF Medium 
     "https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     "https://filters.adtidy.org/dns/filter_46.txt", #HaGeZi's Anti-Piracy Blocklist
