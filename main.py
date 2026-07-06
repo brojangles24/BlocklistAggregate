@@ -135,10 +135,8 @@ MOBILE_SOURCES = list(MAIN_SOURCES)
 # Shared Core Resources
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 REBIND_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adguard/dns-rebind-protection.txt"
-ADGUARD_SAFESEARCH_URLS = [
-    "https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt",
-    "https://adguardteam.github.io/HostlistsRegistry/assets/youtube_safe_search.txt",
-]
+ADGUARD_SAFESEARCH_URLS = "https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt"
+
 
 TOP_LISTS = [
     ("https://tranco-list.eu/top-1m.csv.zip", 1, False, "zip"),
