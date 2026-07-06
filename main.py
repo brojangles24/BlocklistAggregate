@@ -59,10 +59,10 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
-    "https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
+    #"https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
     "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    "https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
+    #"https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
