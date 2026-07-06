@@ -15,13 +15,13 @@ from typing import Iterable
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.05.27.OMNI_PRO_TRIE"
+VERSION = "2026.07.05.OMNI_PRO_TRIE"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
 ENABLE_MAIN_RELEVANCE = False
 ENABLE_MAIN_TLD = True
-ENABLE_MAIN_KW = True # Drops literal keyword matches to offload to the trailing regex rule
+ENABLE_MAIN_KW = True
 
 ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = True
@@ -79,6 +79,7 @@ MAIN_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
 ]
+
 # ---------------------------------------------------------------------------
 # ULTIMATE LIST SELECTION (Jorgensen Omni)
 # ---------------------------------------------------------------------------
@@ -127,7 +128,7 @@ ULTIMATE_SOURCES = [
     # --- Specialty Clean Metadata ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafsearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
 ]
 
@@ -161,9 +162,7 @@ class DomainTrieNode:
         self.is_blocked: bool = False
 
 def optimize_domains(domains: Iterable[str]) -> list[str]:
-    """Compresses lists from the TLD down using a strict structural tree layout."""
     root = DomainTrieNode()
-    
     for domain in domains:
         parts = domain.lower().split('.')
         current = root
@@ -176,7 +175,6 @@ def optimize_domains(domains: Iterable[str]) -> list[str]:
         current.is_blocked = True
 
     results: list[str] = []
-    
     def walk_tree(node: DomainTrieNode, path_segments: list[str]):
         if node.is_blocked:
             results.append(".".join(reversed(path_segments)))
@@ -353,13 +351,9 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if not disable_tld and get_matching_tld(host, s_set, d_map):
                 stats["tld"] += 1
                 continue
-            
-            # --- CORRECTED KEYWORD FILTER ---
-            # If domain matches the pattern, drop it here because the regex rule handles it.
             if not disable_kw and NSFW_REGEX.search(host):
                 stats["kw"] += 1
                 continue
-                
             if not disable_relevance and not has_suffix_match(host, a_list):
                 stats["irrelevant"] += 1
                 continue
@@ -377,7 +371,7 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
         print(f"[*] Source contribution: {p.netloc}/{filename} -> {added_from_source}")
 
     initial_count = len(found)
-    optimized = optimize_domains(found)  # True Trie node reduction
+    optimized = optimize_domains(found) 
     stats["pruned"] = initial_count - len(optimized)
     return optimized, stats, source_stats
 
@@ -421,14 +415,14 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
         f.writelines(f"||{dom}^\n" for dom in sorted(dataset))
 
         if include_rebind and rebind_text:
-            f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text)
+            f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text.strip() + "\n")
         if include_safesearch and ss_rules:
             f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
             f.writelines(f"{rule}\n" for rule in ss_rules)
         if include_regex:
             f.write(f"\n! --- NSFW REGEX ---\n/{NSFW_PATTERN}/\n")
         if include_spam and spam_text:
-            f.write("\n! --- SPAM TLDs ---\n" + spam_text)
+            f.write("\n! --- SPAM TLDs ---\n" + spam_text.strip() + "\n")
 
 # ---------------------------------------------------------------------------
 # Pipeline Orchestrator
@@ -491,7 +485,7 @@ async def run_pipeline() -> None:
                     print(f"[-] Debug write fault for {url}: {e}")
                 print(f"[*] Fetched and parsed {len(hosts)} clean domains from {url}")
 
-        spam_patterns_set, denyallow_map, spam_text = set(), None, None
+        spam_patterns_set, denyallow_map, spam_text = set(), {}, None
         if spam_task:
             try:
                 spam_res = await spam_task
