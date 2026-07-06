@@ -51,8 +51,6 @@ ENABLE_ULTIMATE_SPAM_TLDS = True
 NSFW_PATTERN = r"(blowjob|threesome|gangbang|deepthroat|bukkake|tits|fuck|onlyfans|porn|xxx|sex)"
 NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
 DOMAIN_RE = re.compile(r"(?i)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}")
-IP_HOST_RE = re.compile(r'^(?:0\.0\.0\.0|127\.0\.0\.1)\s+([^\s#]+)')
-DNSMASQ_RE = re.compile(r'(?:address|server)=/([^/]+)/')
 ADBLOCK_EXACT_RE = re.compile(r'^\|\|([^/\^]+)\^')
 ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 
@@ -240,6 +238,7 @@ def extract_host(clean: str) -> str | None:
                 return body.lower().strip('.')
         m = ADBLOCK_EXACT_RE.search(clean)
         if m: return m.group(1).lower().strip('.')
+        clean = clean[2:]
 
     m = ADBLOCK_BASIC_RE.search(clean)
     if m: return m.group(1).lower().strip('.')
@@ -437,10 +436,6 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
         # Write core dataset
         f.writelines(f"||{dom}^\n" for dom in sorted(dataset))
 
-        # --- FORCED HEADERS --- 
-        # By separating the header print from the `if text:` condition, the script 
-        # will ALWAYS print the header if the toggle is set to True. If it's still missing,
-        # it means the toggle was flipped or the file is being aggressively truncated.
         if include_rebind:
             f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n")
             if rebind_text:
@@ -470,12 +465,12 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
 # ---------------------------------------------------------------------------
 
 async def run_pipeline() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-o", "--output", default="blocklist.txt")
-    parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
-    parser.add_argument("-u", "--ultimate", default="omni-blocklist.txt")
-    parser.add_argument("-w", "--whitelist", default="whitelist.txt")
-    args = parser.parse_args()
+    args_parser = argparse.ArgumentParser()
+    args_parser.add_argument("-o", "--output", default="blocklist.txt")
+    args_parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
+    args_parser.add_argument("-u", "--ultimate", default="omni-blocklist.txt")
+    args_parser.add_argument("-w", "--whitelist", default="whitelist.txt")
+    args = args_parser.parse_args()
 
     active_main = [s for s in MAIN_SOURCES if s and not s.strip().startswith(("#", "//"))]
     active_mobile = [s for s in MOBILE_SOURCES if s and not s.strip().startswith(("#", "//"))]
