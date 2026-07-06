@@ -20,11 +20,11 @@ DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
 ENABLE_MAIN_RELEVANCE = False
-ENABLE_MAIN_TLD = True
+ENABLE_MAIN_TLD = False
 ENABLE_MAIN_KW = True
 
 ENABLE_MOBILE_RELEVANCE = True
-ENABLE_MOBILE_TLD = True
+ENABLE_MOBILE_TLD = False
 ENABLE_MOBILE_KW = True
 
 ENABLE_ULTIMATE_RELEVANCE = False
@@ -60,7 +60,7 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
     #"https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
-    "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
+    #"https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
