@@ -128,7 +128,7 @@ ULTIMATE_SOURCES = [
     # --- Specialty Clean Metadata ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafsearch.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
 ]
 
@@ -327,10 +327,12 @@ async def fetch_source_domains(url: str, client: httpx.AsyncClient) -> tuple[str
 # Data Synthesis Engine
 # ---------------------------------------------------------------------------
 
-def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], a_list: set[str], w_list: set[str], source_data: dict[str, set[str]], disable_relevance: bool = False, disable_tld: bool = False, disable_kw: bool = False) -> tuple[list[str], dict[str, int], dict[str, int]]:
+def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], a_list: set[str], w_list: set[str], source_data: dict[str, set[str]], disable_relevance: bool = False, disable_tld: bool = False, disable_kw: bool = False) -> tuple[list[str], dict[str, int], dict[str, int], dict[str, int], dict[str, int]]:
     found = set()
     stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0, "whitelisted": 0, "pruned": 0, "pruned_by_hoster": 0}
     source_stats = {}
+    kw_counts = {}
+    tld_counts = {}
     hoster_active = set()
 
     urls_sorted = sorted(urls, key=lambda u: 0 if "hoster.txt" in u or "filter_55.txt" in u or "filter_50.txt" in u else 1)
@@ -348,12 +350,22 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if has_suffix_match(host, w_list):
                 stats["whitelisted"] += 1
                 continue
-            if not disable_tld and get_matching_tld(host, s_set, d_map):
-                stats["tld"] += 1
-                continue
-            if not disable_kw and NSFW_REGEX.search(host):
-                stats["kw"] += 1
-                continue
+            
+            if not disable_tld:
+                matched_tld = get_matching_tld(host, s_set, d_map)
+                if matched_tld:
+                    stats["tld"] += 1
+                    tld_counts[matched_tld] = tld_counts.get(matched_tld, 0) + 1
+                    continue
+            
+            if not disable_kw:
+                m = NSFW_REGEX.search(host)
+                if m:
+                    matched_kw = m.group(1).lower()
+                    stats["kw"] += 1
+                    kw_counts[matched_kw] = kw_counts.get(matched_kw, 0) + 1
+                    continue
+                    
             if not disable_relevance and not has_suffix_match(host, a_list):
                 stats["irrelevant"] += 1
                 continue
@@ -366,14 +378,11 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if is_hoster: hoster_active.add(host)
 
         source_stats[url] = added_from_source
-        p = urlparse(url)
-        filename = p.path.rstrip('/').split('/')[-1] or p.path
-        print(f"[*] Source contribution: {p.netloc}/{filename} -> {added_from_source}")
 
     initial_count = len(found)
     optimized = optimize_domains(found) 
     stats["pruned"] = initial_count - len(optimized)
-    return optimized, stats, source_stats
+    return optimized, stats, source_stats, kw_counts, tld_counts
 
 def parse_tld_patterns(lines: list[str]) -> tuple[set[str], dict[str, set[str]]]:
     tld_patterns, denyallow_map = set(), {}
@@ -398,31 +407,63 @@ def parse_tld_patterns(lines: list[str]) -> tuple[set[str], dict[str, set[str]]]
                 denyallow_map[rule_part] = denyallow_hosts
     return tld_patterns, denyallow_map
 
-def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool) -> None:
+def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], kw_counts: dict[str, int], tld_counts: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool) -> None:
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
+    total_kept = len(dataset)
+    
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
-        f.write(f"! Stats: Kept {len(dataset)} | Badware-Pruned {stats['pruned_by_hoster']} | General-Pruned {stats['pruned']} | Whitelisted {stats['whitelisted']} | Irrelevant {stats['irrelevant']} | Duplicates {stats['duplicate']} | TLD {stats['tld']} | Regex-Offloaded {stats['kw']}\n")
+        f.write(f"! Stats: Kept {total_kept} | Badware-Pruned {stats['pruned_by_hoster']} | General-Pruned {stats['pruned']} | Whitelisted {stats['whitelisted']} | Irrelevant {stats['irrelevant']} | Duplicates {stats['duplicate']} | TLD {stats['tld']} | Regex-Offloaded {stats['kw']}\n")
+
+        if kw_counts:
+            f.write("!\n! --- Keyword Blocks ---\n")
+            for kw, count in sorted(kw_counts.items(), key=lambda x: x[1], reverse=True):
+                f.write(f"! {kw}: {count}\n")
+                
+        if tld_counts:
+            f.write("!\n! --- Top 10 TLD Blocks ---\n")
+            for tld, count in sorted(tld_counts.items(), key=lambda x: x[1], reverse=True)[:10]:
+                f.write(f"! {tld}: {count}\n")
 
         f.write("!\n! --- Source Contributions (Pre-Pruning) ---\n")
         for entry in literal_list:
             url = entry.lstrip("# ").strip() if entry.strip().startswith("#") else entry.strip()
             count = src_stats.get(url, 0)
-            f.write(f"! {entry} -> {count}\n")
+            pct = (count / total_kept * 100) if total_kept > 0 else 0.0
+            f.write(f"! {entry} -> {count} ({pct:.2f}%)\n")
         f.write("!\n\n")
 
+        # Write core dataset
         f.writelines(f"||{dom}^\n" for dom in sorted(dataset))
 
-        if include_rebind and rebind_text:
-            f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n" + rebind_text.strip() + "\n")
-        if include_safesearch and ss_rules:
+        # --- FORCED HEADERS --- 
+        # By separating the header print from the `if text:` condition, the script 
+        # will ALWAYS print the header if the toggle is set to True. If it's still missing,
+        # it means the toggle was flipped or the file is being aggressively truncated.
+        if include_rebind:
+            f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n")
+            if rebind_text:
+                f.write(rebind_text.strip() + "\n")
+            else:
+                f.write("! [No Rebind Data Fetched or Empty Response]\n")
+                
+        if include_safesearch:
             f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
-            f.writelines(f"{rule}\n" for rule in ss_rules)
+            if ss_rules:
+                f.writelines(f"{rule}\n" for rule in ss_rules)
+            else:
+                f.write("! [No SafeSearch Rules Fetched or Empty Response]\n")
+                
         if include_regex:
             f.write(f"\n! --- NSFW REGEX ---\n/{NSFW_PATTERN}/\n")
-        if include_spam and spam_text:
-            f.write("\n! --- SPAM TLDs ---\n" + spam_text.strip() + "\n")
+            
+        if include_spam:
+            f.write("\n! --- SPAM TLDs ---\n")
+            if spam_text:
+                f.write(spam_text.strip() + "\n")
+            else:
+                f.write("! [No Spam TLD Data Fetched or Empty Response]\n")
 
 # ---------------------------------------------------------------------------
 # Pipeline Orchestrator
@@ -483,7 +524,6 @@ async def run_pipeline() -> None:
                         dbg.write("\n".join(list(hosts)[0:200]))
                 except OSError as e:
                     print(f"[-] Debug write fault for {url}: {e}")
-                print(f"[*] Fetched and parsed {len(hosts)} clean domains from {url}")
 
         spam_patterns_set, denyallow_map, spam_text = set(), {}, None
         if spam_task:
@@ -513,41 +553,50 @@ async def run_pipeline() -> None:
             except Exception as e:
                 print(f"[-] SafeSearch sync validation failed for {url}: {e}")
 
-        print("[*] Generating Main List...")
-        main_set, main_stats, main_src_stats = build_dataset(
+        print("\n[*] Generating Main List...")
+        main_set, main_stats, main_src_stats, main_kw, main_tld = build_dataset(
             active_main, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
             disable_relevance=not ENABLE_MAIN_RELEVANCE, disable_tld=not ENABLE_MAIN_TLD, disable_kw=not ENABLE_MAIN_KW
         )
-        
-        print("[*] Generating Mobile List...")
-        mobile_set, mobile_stats, mobile_src_stats = build_dataset(
+        for url, count in main_src_stats.items():
+            pct = (count / len(main_set) * 100) if len(main_set) > 0 else 0
+            print(f"  -> {urlparse(url).netloc}/{urlparse(url).path.split('/')[-1]}: {count} ({pct:.2f}%)")
+
+        print("\n[*] Generating Mobile List...")
+        mobile_set, mobile_stats, mobile_src_stats, mob_kw, mob_tld = build_dataset(
             active_mobile, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
             disable_relevance=not ENABLE_MOBILE_RELEVANCE, disable_tld=not ENABLE_MOBILE_TLD, disable_kw=not ENABLE_MOBILE_KW
         )
+        for url, count in mobile_src_stats.items():
+            pct = (count / len(mobile_set) * 100) if len(mobile_set) > 0 else 0
+            print(f"  -> {urlparse(url).netloc}/{urlparse(url).path.split('/')[-1]}: {count} ({pct:.2f}%)")
         
-        print("[*] Generating Omni List...")
-        ultimate_set, ultimate_stats, ultimate_src_stats = build_dataset(
+        print("\n[*] Generating Omni List...")
+        ultimate_set, ultimate_stats, ultimate_src_stats, ult_kw, ult_tld = build_dataset(
             active_ultimate, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
             disable_relevance=not ENABLE_ULTIMATE_RELEVANCE, disable_tld=not ENABLE_ULTIMATE_TLD, disable_kw=not ENABLE_ULTIMATE_KW
         )
+        for url, count in ultimate_src_stats.items():
+            pct = (count / len(ultimate_set) * 100) if len(ultimate_set) > 0 else 0
+            print(f"  -> {urlparse(url).netloc}/{urlparse(url).path.split('/')[-1]}: {count} ({pct:.2f}%)")
 
         del source_data
         gc.collect()
 
         write_output_file(
-            args.output, main_set, main_stats, main_src_stats, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text,
+            args.output, main_set, main_stats, main_src_stats, main_kw, main_tld, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text,
             ENABLE_MAIN_REBIND, ENABLE_MAIN_SAFESEARCH, ENABLE_MAIN_NSFW_REGEX, ENABLE_MAIN_SPAM_TLDS
         )
         write_output_file(
-            args.mobile, mobile_set, mobile_stats, mobile_src_stats, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text,
+            args.mobile, mobile_set, mobile_stats, mobile_src_stats, mob_kw, mob_tld, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text,
             ENABLE_MOBILE_REBIND, ENABLE_MOBILE_SAFESEARCH, ENABLE_MOBILE_NSFW_REGEX, ENABLE_MOBILE_SPAM_TLDS
         )
         write_output_file(
-            args.ultimate, ultimate_set, ultimate_stats, ultimate_src_stats, ULTIMATE_SOURCES, "OMNI", rebind_text, ss_rules, spam_text,
+            args.ultimate, ultimate_set, ultimate_stats, ultimate_src_stats, ult_kw, ult_tld, ULTIMATE_SOURCES, "OMNI", rebind_text, ss_rules, spam_text,
             ENABLE_ULTIMATE_REBIND, ENABLE_ULTIMATE_SAFESEARCH, ENABLE_ULTIMATE_NSFW_REGEX, ENABLE_ULTIMATE_SPAM_TLDS
         )
 
-        print(f"[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)} | Omni: {len(ultimate_set)}")
+        print(f"\n[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)} | Omni: {len(ultimate_set)}")
 
 def main() -> None:
     asyncio.run(run_pipeline())
