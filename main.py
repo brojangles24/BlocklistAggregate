@@ -234,7 +234,7 @@ def write_file(filename: str, dataset: list[str], stats: dict, src_stats: dict, 
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen {label} List | {VERSION}\n! Generated: {now}\n")
-        f.write(f"! Kept: {len(dataset)} | Pruned: {stats['pruned']} | Dup: {stats['dup']} | White: {stats['white']}\n")
+        f.write(f"! Kept: {len(dataset)} | Pruned: {stats['pruned']} | Dup: {stats['dup']} | White: {stats['white']} | TLD: {stats.get('tld', 0)} | KW: {stats.get('kw', 0)}\n")
         if kw_c:
             f.write("!\n! --- KW Blocks ---\n")
             for k, v in sorted(kw_c.items(), key=lambda x: x[1], reverse=True): f.write(f"! {k}: {v}\n")
