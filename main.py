@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-from __future__ import annotations
-import httpx, asyncio, re, argparse, zipfile, gzip, os
+import httpx, asyncio, re, argparse, zipfile, gzip, os, io
 from datetime import datetime, timezone, timedelta
 from urllib.parse import urlparse
 from typing import Iterable
@@ -165,13 +164,17 @@ async def fetch_with_retry(client: httpx.AsyncClient, url: str, **kwargs) -> htt
 async def fetch_top_list(url: str, col: int, skip: bool, comp: str, client: httpx.AsyncClient) -> set[str]:
     try:
         r = await fetch_with_retry(client, url, headers={"User-Agent": "Mozilla/5.0"}, timeout=90)
+        data = r.content
         def proc():
             if comp == "zip":
-                with zipfile.ZipFile(r.content) as z:  # type: ignore
-                    with z.open(z.namelist()[0]) as f: return _parse_csv(f, col, skip)  # type: ignore
+                with zipfile.ZipFile(io.BytesIO(data)) as z:
+                    with z.open(z.namelist()[0]) as f:
+                        return _parse_csv(io.TextIOWrapper(f, encoding='utf-8', errors='ignore'), col, skip)
             elif comp == "gzip":
-                with gzip.GzipFile(fileobj=r.content) as gz: return _parse_csv(gz, col, skip)  # type: ignore
-            return _parse_csv(r.text.splitlines(), col, skip)
+                with gzip.GzipFile(fileobj=io.BytesIO(data)) as gz:
+                    return _parse_csv(io.TextIOWrapper(gz, encoding='utf-8', errors='ignore'), col, skip)
+            else:
+                return _parse_csv(data.decode('utf-8', errors='ignore').splitlines(), col, skip)
         return await asyncio.to_thread(proc)
     except Exception as e:
         print(f"[-] Top list error {url}: {e}")
@@ -258,7 +261,7 @@ async def run_pipeline():
     p.add_argument("-o", default="blocklist.txt")
     p.add_argument("-m", default="mobile-blocklist.txt")
     p.add_argument("-u", default="omni-blocklist.txt")
-    p.add_argument("-w", default="whitelist.txt")
+    p.add_argument("-w", "--whitelist", default="whitelist.txt")
     args = p.parse_args()
 
     limits = httpx.Limits(max_keepalive_connections=20, max_connections=40)
