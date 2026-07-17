@@ -1,55 +1,22 @@
 #!/usr/bin/env python3
 from __future__ import annotations
-import httpx
-import asyncio
-import re
-import argparse
-import io
-import zipfile
-import gzip
-import gc
-import os
+import httpx, asyncio, re, argparse, zipfile, gzip, os
 from datetime import datetime, timezone, timedelta
 from urllib.parse import urlparse
 from typing import Iterable
 
 # --- CONFIGURATION ---
 AZ_TZ = timezone(timedelta(hours=-7))
-VERSION = "2026.07.05.OMNI_PRO_TRIE"
-DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
+VERSION = "2026.07.16.OMNI_PRO_TRIE"
 
 # FILTER TOGGLES
-ENABLE_MAIN_RELEVANCE = False
-ENABLE_MAIN_TLD = True
-ENABLE_MAIN_KW = True
+ENABLE_RELEVANCE = {"main": False, "mobile": True, "ultimate": False}
+ENABLE_TLD = {"main": True, "mobile": True, "ultimate": True}
+ENABLE_KW = {"main": True, "mobile": True, "ultimate": True}
+ENABLE_REBIND = ENABLE_SAFESEARCH = ENABLE_NSFW = ENABLE_SPAM = True
 
-ENABLE_MOBILE_RELEVANCE = True
-ENABLE_MOBILE_TLD = True
-ENABLE_MOBILE_KW = True
-
-ENABLE_ULTIMATE_RELEVANCE = False
-ENABLE_ULTIMATE_TLD = True
-ENABLE_ULTIMATE_KW = True
-
-# APPEND TOGGLES
-ENABLE_MAIN_REBIND = True
-ENABLE_MAIN_SAFESEARCH = True
-ENABLE_MAIN_NSFW_REGEX = True
-ENABLE_MAIN_SPAM_TLDS = True
-
-ENABLE_MOBILE_REBIND = True
-ENABLE_MOBILE_SAFESEARCH = True
-ENABLE_MOBILE_NSFW_REGEX = True
-ENABLE_MOBILE_SPAM_TLDS = True
-
-ENABLE_ULTIMATE_REBIND = True
-ENABLE_ULTIMATE_SAFESEARCH = True
-ENABLE_ULTIMATE_NSFW_REGEX = True
-ENABLE_ULTIMATE_SPAM_TLDS = True
-
-# --- REGEX COMPILATION ---
-NSFW_PATTERN = r"(blowjob|threesome|gangbang|deepthroat|bukkake|tits|fuck|onlyfans|porn|xxx|sex)"
-NSFW_REGEX = re.compile(f"(?i){NSFW_PATTERN}")
+# --- REGEX ---
+NSFW_REGEX = re.compile(r"(?i)(blowjob|threesome|gangbang|deepthroat|bukkake|tits|fuck|onlyfans|porn|xxx|sex)")
 DOMAIN_RE = re.compile(r"(?i)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}")
 ADBLOCK_EXACT_RE = re.compile(r'^\|\|([^/\^]+)\^')
 ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
@@ -58,20 +25,9 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^/\^]+)\^')
 # MAIN LIST SELECTION
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
-    # --- 1. Content Filtering & Core Safety Baseline ---
-    #"https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
-    "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
+    # Core Safety & Content Filtering
+    "https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    #"https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
-    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
-    #"https://filters.adtidy.org/dns/filter_34.txt", #HaGeZi's Normal Blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
-    #"https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
-
-    # --- 2. Enforcement & Behavioral Blocks ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
@@ -83,47 +39,18 @@ MAIN_SOURCES = [
 # ---------------------------------------------------------------------------
 ULTIMATE_SOURCES = [
     # --- HaGeZi Umbrella Engines ---
-    "https://filters.adtidy.org/dns/filter_54.txt", #HaGeZi's DynDNS Blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
-    "https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
-    "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    #"https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", #TIF Full
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", #TIF Medium 
-    "https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
-    "https://filters.adtidy.org/dns/filter_46.txt", #HaGeZi's Anti-Piracy Blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    "https://filters.adtidy.org/dns/filter_52.txt", #HaGeZi's Encrypted DNS/VPN/TOR/Proxy Bypass
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt",
-    #"https://filters.adtidy.org/dns/filter_34.txt", #HaGeZi's Normal Blocklist
-    
+    "https://filters.adtidy.org/dns/filter_54.txt", # HaGeZi DynDNS
+    "https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware risks
+    "https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster Blocklist
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", # Threat Intelligence Medium
+    "https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++ Blocklist
+    "https://filters.adtidy.org/dns/filter_46.txt", # HaGeZi Anti-Piracy
+    "https://filters.adtidy.org/dns/filter_52.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
+
     # --- Core Content Tiers ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
 
-    # --- High-Yield Blocklist Project Components ---
-    #"https://blocklistproject.github.io/Lists/abuse.txt",
-    #"https://blocklistproject.github.io/Lists/crypto.txt",
-    #"https://blocklistproject.github.io/Lists/drugs.txt",
-    #"https://blocklistproject.github.io/Lists/fraud.txt",
-    #"https://blocklistproject.github.io/Lists/phishing.txt",
-
-    # --- Specialized Live Threat Feeds ---
-    #"https://phishing.army/download/phishing_army_blocklist_extended.txt",
-    #"https://malware-filter.gitlab.io/malware-filter/phishing-filter-agh.txt",
-    #"https://raw.githubusercontent.com/DandelionSprout/adfilt/master/Alternate%20versions%20Anti-Malware%20List/AntiMalwareAdGuardHome.txt",
-    #"https://raw.githubusercontent.com/hoshsadiq/adblock-nocoin-list/master/hosts.txt",
-    #"https://raw.githubusercontent.com/durablenapkin/scamblocklist/master/adguard.txt",
-    #"https://raw.githubusercontent.com/ShadowWhisperer/BlockLists/master/Lists/Malware",
-    #"https://raw.githubusercontent.com/mitchellkrogza/The-Big-List-of-Hacked-Malware-Web-Sites/master/hosts",
-    #"https://raw.githubusercontent.com/AssoEchap/stalkerware-indicators/master/generated/hosts",
-    #"https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-agh.txt",
-    #"https://raw.githubusercontent.com/phishdestroy/destroylist/main/rootlist/formats/primary_active/hosts.txt",
-
-    # --- Specialty Clean Metadata ---
+    # --- Specialized ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
@@ -132,14 +59,10 @@ ULTIMATE_SOURCES = [
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
 
-# Shared Core Resources
+# Shared Resources
 SPAM_TLD_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/spam-tlds.txt"
 REBIND_URL = "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adguard/dns-rebind-protection.txt"
-ADGUARD_SAFESEARCH_URLS = [
-    "https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt",
-    #"https://adguardteam.github.io/HostlistsRegistry/assets/youtube_safe_search.txt",
-]
-
+ADGUARD_SAFESEARCH_URLS = ["https://adguardteam.github.io/HostlistsRegistry/assets/engines_safe_search.txt"]
 
 TOP_LISTS = [
     ("https://tranco-list.eu/top-1m.csv.zip", 1, False, "zip"),
@@ -151,9 +74,8 @@ TOP_LISTS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Trie Data Structures & Core Optimizers
+# Trie & Helpers
 # ---------------------------------------------------------------------------
-
 class DomainTrieNode:
     __slots__ = ('children', 'is_blocked')
     def __init__(self):
@@ -166,436 +88,226 @@ def optimize_domains(domains: Iterable[str]) -> list[str]:
         parts = domain.lower().split('.')
         current = root
         for part in reversed(parts):
-            if part not in current.children:
-                current.children[part] = DomainTrieNode()
-            current = current.children[part]
-            if current.is_blocked:
-                break
+            current = current.children.setdefault(part, DomainTrieNode())
+            if current.is_blocked: break
         current.is_blocked = True
-
     results: list[str] = []
-    def walk_tree(node: DomainTrieNode, path_segments: list[str]):
+    def walk(node: DomainTrieNode, path: list[str]):
         if node.is_blocked:
-            results.append(".".join(reversed(path_segments)))
+            results.append('.'.join(reversed(path)))
             return
-        for segment, child_node in node.children.items():
-            path_segments.append(segment)
-            walk_tree(child_node, path_segments)
-            path_segments.pop()
-
-    walk_tree(root, [])
+        for seg, child in node.children.items():
+            path.append(seg)
+            walk(child, path)
+            path.pop()
+    walk(root, [])
     return results
 
-def has_suffix_match(host: str, lookup_set: set[str]) -> bool:
-    if host in lookup_set:
-        return True
+def has_suffix_match(host: str, lookup: set[str]) -> bool:
+    if host in lookup: return True
     idx = host.find('.')
     while idx != -1:
-        if host[idx+1:] in lookup_set:
-            return True
+        if host[idx+1:] in lookup: return True
         idx = host.find('.', idx + 1)
     return False
 
-def get_matching_tld(host: str, spam_set: set[str], denyallow_map: dict[str, set[str]]) -> str | None:
-    if host in spam_set:
-        if host in denyallow_map and host in denyallow_map[host]: 
-            return None
-        return host
+def get_matching_tld(host: str, spam_set: set[str], deny_map: dict) -> str | None:
+    if host in spam_set and not (host in deny_map and host in deny_map.get(host, set())): return host
     idx = host.find('.')
     while idx != -1:
-        candidate = host[idx+1:]
-        if candidate in spam_set:
-            if candidate in denyallow_map and host in denyallow_map[candidate]: 
-                return None
-            return candidate
+        cand = host[idx+1:]
+        if cand in spam_set and not (cand in deny_map and host in deny_map.get(cand, set())): return cand
         idx = host.find('.', idx + 1)
     return None
 
-def _parse_csv_lines(iterable: Iterable[str], col_idx: int, skip_header: bool) -> set[str]:
-    domains = set()
-    add_dom = domains.add
-    for i, line in enumerate(iterable):
-        if skip_header and i == 0: 
-            continue
-        parts = line.split(',', col_idx + 1)
-        if len(parts) > col_idx:
-            dom = parts[col_idx].strip().lower().strip('"')
-            if dom and "." in dom: 
-                add_dom(dom)
-    return domains
-
-def extract_host(clean: str) -> str | None:
-    if '!' in clean: clean = clean.split('!', 1)[0]
-    if '#' in clean: clean = clean.split('#', 1)[0]
-    clean = clean.strip()
+def extract_host(line: str) -> str | None:
+    if not line or line.startswith(('#', '!', '[', ' ')): return None
+    clean = line.split('!', 1)[0].split('#', 1)[0].strip()
     if not clean: return None
-
     if clean.startswith("||"):
-        if "$" in clean:
-            clean = clean.split("$", 1)[0]
-        if clean.endswith("^"):
-            body = clean[2:-1]
-            if "/" not in body and "^" not in body:
-                return body.lower().strip('.')
-        m = ADBLOCK_EXACT_RE.search(clean)
-        if m: return m.group(1).lower().strip('.')
-        clean = clean[2:]
-
-    m = ADBLOCK_BASIC_RE.search(clean)
+        clean = clean.split('$', 1)[0].rstrip('^')
+        if clean.startswith("||"): clean = clean[2:]
+    m = ADBLOCK_EXACT_RE.search(clean) or ADBLOCK_BASIC_RE.search(clean)
     if m: return m.group(1).lower().strip('.')
-
     if clean.startswith(("0.0.0.0", "127.0.0.1")):
         parts = clean.split(None, 1)
-        if len(parts) > 1:
-            out = parts[1].strip('.')
-            if '.' in out and ' ' not in out: 
-                return out.lower()
-
+        if len(parts) > 1 and '.' in parts[1]: return parts[1].strip('.').lower()
     if clean.startswith(("address=/", "server=/")):
         parts = clean.split('/')
-        if len(parts) > 1:
-            return parts[1].lower().strip('.')
-
-    if '.' in clean and ' ' not in clean and '/' not in clean and '\\' not in clean:
-        return clean.lower().strip('.')
-
+        if len(parts) > 1: return parts[1].lower().strip('.')
+    if '.' in clean and ' ' not in clean and '/' not in clean: return clean.lower().strip('.')
     m = DOMAIN_RE.search(clean)
-    if m: return m.group(0).lower().strip('.')
-    return None
+    return m.group(0).lower().strip('.') if m else None
+
+def _parse_csv(iterable: Iterable[str], col: int, skip_header: bool) -> set[str]:
+    domains = set()
+    for i, line in enumerate(iterable):
+        if skip_header and i == 0: continue
+        parts = line.split(',', col + 1)
+        if len(parts) > col:
+            dom = parts[col].strip().lower().strip('"')
+            if dom and '.' in dom: domains.add(dom)
+    return domains
 
 # ---------------------------------------------------------------------------
-# Async Network Engine
+# Async Fetch
 # ---------------------------------------------------------------------------
-
 async def fetch_with_retry(client: httpx.AsyncClient, url: str, **kwargs) -> httpx.Response:
-    total_retries = 3
-    backoff_factor = 1.0
-    for attempt in range(total_retries):
+    for attempt in range(3):
         try:
-            response = await client.get(url, **kwargs)
-            if response.status_code in [500, 502, 503, 504]:
-                raise httpx.HTTPStatusError(f"Status {response.status_code}", request=response.request, response=response)
-            response.raise_for_status()
-            return response
-        except (httpx.HTTPError, httpx.HTTPStatusError) as e:
-            if attempt == total_retries - 1:
-                raise e
-            await asyncio.sleep(backoff_factor * (2 ** attempt))
-    raise httpx.HTTPError("Failed after maximum retries.")
+            r = await client.get(url, **kwargs)
+            r.raise_for_status()
+            return r
+        except httpx.HTTPError:
+            if attempt == 2: raise
+            await asyncio.sleep(1 * (2 ** attempt))
 
-async def fetch_top_list(url: str, col_idx: int, skip_header: bool, compression: str, client: httpx.AsyncClient) -> set[str]:
+async def fetch_top_list(url: str, col: int, skip: bool, comp: str, client: httpx.AsyncClient) -> set[str]:
     try:
-        r = await fetch_with_retry(client, url, headers={"User-Agent": "Mozilla/5.0"}, timeout=90.0)
-        def process_sync():
-            if compression == "zip":
-                with zipfile.ZipFile(io.BytesIO(r.content)) as z:
-                    with io.TextIOWrapper(z.open(z.namelist()[0]), encoding='utf-8', errors='ignore') as f:
-                        return _parse_csv_lines(f, col_idx, skip_header)
-            elif compression == "gzip":
-                with gzip.GzipFile(fileobj=io.BytesIO(r.content)) as gz:
-                    with io.TextIOWrapper(gz, encoding='utf-8', errors='ignore') as f:
-                        return _parse_csv_lines(f, col_idx, skip_header)
-            else:
-                return _parse_csv_lines(r.text.splitlines(), col_idx, skip_header)
-        return await asyncio.to_thread(process_sync)
+        r = await fetch_with_retry(client, url, headers={"User-Agent": "Mozilla/5.0"}, timeout=90)
+        def proc():
+            if comp == "zip":
+                with zipfile.ZipFile(r.content) as z:  # type: ignore
+                    with z.open(z.namelist()[0]) as f: return _parse_csv(f, col, skip)  # type: ignore
+            elif comp == "gzip":
+                with gzip.GzipFile(fileobj=r.content) as gz: return _parse_csv(gz, col, skip)  # type: ignore
+            return _parse_csv(r.text.splitlines(), col, skip)
+        return await asyncio.to_thread(proc)
     except Exception as e:
-        print(f"[-] Error processing top list {url}: {e}")
+        print(f"[-] Top list error {url}: {e}")
         return set()
 
-async def fetch_source_domains(url: str, client: httpx.AsyncClient) -> tuple[str, set[str]]:
+async def fetch_source(url: str, client: httpx.AsyncClient) -> tuple[str, set[str]]:
     try:
         domains = set()
-        add_dom = domains.add
-        async with client.stream("GET", url, headers={"User-Agent": "Mozilla/5.0"}, timeout=60.0) as r:
+        async with client.stream("GET", url, headers={"User-Agent": "Mozilla/5.0"}, timeout=60) as r:
             r.raise_for_status()
             async for line in r.aiter_lines():
-                if not line: continue
-                clean_line = line.strip()
-                if not clean_line or clean_line.startswith(('!', '#', '[', ' ')): continue
-
-                host = extract_host(clean_line)
-                if host:
-                    if host.startswith("www."): 
-                        host = host[4:]
-                    add_dom(host)
+                if host := extract_host(line):
+                    domains.add(host[4:] if host.startswith("www.") else host)
         return url, domains
     except Exception as e:
-        print(f"[-] Network error fetching source {url}: {e}")
+        print(f"[-] Fetch error {url}: {e}")
         return url, set()
 
-# ---------------------------------------------------------------------------
-# Data Synthesis Engine
-# ---------------------------------------------------------------------------
-
-def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], a_list: set[str], w_list: set[str], source_data: dict[str, set[str]], disable_relevance: bool = False, disable_tld: bool = False, disable_kw: bool = False) -> tuple[list[str], dict[str, int], dict[str, int], dict[str, int], dict[str, int]]:
-    found = set()
-    stats = {"irrelevant": 0, "kw": 0, "tld": 0, "duplicate": 0, "whitelisted": 0, "pruned": 0, "pruned_by_hoster": 0}
-    source_stats = {}
-    kw_counts = {}
-    tld_counts = {}
-    hoster_active = set()
-
-    urls_sorted = sorted(urls, key=lambda u: 0 if "hoster.txt" in u or "filter_55.txt" in u or "filter_50.txt" in u else 1)
-    for u in urls_sorted: 
-        source_stats[u] = 0
-
-    for url in urls_sorted:
-        is_hoster = "hoster.txt" in url or "filter_55.txt" in url or "filter_50.txt" in url
-        added_from_source = 0
-
-        for host in source_data.get(url, set()):
-            if host in found:
-                stats["duplicate"] += 1
-                continue
-            if has_suffix_match(host, w_list):
-                stats["whitelisted"] += 1
-                continue
-            
-            if not disable_tld:
-                matched_tld = get_matching_tld(host, s_set, d_map)
-                if matched_tld:
-                    stats["tld"] += 1
-                    tld_counts[matched_tld] = tld_counts.get(matched_tld, 0) + 1
-                    continue
-            
-            if not disable_kw:
-                m = NSFW_REGEX.search(host)
-                if m:
-                    matched_kw = m.group(1).lower()
-                    stats["kw"] += 1
-                    kw_counts[matched_kw] = kw_counts.get(matched_kw, 0) + 1
-                    continue
-                    
-            if not disable_relevance and not has_suffix_match(host, a_list):
-                stats["irrelevant"] += 1
-                continue
-            if not is_hoster and has_suffix_match(host, hoster_active):
-                stats["pruned_by_hoster"] += 1
-                continue
-
-            found.add(host)
-            added_from_source += 1
-            if is_hoster: hoster_active.add(host)
-
-        source_stats[url] = added_from_source
-
-    initial_count = len(found)
-    optimized = optimize_domains(found) 
-    stats["pruned"] = initial_count - len(optimized)
-    return optimized, stats, source_stats, kw_counts, tld_counts
-
 def parse_tld_patterns(lines: list[str]) -> tuple[set[str], dict[str, set[str]]]:
-    tld_patterns, denyallow_map = set(), {}
+    tlds, deny = set(), {}
     for line in lines:
-        clean = line.split("!")[0].split("#")[0].strip()
+        clean = line.split('!', 1)[0].split('#', 1)[0].strip().lower()
         if not clean: continue
-        clean = clean.lower()
+        rule = clean.split('$', 1)[0].replace("||", "").replace("^", "").lstrip(".")
+        if rule: tlds.add(rule)
+    return tlds, deny
 
-        denyallow_hosts = set()
-        if "$" in clean:
-            rule_part, _, modifiers = clean.partition("$")
-            for mod in modifiers.split(","):
-                if mod.startswith("denyallow="):
-                    denyallow_hosts = set(mod[len("denyallow="):].split("|"))
-        else: 
-            rule_part = clean
+# ---------------------------------------------------------------------------
+# Build & Output
+# ---------------------------------------------------------------------------
+def build_dataset(urls: list[str], spam_set: set, deny_map: dict, allow_list: set, white_list: set, source_data: dict,
+                  disable_rel: bool, disable_tld: bool, disable_kw: bool):
+    found = set()
+    stats = {"irrel": 0, "kw": 0, "tld": 0, "dup": 0, "white": 0, "pruned": 0}
+    src_stats = {u: 0 for u in urls}
+    kw_c, tld_c = {}, {}
+    for url in sorted(urls, key=lambda u: 0 if any(x in u for x in ("filter_55", "filter_50")) else 1):
+        for host in source_data.get(url, set()):
+            if host in found: stats["dup"] += 1; continue
+            if has_suffix_match(host, white_list): stats["white"] += 1; continue
+            if not disable_tld and (mt := get_matching_tld(host, spam_set, deny_map)):
+                stats["tld"] += 1; tld_c[mt] = tld_c.get(mt, 0) + 1; continue
+            if not disable_kw and (m := NSFW_REGEX.search(host)):
+                kw = m.group(1).lower()
+                stats["kw"] += 1; kw_c[kw] = kw_c.get(kw, 0) + 1; continue
+            if not disable_rel and not has_suffix_match(host, allow_list):
+                stats["irrel"] += 1; continue
+            found.add(host)
+            src_stats[url] += 1
+    initial = len(found)
+    opt = optimize_domains(found)
+    stats["pruned"] = initial - len(opt)
+    return opt, stats, src_stats, kw_c, tld_c
 
-        rule_part = rule_part.replace("||", "").replace("^", "").replace("*", "").lstrip(".")
-        if rule_part:
-            tld_patterns.add(rule_part)
-            if denyallow_hosts: 
-                denyallow_map[rule_part] = denyallow_hosts
-    return tld_patterns, denyallow_map
-
-def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], kw_counts: dict[str, int], tld_counts: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool) -> None:
+def write_file(filename: str, dataset: list[str], stats: dict, src_stats: dict, kw_c: dict, tld_c: dict,
+               sources: list, label: str, rebind_t: str, ss_r: list, spam_t: str | None):
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
-    total_kept = len(dataset)
-    
     with open(filename, "w", encoding="utf-8") as f:
-        f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
-        f.write(f"! Generated: {now}\n")
-        f.write(f"! Stats: Kept {total_kept} | Badware-Pruned {stats['pruned_by_hoster']} | General-Pruned {stats['pruned']} | Whitelisted {stats['whitelisted']} | Irrelevant {stats['irrelevant']} | Duplicates {stats['duplicate']} | TLD {stats['tld']} | Regex-Offloaded {stats['kw']}\n")
-
-        if kw_counts:
-            f.write("!\n! --- Keyword Blocks ---\n")
-            for kw, count in sorted(kw_counts.items(), key=lambda x: x[1], reverse=True):
-                f.write(f"! {kw}: {count}\n")
-                
-        if tld_counts:
-            f.write("!\n! --- Top 10 TLD Blocks ---\n")
-            for tld, count in sorted(tld_counts.items(), key=lambda x: x[1], reverse=True)[:10]:
-                f.write(f"! {tld}: {count}\n")
-
-        f.write("!\n! --- Source Contributions (Pre-Pruning) ---\n")
-        for entry in literal_list:
-            url = entry.lstrip("# ").strip() if entry.strip().startswith("#") else entry.strip()
-            count = src_stats.get(url, 0)
-            pct = (count / total_kept * 100) if total_kept > 0 else 0.0
-            f.write(f"! {entry} -> {count} ({pct:.2f}%)\n")
-        f.write("!\n\n")
-
-        # Write core dataset
-        f.writelines(f"||{dom}^\n" for dom in sorted(dataset))
-
-        if include_rebind:
-            f.write("\n! --- DYNAMIC REBIND PROTECTION ---\n")
-            if rebind_text:
-                f.write(rebind_text.strip() + "\n")
-            else:
-                f.write("! [No Rebind Data Fetched or Empty Response]\n")
-                
-        if include_safesearch:
-            f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
-            if ss_rules:
-                f.writelines(f"{rule}\n" for rule in ss_rules)
-            else:
-                f.write("! [No SafeSearch Rules Fetched or Empty Response]\n")
-                
-        if include_regex:
-            f.write(f"\n! --- NSFW REGEX ---\n/{NSFW_PATTERN}/\n")
-            
-        if include_spam:
-            f.write("\n! --- SPAM TLDs ---\n")
-            if spam_text:
-                f.write(spam_text.strip() + "\n")
-            else:
-                f.write("! [No Spam TLD Data Fetched or Empty Response]\n")
+        f.write(f"! Jorgensen {label} List | {VERSION}\n! Generated: {now}\n")
+        f.write(f"! Kept: {len(dataset)} | Pruned: {stats['pruned']} | Dup: {stats['dup']} | White: {stats['white']}\n")
+        if kw_c:
+            f.write("!\n! --- KW Blocks ---\n")
+            for k, v in sorted(kw_c.items(), key=lambda x: x[1], reverse=True): f.write(f"! {k}: {v}\n")
+        if tld_c:
+            f.write("!\n! --- Top TLDs ---\n")
+            for k, v in sorted(tld_c.items(), key=lambda x: x[1], reverse=True)[:10]: f.write(f"! {k}: {v}\n")
+        f.write("!\n! --- Sources ---\n")
+        for u in sources:
+            c = src_stats.get(u, 0)
+            p = (c / len(dataset) * 100) if dataset else 0
+            f.write(f"! {u} -> {c} ({p:.1f}%)\n")
+        f.write("!\n")
+        f.writelines(f"||{d}^\n" for d in sorted(dataset))
+        if ENABLE_REBIND and rebind_t: f.write(f"\n! --- REBIND ---\n{rebind_t}\n")
+        if ENABLE_SAFESEARCH and ss_r: f.write("\n! --- SAFESEARCH ---\n" + "\n".join(ss_r) + "\n")
+        if ENABLE_NSFW: f.write(f"\n! --- NSFW ---\n/{NSFW_REGEX.pattern[4:-1]}/\n")
+        if ENABLE_SPAM and spam_t: f.write(f"\n! --- SPAM TLD ---\n{spam_t}\n")
 
 # ---------------------------------------------------------------------------
-# Pipeline Orchestrator
+# Pipeline
 # ---------------------------------------------------------------------------
-
-async def run_pipeline() -> None:
-    args_parser = argparse.ArgumentParser()
-    args_parser.add_argument("-o", "--output", default="blocklist.txt")
-    args_parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
-    args_parser.add_argument("-u", "--ultimate", default="omni-blocklist.txt")
-    args_parser.add_argument("-w", "--whitelist", default="whitelist.txt")
-    args = args_parser.parse_args()
-
-    active_main = [s for s in MAIN_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    active_mobile = [s for s in MOBILE_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    active_ultimate = [s for s in ULTIMATE_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    all_unique_urls = list(dict.fromkeys(active_main + active_mobile + active_ultimate))
+async def run_pipeline():
+    p = argparse.ArgumentParser()
+    p.add_argument("-o", default="blocklist.txt")
+    p.add_argument("-m", default="mobile-blocklist.txt")
+    p.add_argument("-u", default="omni-blocklist.txt")
+    p.add_argument("-w", default="whitelist.txt")
+    args = p.parse_args()
 
     limits = httpx.Limits(max_keepalive_connections=20, max_connections=40)
     async with httpx.AsyncClient(limits=limits, follow_redirects=True) as client:
-        print("[*] Allocating asynchronous pipelines...")
-        master_allowlist = set()
-
-        top_tasks = []
-        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE or ENABLE_ULTIMATE_RELEVANCE:
-            top_tasks = [asyncio.create_task(fetch_top_list(url, col, skip, comp, client)) for url, col, skip, comp in TOP_LISTS]
-
-        rebind_task = asyncio.create_task(client.get(REBIND_URL, timeout=30.0)) if REBIND_URL else None
-        spam_task = asyncio.create_task(client.get(SPAM_TLD_URL, timeout=30.0)) if SPAM_TLD_URL else None
-        ss_tasks = {asyncio.create_task(client.get(url, timeout=30.0)): url for url in ADGUARD_SAFESEARCH_URLS}
-
-        print(f"[*] Downloading and parsing {len(all_unique_urls)} source files concurrently...")
-        fetch_tasks = [asyncio.create_task(fetch_source_domains(url, client)) for url in all_unique_urls]
-
-        if top_tasks:
-            top_results = await asyncio.gather(*top_tasks)
-            for res in top_results:
-                master_allowlist.update(res)
+        allow = set()
+        if any(ENABLE_RELEVANCE.values()):
+            tops = await asyncio.gather(*[fetch_top_list(u, c, s, comp, client) for u, c, s, comp in TOP_LISTS])
+            for t in tops: allow.update(t)
 
         try:
-            with open(args.whitelist, 'r') as wf:
-                manual_whitelist = set(line.strip().lower() for line in wf if line.strip() and not line.strip().startswith(('#', '!')))
-            print(f"[*] Loaded {len(manual_whitelist)} domains from {args.whitelist}")
+            with open(args.whitelist) as f:
+                white = {line.strip().lower() for line in f if line.strip() and not line.strip().startswith(('#', '!'))}
         except FileNotFoundError:
-            manual_whitelist = set()
-            print(f"[*] Manual whitelist '{args.whitelist}' not found. Skipping local disk read.")
+            white = set()
 
-        source_data = {}
-        for task in asyncio.as_completed(fetch_tasks):
-            url, hosts = await task
-            source_data[url] = hosts
+        urls = list(dict.fromkeys(MAIN_SOURCES + MOBILE_SOURCES + ULTIMATE_SOURCES))
+        source_data = dict(await asyncio.gather(*[fetch_source(u, client) for u in urls]))
 
-            if DEBUG_SAMPLES:
-                p = urlparse(url)
-                safe_name = f"{p.netloc}_{p.path.replace('/', '_').strip('_')}"
-                try:
-                    with open(f"debug_{safe_name}.sample", "w", encoding="utf-8") as dbg:
-                        dbg.write("\n".join(list(hosts)[0:200]))
-                except OSError as e:
-                    print(f"[-] Debug write fault for {url}: {e}")
-
-        spam_patterns_set, denyallow_map, spam_text = set(), {}, None
-        if spam_task:
-            try:
-                spam_res = await spam_task
-                spam_res.raise_for_status()
-                spam_patterns_set, denyallow_map = parse_tld_patterns(spam_res.text.splitlines())
-                spam_text = spam_res.text
-            except Exception as e:
-                print(f"[-] Failed to map custom Spam TLD footprints: {e}")
+        spam_set, deny_map, spam_text = set(), {}, None
+        try:
+            r = await fetch_with_retry(client, SPAM_TLD_URL, timeout=30)
+            spam_set, deny_map = parse_tld_patterns(r.text.splitlines())
+            spam_text = r.text
+        except Exception as e: print(f"[-] Spam TLD: {e}")
 
         rebind_text = ""
-        if rebind_task:
-            try:
-                rebind_res = await rebind_task
-                rebind_res.raise_for_status()
-                rebind_text = rebind_res.text
-            except Exception as e:
-                print(f"[-] Failed to query secure rebinding configurations: {e}")
+        try:
+            r = await fetch_with_retry(client, REBIND_URL, timeout=30)
+            rebind_text = r.text
+        except Exception as e: print(f"[-] Rebind: {e}")
 
         ss_rules = []
-        for task, url in ss_tasks.items():
+        for url in ADGUARD_SAFESEARCH_URLS:
             try:
-                r = await task
-                r.raise_for_status()
-                ss_rules.extend([l for l in r.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
-            except Exception as e:
-                print(f"[-] SafeSearch sync validation failed for {url}: {e}")
+                r = await fetch_with_retry(client, url, timeout=30)
+                ss_rules.extend([l for l in r.text.splitlines() if l.strip() and not l.startswith(('#', '!'))])
+            except Exception: pass
 
-        print("\n[*] Generating Main List...")
-        main_set, main_stats, main_src_stats, main_kw, main_tld = build_dataset(
-            active_main, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
-            disable_relevance=not ENABLE_MAIN_RELEVANCE, disable_tld=not ENABLE_MAIN_TLD, disable_kw=not ENABLE_MAIN_KW
-        )
-        for url, count in main_src_stats.items():
-            pct = (count / len(main_set) * 100) if len(main_set) > 0 else 0
-            print(f"  -> {urlparse(url).netloc}/{urlparse(url).path.split('/')[-1]}: {count} ({pct:.2f}%)")
+        for name, sources, outf, rel, tld, kw in [
+            ("Main", MAIN_SOURCES, args.o, not ENABLE_RELEVANCE["main"], not ENABLE_TLD["main"], not ENABLE_KW["main"]),
+            ("Mobile", MOBILE_SOURCES, args.m, not ENABLE_RELEVANCE["mobile"], not ENABLE_TLD["mobile"], not ENABLE_KW["mobile"]),
+            ("Omni", ULTIMATE_SOURCES, args.u, not ENABLE_RELEVANCE["ultimate"], not ENABLE_TLD["ultimate"], not ENABLE_KW["ultimate"])
+        ]:
+            print(f"[*] Building {name}...")
+            ds, st, sst, kwc, tldc = build_dataset(sources, spam_set, deny_map, allow, white, source_data, rel, tld, kw)
+            write_file(outf, ds, st, sst, kwc, tldc, sources, name.upper(), rebind_text, ss_rules, spam_text)
+            print(f" -> {name}: {len(ds)} domains")
 
-        print("\n[*] Generating Mobile List...")
-        mobile_set, mobile_stats, mobile_src_stats, mob_kw, mob_tld = build_dataset(
-            active_mobile, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
-            disable_relevance=not ENABLE_MOBILE_RELEVANCE, disable_tld=not ENABLE_MOBILE_TLD, disable_kw=not ENABLE_MOBILE_KW
-        )
-        for url, count in mobile_src_stats.items():
-            pct = (count / len(mobile_set) * 100) if len(mobile_set) > 0 else 0
-            print(f"  -> {urlparse(url).netloc}/{urlparse(url).path.split('/')[-1]}: {count} ({pct:.2f}%)")
-        
-        print("\n[*] Generating Omni List...")
-        ultimate_set, ultimate_stats, ultimate_src_stats, ult_kw, ult_tld = build_dataset(
-            active_ultimate, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data, 
-            disable_relevance=not ENABLE_ULTIMATE_RELEVANCE, disable_tld=not ENABLE_ULTIMATE_TLD, disable_kw=not ENABLE_ULTIMATE_KW
-        )
-        for url, count in ultimate_src_stats.items():
-            pct = (count / len(ultimate_set) * 100) if len(ultimate_set) > 0 else 0
-            print(f"  -> {urlparse(url).netloc}/{urlparse(url).path.split('/')[-1]}: {count} ({pct:.2f}%)")
-
-        del source_data
-        gc.collect()
-
-        write_output_file(
-            args.output, main_set, main_stats, main_src_stats, main_kw, main_tld, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text,
-            ENABLE_MAIN_REBIND, ENABLE_MAIN_SAFESEARCH, ENABLE_MAIN_NSFW_REGEX, ENABLE_MAIN_SPAM_TLDS
-        )
-        write_output_file(
-            args.mobile, mobile_set, mobile_stats, mobile_src_stats, mob_kw, mob_tld, MOBILE_SOURCES, "MOBILE", rebind_text, ss_rules, spam_text,
-            ENABLE_MOBILE_REBIND, ENABLE_MOBILE_SAFESEARCH, ENABLE_MOBILE_NSFW_REGEX, ENABLE_MOBILE_SPAM_TLDS
-        )
-        write_output_file(
-            args.ultimate, ultimate_set, ultimate_stats, ultimate_src_stats, ult_kw, ult_tld, ULTIMATE_SOURCES, "OMNI", rebind_text, ss_rules, spam_text,
-            ENABLE_ULTIMATE_REBIND, ENABLE_ULTIMATE_SAFESEARCH, ENABLE_ULTIMATE_NSFW_REGEX, ENABLE_ULTIMATE_SPAM_TLDS
-        )
-
-        print(f"\n[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)} | Omni: {len(ultimate_set)}")
-
-def main() -> None:
-    asyncio.run(run_pipeline())
+        print("\n[+] Done.")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(run_pipeline())
