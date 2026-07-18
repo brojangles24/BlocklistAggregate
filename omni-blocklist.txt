@@ -1,11 +1,11 @@
 ! Jorgensen OMNI List | Version: 2026.07.05.OMNI_PRO_TRIE
-! Generated: 2026-07-18 02:43:13 PM MST
-! Stats: Kept 900969 | Badware-Pruned 1229 | General-Pruned 6492 | Whitelisted 3 | Irrelevant 0 | Duplicates 119972 | TLD 283568 | Regex-Offloaded 156254
+! Generated: 2026-07-18 03:41:38 PM MST
+! Stats: Kept 901496 | Badware-Pruned 1229 | General-Pruned 6564 | Whitelisted 3 | Irrelevant 0 | Duplicates 119988 | TLD 283590 | Regex-Offloaded 156250
 !
 ! --- Keyword Blocks ---
-! sex: 68471
-! porn: 59280
-! xxx: 21138
+! sex: 68463
+! porn: 59282
+! xxx: 21140
 ! fuck: 4661
 ! tits: 1189
 ! blowjob: 459
@@ -16,28 +16,28 @@
 ! deepthroat: 70
 !
 ! --- Top 10 TLD Blocks ---
-! top: 52400
+! top: 52398
 ! shop: 29409
 ! click: 13142
-! cc: 12558
-! online: 12293
+! cc: 12562
+! online: 12292
 ! site: 11270
-! asia: 10348
-! sbs: 9745
-! cfd: 8504
+! asia: 10349
+! sbs: 9749
+! cfd: 8507
 ! buzz: 7541
 !
 ! --- Source Contributions (Pre-Pruning) ---
 ! https://filters.adtidy.org/dns/filter_54.txt -> 1424 (0.16%)
 ! https://filters.adtidy.org/dns/filter_50.txt -> 2661 (0.30%)
 ! https://filters.adtidy.org/dns/filter_55.txt -> 1164 (0.13%)
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt -> 417224 (46.31%)
-! https://filters.adtidy.org/dns/filter_51.txt -> 155957 (17.31%)
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt -> 417224 (46.28%)
+! https://filters.adtidy.org/dns/filter_51.txt -> 155957 (17.30%)
 ! https://filters.adtidy.org/dns/filter_46.txt -> 19112 (2.12%)
 ! https://filters.adtidy.org/dns/filter_52.txt -> 14005 (1.55%)
-! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 269962 (29.96%)
+! https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt -> 270568 (30.01%)
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 851 (0.09%)
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 24914 (2.77%)
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 24907 (2.76%)
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 182 (0.02%)
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 5 (0.00%)
 !
@@ -42658,7 +42658,6 @@
 ||acr-mx-prd.samsungcloud.tv^
 ||acr-nz-prd.samsungcloud.tv^
 ||acr-us-prd.samsungcloud.tv^
-||acr.roku.com^
 ||acr0.samsungcloudsolution.com^
 ||acrackstreams.tv^
 ||acrasiatickles.com^
@@ -43481,9 +43480,6 @@
 ||ad-balancer.at^
 ||ad-balancer.net^
 ||ad-bazalt02.servers.bazalt.fr^
-||ad-bl.geoproximity.staging.rpay.roku.com^
-||ad-bl.prod.rpay.int.roku.com^
-||ad-bl.usw2.staging.rpay.int.roku.com^
 ||ad-block-offer.com^
 ||ad-blocker-pro.org^
 ||ad-blocker.co^
@@ -43542,17 +43538,6 @@
 ||ad-drs-ipv6.52qumao.com^
 ||ad-drs.52qumao.com^
 ||ad-elektro.de^
-||ad-eng-bl.geoproximity.staging.rpay.roku.com^
-||ad-eng-bl.use1.prod.rpay.int.roku.com^
-||ad-eng-bl.usw2.prod.rpay.int.roku.com^
-||ad-eng-pci-bl.geoproximity.rpay.roku.com^
-||ad-eng-pci-bl.geoproximity.staging.rpay.roku.com^
-||ad-eng-pci-bl.prod.rpay.int.roku.com^
-||ad-eng-pci-bl.use1.prod.rpay.int.roku.com^
-||ad-eng-pci-bl.usw2.prod.rpay.int.roku.com^
-||ad-eng-pci.prod.rpay.int.roku.com^
-||ad-eng.prod.rpay.int.roku.com^
-||ad-eng.staging.rpay.int.roku.com^
 ||ad-ettoday.cdn.hinet.net^
 ||ad-eu-bid.veonadx.com^
 ||ad-events-prod.voltaxam-events.com^
@@ -44324,7 +44309,6 @@
 ||ad.preventsi.co.jp^
 ||ad.priel.co.kr^
 ||ad.prod.ilcdn.fi^
-||ad.prod.rpay.int.roku.com^
 ||ad.profesia.sk^
 ||ad.profiwin.de^
 ||ad.prw.pl^
@@ -44332,7 +44316,6 @@
 ||ad.psu.edu^
 ||ad.publicidees.com^
 ||ad.puricchi.com^
-||ad.qa.ap.int.roku.com^
 ||ad.qanda.ai^
 ||ad.qero-srv.de^
 ||ad.qianyichuanmei.com.cn^
@@ -44409,7 +44392,6 @@
 ||ad.spreamedia.it^
 ||ad.srv-monitoring.com^
 ||ad.srv-track.com^
-||ad.staging.rpay.int.roku.com^
 ||ad.stalowka.net^
 ||ad.starlightmedia.ua^
 ||ad.steris.com^
@@ -44474,7 +44456,6 @@
 ||ad.url.com.tw^
 ||ad.us.sinaimg.cn^
 ||ad.usatoday.com^
-||ad.usw2.qa.ap.int.roku.com^
 ||ad.uwm.edu^
 ||ad.v2k.it^
 ||ad.v3mh.com^
@@ -45976,10 +45957,6 @@
 ||adena135m.blogspot.com^
 ||adenapez.com^
 ||adenc.co.kr^
-||adeng-identity-prod3.bdp.roku.com^
-||adeng-looker-bi-oneview-prod-1001.bdp.roku.com^
-||adeng-looker-dev-1001.bdp.roku.com^
-||adeng-looker-dev-1003.bdp.roku.com^
 ||adengage.com^
 ||adenghd.net^
 ||adengine.makemytrip.com^
@@ -46491,7 +46468,6 @@
 ||adhunt.net^
 ||adhunter.media^
 ||adhustler.com^
-||adi-airflow.bdp.roku.com^
 ||adi.camp^
 ||adiabetic.ru^
 ||adiacqua.art^
@@ -48307,8 +48283,6 @@
 ||ads-admin.brave.com^
 ||ads-adnet-drcn.cloud.honor.com^
 ||ads-ads-main-awesomeads-staging.sacdn.net^
-||ads-aka-us-east-1.delivery.roku.com^
-||ads-aka-us-west-2.delivery.roku.com^
 ||ads-alb-seoul-newid-384848694.ap-northeast-2.elb.amazonaws.com^
 ||ads-allstreamers.flumotion.com^
 ||ads-alpha.ewscloud.com^
@@ -48360,9 +48334,6 @@
 ||ads-cdn.hopper.com^
 ||ads-cdn.openweb.com^
 ||ads-cdn.smartbitchestrashybooks.com^
-||ads-cf-us-east-1.delivery.roku.com^
-||ads-cf-us-east-1.dev.delivery.roku.com^
-||ads-cf-us-west-2.delivery.roku.com^
 ||ads-chi-nfl.yinzcam.com^
 ||ads-chunks.prod.ihrhls.com^
 ||ads-claude-beta.com^
@@ -48573,14 +48544,11 @@
 ||ads-union.jd.com^
 ||ads-us-1win.passthrough.me^
 ||ads-us-7bit.passthrough.me^
-||ads-us-east-1.delivery.roku.com^
-||ads-us-east-2.delivery.roku.com^
 ||ads-us-gp.passthrough.me^
 ||ads-us-grana.ubidex1.xyz^
 ||ads-us-leon.ubidex1.xyz^
 ||ads-us-spinbetter.passthrough.me^
 ||ads-us-weltrade.passthrough1.me^
-||ads-us-west-2.delivery.roku.com^
 ||ads-us.1winsa.com^
 ||ads-us.7-ubi.com^
 ||ads-us.flawlessstarfall.com^
@@ -48788,7 +48756,6 @@
 ||ads.bestads.com^
 ||ads.bestads.com.queniuaa.com^
 ||ads.bestit.ee^
-||ads.beta.roku.com^
 ||ads.betfair.bet.br^
 ||ads.betfair.com^
 ||ads.betfair.com.au^
@@ -49111,7 +49078,6 @@
 ||ads.gawker.com^
 ||ads.gazetaesportiva.net^
 ||ads.gazetaexpress.com^
-||ads.gcp.roku.com^
 ||ads.geeks.hu^
 ||ads.gelbe-liste.de^
 ||ads.gemini.media^
@@ -49691,7 +49657,6 @@
 ||ads.roblox.com^
 ||ads.robloxapp.vnggames.com^
 ||ads.rohea.com^
-||ads.roku.com^
 ||ads.rtbthtrck.com^
 ||ads.rtl.hr^
 ||ads.rtl2.de^
@@ -49806,7 +49771,6 @@
 ||ads.squaresite.com^
 ||ads.ssmas.com^
 ||ads.stadtradeln.de^
-||ads.staging.roku.com^
 ||ads.stalker2.com^
 ||ads.standartnews.com^
 ||ads.stankov.me^
@@ -51010,7 +50974,6 @@
 ||adservice.tohsoft.com^
 ||adserviceretry.kugou.com^
 ||adservices.brandcdn.com^
-||adservices.roku.com^
 ||adserving-com-f11-ads-de-976869676.eu-central-1.elb.amazonaws.com^
 ||adserving-oss.bangdao-tech.com^
 ||adserving.autotrader.com^
@@ -55945,11 +55908,7 @@
 ||advertising-cdn.target.dpgmedia.cloud^
 ||advertising-module.api.dpgmedia.cloud^
 ||advertising-plus.com^
-||advertising-qa.us-east-1.dev.msc.roku.com^
 ||advertising-server.amadeus.net^
-||advertising-v3-qa.us-east-1.dev.msc.roku.com^
-||advertising-v3.roku.com^
-||advertising-v3.us-east-1.msc.roku.com^
 ||advertising.20min.ch^
 ||advertising.a2z.com^
 ||advertising.adobe.com^
@@ -56009,8 +55968,6 @@
 ||advertising.persgroep.net^
 ||advertising.petco.com^
 ||advertising.post.ch^
-||advertising.qa.us-east-1.dev.msc.roku.com^
-||advertising.roku.com^
 ||advertising.samsclub.com^
 ||advertising.se^
 ||advertising.staging-cdn.walmart.com.akadns.net^
@@ -56019,7 +55976,6 @@
 ||advertising.theguardian.com^
 ||advertising.ugnet.gay^
 ||advertising.ukclimbing.com^
-||advertising.us-east-1.msc.roku.com^
 ||advertising.v-app.vn^
 ||advertising.webapi.gc.avfcservices.co.uk^
 ||advertising.webapi.gc.celticfc.com^
@@ -82799,7 +82755,6 @@
 ||analytics.rohanbhardwaj.com^
 ||analytics.rohanjaguste.com^
 ||analytics.rohrmeisterei-schwerte.de^
-||analytics.roku.com^
 ||analytics.rolhuis.nl^
 ||analytics.rollerblade.com^
 ||analytics.roma.de^
@@ -99511,7 +99466,6 @@
 ||assets.shopbunzlna.com^
 ||assets.soom.la^
 ||assets.squarewebsites.org^
-||assets.sr.roku.com^
 ||assets.taghtia.com^
 ||assets.teradata.com^
 ||assets.ti-media.net^
@@ -141237,10 +141191,6 @@
 ||blofffs.blogspot.com^
 ||blog-abg-bugil.blogspot.com^
 ||blog-adults.blogspot.com^
-||blog-advertising-qa.us-east-1.dev.msc.roku.com^
-||blog-advertising-v2-qa.us-east-1.dev.msc.roku.com^
-||blog-advertising-v2.us-east-1.msc.roku.com^
-||blog-advertising.msc.roku.com^
 ||blog-alekseev.ru^
 ||blog-amadorasbrasileiras.blogspot.com^
 ||blog-amatrice-francaise.fr^
@@ -202412,7 +202362,6 @@
 ||cloudservicear.xyz^
 ||cloudserviceev.xyz^
 ||cloudserviceid.xyz^
-||cloudservices.roku.com^
 ||cloudseun.com^
 ||cloudsfilesstorage.com^
 ||cloudshielders.com^
@@ -228989,7 +228938,6 @@
 ||customer-analytics.creditsafe.com^
 ||customer-analytics.starship.xyz^
 ||customer-facing-analytics.zoominfo.com^
-||customer-feedbacks.web.roku.com^
 ||customer-loyalty-insurance-userid3956268-nfz.italianaimpasti.com^
 ||customer-portal.info^
 ||customer-sentry.hepsiburada.com^
@@ -275113,7 +275061,6 @@
 ||eagle-perspective.com^
 ||eagle-rise.com^
 ||eagle-tex.cn^
-||eagle.roarfilm.com.au^
 ||eagle1997.executorstresser.ru^
 ||eaglealtflowengine.com^
 ||eagleandsparrow.blogspot.com^
@@ -358333,7 +358280,6 @@
 ||gilfundme.com^
 ||gilfwebcam.com^
 ||gilfx.tv^
-||gilfxmho.roasted.com.au^
 ||gilfxtube.com^
 ||gilfyes.com^
 ||gilfzone.com^
@@ -428376,7 +428322,6 @@
 ||itelehealth.com.cn^
 ||itelemed.ca^
 ||itellyoutell.com^
-||item-tracking.dev.sr.roku.com^
 ||itemanceai.xyz^
 ||itemattain.xyz^
 ||itembonsai.xyz^
@@ -438025,6 +437970,7 @@
 ||jinzhoukk.com^
 ||jinzhujie.com^
 ||jinzixing.com^
+||jinzzz.com^
 ||jio-play-slots.com^
 ||jio-slots.com^
 ||jioads.akamaized.net^
@@ -463679,6 +463625,7 @@
 ||ksn-fr-geo.kas-labs.com^
 ||ksn-stat-install.kaspersky-labs.com^
 ||ksnewly.com.cn^
+||ksnklf.com^
 ||ksnwudphq.com^
 ||ksoakland.com^
 ||ksoft-sage.com^
@@ -472332,6 +472279,7 @@
 ||ldsgospelapp.sc.omtrdc.net^
 ||ldsjsy.com^
 ||ldskqm.com^
+||ldslwv.com^
 ||ldsparentcoach.org^
 ||ldspdf.com^
 ||ldsplanet.com^
@@ -492442,7 +492390,6 @@
 ||logs.danamas.net^
 ||logs.dashlane.com^
 ||logs.datadoghq.com^
-||logs.dev.sr.roku.com^
 ||logs.devid.net^
 ||logs.dipal.net^
 ||logs.docnhanh.com.vn^
@@ -492538,12 +492485,10 @@
 ||logs.production-eu.aktiia.io^
 ||logs.profi.ru^
 ||logs.px4.io^
-||logs.qa.ap.int.roku.com^
 ||logs.qgis.org^
 ||logs.razorpayads.com^
 ||logs.recipe.pmang.cloud^
 ||logs.riamoneytransfer.com^
-||logs.roku.com^
 ||logs.s2s.squidapp.co^
 ||logs.sahanafoundation.org^
 ||logs.sanchoikns.vn^
@@ -492563,7 +492508,6 @@
 ||logs.soundtrackyourbrand.com^
 ||logs.spanix.team^
 ||logs.spilgames.com^
-||logs.sr.roku.com^
 ||logs.sso235.com^
 ||logs.stormforge.gg^
 ||logs.stupeflix.com^
@@ -524870,6 +524814,7 @@
 ||meipiaopiao.com^
 ||meipingwang.com^
 ||meiqia.com^
+||meiqiacs.com^
 ||meiquan8.com.cn^
 ||meiracontadores.com.br^
 ||meireis.de^
@@ -531837,6 +531782,7 @@
 ||miand.xyz^
 ||miandanmanhua.com^
 ||miandi9.com.cn^
+||miandiguo.com^
 ||mianestliving.com^
 ||mianfan.eu.org^
 ||mianfeihd.com^
@@ -534246,8 +534192,6 @@
 ||milfordcredit.com^
 ||milfordcruises.com^
 ||milfordct.rmcay.com^
-||milfordct.rmccpay.com^
-||milfordct.rmcppay.com^
 ||milfordct.rmcpy.com^
 ||milfordct.rrmcpay.com^
 ||milfordctrealestate.com^
@@ -539507,6 +539451,7 @@
 ||mkbtoken.com^
 ||mkc-invest.com^
 ||mkcasino.co.uk^
+||mkconstructarchi.com^
 ||mkcqlwas.com^
 ||mkd-news.com^
 ||mkd.net.cn^
@@ -544057,6 +544002,7 @@
 ||momowedding.com.cn^
 ||momperv.com^
 ||mompics.net^
+||mompiece.com^
 ||mompleasestop.com^
 ||mompov.com^
 ||mompov.us^
@@ -563646,6 +563592,7 @@
 ||nbnbewlhy.com^
 ||nbnbfb.de^
 ||nbnbnb.teachery.co^
+||nbnbv.com^
 ||nbnest-admonitor.cainiao.com^
 ||nbng.io^
 ||nbnowkpfnmyt.com^
@@ -563734,6 +563681,7 @@
 ||nbzhsb.com^
 ||nbzkwl.com.cn^
 ||nbzl2.com^
+||nbzlyeya.com^
 ||nbzlzl.com^
 ||nbzmkz.com^
 ||nbzqmk.com^
@@ -564817,6 +564765,7 @@
 ||nekrasivaya-podruzhka-lordfilm.ru^
 ||nekrotherium.com^
 ||nekt.com^
+||nekuur.com^
 ||nekuvkemfyhbq.com^
 ||nekxzluer.info^
 ||nekyda.com^
@@ -569735,6 +569684,7 @@
 ||nfrluoaxmt.com^
 ||nfrvficeao.com^
 ||nfs8nsaf.xyz^
+||nfscgames.com^
 ||nfsiee.com^
 ||nfslebanon.org^
 ||nfsvgvusih.data.adobedc.net^
@@ -572846,6 +572796,7 @@
 ||njlmpujxsozzel.com^
 ||njloi.com^
 ||njlsjs.cn^
+||njlszmuct.com^
 ||njm.cz^
 ||njmalmwdh-sa.com^
 ||njmch.com^
@@ -578626,6 +578577,7 @@
 ||nsms10.com^
 ||nsmsm.com^
 ||nsmultitrade.com^
+||nsmxgx.com^
 ||nsn-azert.xyz^
 ||nsn-babysoft.com^
 ||nsn-server.xyz^
@@ -578789,6 +578741,7 @@
 ||ntflx.fr^
 ||ntfsformac.cn^
 ||ntfsub.com^
+||ntfukun.com^
 ||ntfx-acc.com^
 ||ntfxrenewservice.com^
 ||ntfxrenewsupport.com^
@@ -587213,6 +587166,7 @@
 ||oifn-program.ru^
 ||oifod.com^
 ||oigjb.com^
+||oigromsl.com^
 ||oihogugf.blogspot.com^
 ||oiihk.com^
 ||oijhekvoh.com^
@@ -598247,6 +598201,7 @@
 ||ossci.net^
 ||ossebetsonadres.com^
 ||ossetbulimus.com^
+||ossfan.com^
 ||ossfile001.com^
 ||ossgogoaton.com^
 ||ossgw.alicdn.com^
@@ -601759,6 +601714,7 @@
 ||p108.laukaa-konnevesi.fi^
 ||p1271.com^
 ||p12acx.com^
+||p1319.com^
 ||p14.co.uk^
 ||p14.com.cn^
 ||p15vjj3og.com^
@@ -609910,6 +609866,7 @@
 ||pb.sogou.com^
 ||pb10.sogou.com^
 ||pb1b7cqwvs.com^
+||pb6688.com^
 ||pb88slot.xyz^
 ||pba.earth^
 ||pbabali.com^
@@ -610562,6 +610519,7 @@
 ||pds.gmarket.co.kr^
 ||pdschem.com.cn^
 ||pdscu.com^
+||pdshydcx.com^
 ||pdsigayolues.org^
 ||pdsoftwarezone.xyz^
 ||pdss3a1r.jp^
@@ -612487,7 +612445,6 @@
 ||penzion-furkotka.stays-center.com^
 ||penzionzemianskydvor.sk^
 ||penzkereses.ardoboz.hu^
-||peoblportlandparkspermits.rmcpau.com^
 ||peoconnection.com^
 ||peoeieiew.sirv.com^
 ||peofhyeonho.blogspot.com^
@@ -617424,6 +617381,7 @@
 ||photoprofix.com^
 ||photoptics.com^
 ||photopyro.com^
+||photoqiang.com^
 ||photorama-digital.com^
 ||photorama.nl^
 ||photorank.me^
@@ -621736,7 +621694,6 @@
 ||pixel.spotify.com^
 ||pixel.sprinklr.com^
 ||pixel.staging.datalivemarketing.com.br^
-||pixel.staging.web.roku.com^
 ||pixel.stirlingpdf.com^
 ||pixel.stonel1nk.ru^
 ||pixel.strongautomotive.com^
@@ -621762,7 +621719,6 @@
 ||pixel.vptrack.com.br^
 ||pixel.vreview.tv^
 ||pixel.watch^
-||pixel.web.roku.com^
 ||pixel.welcomesoftware.com^
 ||pixel.wenxuecity.com^
 ||pixel.wetracked.io^
@@ -631918,7 +631874,6 @@
 ||portlanddapps.xyz^
 ||portlandgardentour.com^
 ||portlandginger.gay^
-||portlandparkspermits.rmcpau.com^
 ||portlandvale.com^
 ||portlandvalleyscottishrite.com^
 ||portlandvalleyscottishrite.org^
@@ -633587,6 +633542,7 @@
 ||ppabovepussy.xyz^
 ||ppac.de^
 ||ppacerpparkn.blogspot.com^
+||ppacmann.com^
 ||ppahomov4377.blogspot.com^
 ||ppanties.blogspot.com^
 ||ppap.fr^
@@ -652920,6 +652876,7 @@
 ||psgbhfknfatgaq.com^
 ||psgg123.com^
 ||psginfosrevente.fr^
+||psgjg.com^
 ||psgmaillot.fr^
 ||psgpics.com^
 ||psgpllf.com^
@@ -659026,6 +658983,7 @@
 ||qf6tm5ug.com^
 ||qfa984.com^
 ||qfaacz6566h8qhzhz6xhxuxegbtudz.live^
+||qfbgbd.com^
 ||qfbjz.com^
 ||qfblc.com^
 ||qfbmr.snare-plum.ru^
@@ -659129,6 +659087,7 @@
 ||qg0005.com^
 ||qg666.cn^
 ||qg745.com^
+||qg747.com^
 ||qg878.com^
 ||qg8811.com^
 ||qgay.com^
@@ -659598,6 +659557,7 @@
 ||qinaqiaoedu.com^
 ||qinav.com^
 ||qinaza.com^
+||qinberber.com^
 ||qincn.com.cn^
 ||qindouxs.co^
 ||qineizhu.com^
@@ -659964,6 +659924,7 @@
 ||qixakyu.com^
 ||qixekeu8.com^
 ||qixia-window.com^
+||qixiandj.com^
 ||qixianlou.com^
 ||qixicau.com^
 ||qixingqiu.com^
@@ -660672,6 +660633,7 @@
 ||qq1221fair.org^
 ||qq1221slot.xyz^
 ||qq1221twelve.com^
+||qq168168168.com^
 ||qq2889login.xyz^
 ||qq288sq2.com^
 ||qq2tdd0xx.com^
@@ -661034,6 +660996,7 @@
 ||qrq268.com^
 ||qrqdlorgwt.com^
 ||qrqpfviewuwxh.com^
+||qrqqqqt.com^
 ||qrrro.com^
 ||qrrtvqws.com^
 ||qrsanluis.com.ar^
@@ -661254,6 +661217,7 @@
 ||qtchain.com.cn^
 ||qtcle.org.cn^
 ||qtclothes.com^
+||qtcpvp.com^
 ||qtcqxssh.com^
 ||qtcxw.com^
 ||qtdfxjlbnojnc.com^
@@ -668602,7 +668566,6 @@
 ||ravkoryn-ai.com^
 ||ravkoryn-pl.com^
 ||ravku.com^
-||ravm-staging.data.roku.com^
 ||ravm.tv^
 ||ravnann.blogspot.com^
 ||ravoapp.com^
@@ -669409,6 +669372,7 @@
 ||rd.linksynergy.com^
 ||rd.vector.co.jp^
 ||rd.yahoo.com^
+||rd1.com.br^
 ||rd8x6w8uco7mjx9.s3-website-us-east-1.amazonaws.com^
 ||rda.net^
 ||rdag-dws-matomo.mehrkanal.com^
@@ -672457,6 +672421,7 @@
 ||reconsiderquestions.com^
 ||reconsolesgrmmaples.info^
 ||reconstack.xyz^
+||reconstelec.com^
 ||reconstructambition.com^
 ||reconstructcrookcandy.com^
 ||reconstructnicestain.com^
@@ -672683,6 +672648,7 @@
 ||recovery-hinkal.xyz^
 ||recovery-portal-ledger.com^
 ||recovery-yahoo.com^
+||recovery.it^
 ||recoveryalpha.xyz^
 ||recoveryaudit.xyz^
 ||recoverybeacon.xyz^
@@ -673783,6 +673749,7 @@
 ||redlink.com^
 ||redlinks.net^
 ||redlion-casinouk.com^
+||redlion.com.au^
 ||redlionintl.com^
 ||redlionouston.co.uk^
 ||redlionstreet.blogspot.com^
@@ -673856,6 +673823,7 @@
 ||redotica.com^
 ||redoublelayer.digital^
 ||redoubt.digital^
+||redovnistvo.hr^
 ||redowin.com^
 ||redpage.com^
 ||redpandaz.net^
@@ -674335,6 +674303,7 @@
 ||reduxmedia.com^
 ||reduxmessenger.com^
 ||reduxmobile.com^
+||reduxrags.com^
 ||reduzacustos.pt^
 ||reduzirfotos.com^
 ||reduztaxa.net^
@@ -674398,6 +674367,7 @@
 ||redwolfmoon.com^
 ||redwood-fundrelixsoftware.com^
 ||redwoodcoastdental.com^
+||redwoodrollerrink.com^
 ||redwoodxcoin.com^
 ||redworld.ch^
 ||redwudsabana.com^
@@ -674446,6 +674416,7 @@
 ||reedledger.com^
 ||reedledger.digital^
 ||reedledgersolutions.com^
+||reedots.com^
 ||reedpraised.com^
 ||reedsbullyingpastel.com^
 ||reedscustomcrafts.com^
@@ -674563,6 +674534,7 @@
 ||reeservice.com^
 ||reetahoo.com^
 ||reetpret.com^
+||reevewrites.com^
 ||reevown.com^
 ||reewoumak.com^
 ||reexpedition-colis.fr^
@@ -675033,6 +675005,7 @@
 ||refrigerator-moscow.ru^
 ||refsrgdsfsrsres.blogspot.com^
 ||reftagger.com^
+||refuelmilitary.com^
 ||refugedapps.xyz^
 ||refugeeair.org^
 ||refugeesagi.xyz^
@@ -675206,6 +675179,7 @@
 ||regbeegtube.com^
 ||regbu.com^
 ||regcozy.de^
+||regdict.cn^
 ||regdict.com^
 ||regen7.briarhaven.ru^
 ||regenbone.com.br^
@@ -675660,6 +675634,7 @@
 ||rei.com.ssl.d2.sc.omtrdc.net^
 ||rei.sc.omtrdc.net^
 ||rei12.com.br^
+||reibill.com^
 ||reicezenana.com^
 ||reichefrauensuchenmanner.com^
 ||reichefrauentreff.ch^
@@ -675777,6 +675752,7 @@
 ||reignn.com^
 ||reigntrust.xyz^
 ||reigoldbets.com^
+||reiice.com^
 ||reiinapop.com^
 ||reijn.org^
 ||reikercycles.co.nz^
@@ -675787,6 +675763,7 @@
 ||reikiwellnessgroup.com^
 ||reikousya.com^
 ||reilesenthel.de.com^
+||reillyspringsjamboree.com^
 ||reima-eu.com^
 ||reimage.com^
 ||reimageplus.com^
@@ -675881,6 +675858,7 @@
 ||reitdnreepo.com^
 ||reiteachhome.com^
 ||reitz-handel.de^
+||reiwarss.com^
 ||reizako.com^
 ||reizentraki-de.live^
 ||reizentraki.live^
@@ -675932,6 +675910,7 @@
 ||rekhacd.blogspot.com^
 ||rekhaescorts.com^
 ||rekhashukla.com^
+||rekhtashayari.com^
 ||rekifoly-macroduvocafy-repabily.info^
 ||rekihxdwtnn.com^
 ||rekipion.com^
@@ -676140,6 +676119,7 @@
 ||relaxik.org^
 ||relaxiones.es^
 ||relaxkharkiv.com^
+||relaxkomplex.sk^
 ||relaxkrasnodara.com^
 ||relaxliegenxa.com^
 ||relaxlviv.com^
@@ -676493,10 +676473,12 @@
 ||reloadit.com^
 ||reloadphoto.com^
 ||reloandewater.com^
+||relocatetoidaho.org^
 ||relocation.tools^
 ||relojesvillarreal.com^
 ||relokant.net^
 ||relongturkiye.com^
+||relookie.com^
 ||relovedjewelry.com^
 ||relsanthel.de.com^
 ||reltik.com^
@@ -676515,6 +676497,7 @@
 ||relvadont.org^
 ||relviro.ru^
 ||relwnriokscgt.com^
+||relxnewk.com^
 ||relybelonged.com^
 ||relybrain.xyz^
 ||relychina.com^
@@ -677359,14 +677342,18 @@
 ||renardbleu.dev^
 ||renasingh.com^
 ||renataabreuoficial.com.br^
+||renatabacha.com.br^
 ||renataborja.com.br^
 ||renatabosco.ch^
 ||renatafinsk.blogspot.com^
 ||renatagpuberaba.blogspot.com^
 ||renatak7124.blogspot.com^
 ||renatalopeslope.pro^
+||renataschneider.com^
 ||renatasivierooftalmologia.com.br^
 ||renatoejana.blogspot.com^
+||renatomeneses.com^
+||renatomothaepatricialobato.com^
 ||renatotelli.com.br^
 ||renatoxxl.blogspot.com^
 ||renaud.client-pickups-sms.com^
@@ -677398,11 +677385,13 @@
 ||rencontre-adultere.org^
 ||rencontre-adultes.blogspot.com^
 ||rencontre-amicales.blogspot.com^
+||rencontre-annecy.fr^
 ||rencontre-antibes.fr^
 ||rencontre-arras.fr^
 ||rencontre-avec-trans.blogspot.com^
 ||rencontre-bdsm.org^
 ||rencontre-belgique.com^
+||rencontre-blois.fr^
 ||rencontre-couple.blogspot.com^
 ||rencontre-d-un-soir.blogspot.com^
 ||rencontre-desir.blogspot.com^
@@ -677414,6 +677403,7 @@
 ||rencontre-femme-ronde.com^
 ||rencontre-fetichisme.fr^
 ||rencontre-filles.blogspot.com^
+||rencontre-frejus.fr^
 ||rencontre-gay-amiens.fr^
 ||rencontre-gay-bordeaux.fr^
 ||rencontre-gay-caen.fr^
@@ -677426,12 +677416,14 @@
 ||rencontre-homme-homo-gay.com^
 ||rencontre-homme.blogspot.com^
 ||rencontre-homo.org^
+||rencontre-ile-de-france.fr^
 ||rencontre-japonaise.blogspot.com^
 ||rencontre-lesbienne-angers.blogspot.com^
 ||rencontre-martinique.fr^
 ||rencontre-mature.fr^
 ||rencontre-milf.blogspot.com^
 ||rencontre-milf.fr^
+||rencontre-militaire.net^
 ||rencontre-nord.blogspot.com^
 ||rencontre-nudiste.ch^
 ||rencontre-plan-cul.fr^
@@ -677454,6 +677446,7 @@
 ||rencontre-travestis.blogspot.com^
 ||rencontre-troyes.fr^
 ||rencontre-une-femme.com^
+||rencontre-valenciennes.fr^
 ||rencontre-venale.blogspot.com^
 ||rencontre-webcam-gratuit.blogspot.com^
 ||rencontre.chaude.free.fr^
@@ -677480,6 +677473,7 @@
 ||rencontrelibertine.ch^
 ||rencontremariage.ch^
 ||rencontremessenger.blogspot.com^
+||rencontremoto.com^
 ||rencontrepompier.com^
 ||rencontrer-vieille-cougar.com^
 ||rencontrer.eu^
@@ -677618,6 +677612,7 @@
 ||reneeslansky.com^
 ||reneestengelphotography.com^
 ||reneevictoria.com^
+||reneevincent.com^
 ||renegadebbs.info^
 ||renegadeinternet.com^
 ||renegademerchant.com^
@@ -677630,6 +677625,7 @@
 ||renengshebei.com^
 ||renentcawer1976.blogspot.com^
 ||renergysolution.com^
+||renerprene.com.br^
 ||reneshome.com^
 ||renetp.com^
 ||renew-account-lock.com^
@@ -677740,6 +677736,7 @@
 ||renguangli.com^
 ||rengxu.com^
 ||renhechang.com^
+||renhegang.com^
 ||renhemc.com^
 ||renheyiyao.cn^
 ||renhuanxi.com^
@@ -677761,6 +677758,7 @@
 ||renliangliang.com^
 ||renlion69.itch.io^
 ||renlou123.com^
+||renlu1.com.cn^
 ||renminbao.com^
 ||renminshenghuo.cn^
 ||renminsoft.com^
@@ -677817,6 +677815,7 @@
 ||renov-cunta.com^
 ||renov-evolution.com^
 ||renovacia-vani.eu^
+||renovada.org.br^
 ||renovaled.com^
 ||renovapqs.com.br^
 ||renovar-cuenta.net^
@@ -677849,6 +677848,7 @@
 ||renqidu.com^
 ||renqishaofu.org.cn^
 ||renqiu.net.cn^
+||renqiwx.com^
 ||renquestinfodate.com^
 ||renqw.com^
 ||renranedu.com^
@@ -677869,8 +677869,10 @@
 ||renrensmart.com^
 ||renrenvideo.com^
 ||renrenvideo.net^
+||renrenzhaoshang.com.cn^
 ||renrla.com^
 ||renshengo.com^
+||renshenqi.com^
 ||rensinaga.blogspot.com^
 ||rensoacmelr.net^
 ||rensparevoll-ai-no.com^
@@ -677903,6 +677905,7 @@
 ||rentadolls.net^
 ||rentadult.com^
 ||rentaen.com^
+||rentahousecountryclub.com^
 ||rentaidz.com^
 ||rental-led-screen-madrid.com^
 ||rental-office-base.com^
@@ -678261,6 +678264,8 @@
 ||rentnest24.com^
 ||rentnstay.com^
 ||rentoffice.pro^
+||rentola.com.tr^
+||rentola.jp^
 ||rentorly.com^
 ||rentovira.com^
 ||rentovira.net^
@@ -678301,6 +678306,7 @@
 ||renwuzhuanjiwang.com^
 ||renxingdaozha.com^
 ||renxingganwu.com^
+||renxiyiyao.com^
 ||renxkash.com^
 ||renyingying.com^
 ||renyushouspaa.xyz^
@@ -678337,6 +678343,7 @@
 ||reorganizeglaze.com^
 ||reorganizes64.com^
 ||reorzo.com^
+||reouvir.org.br^
 ||reowihep.com^
 ||reoyxtulfpbamci.com^
 ||rep-art.ynh.fr^
@@ -678458,12 +678465,14 @@
 ||repantalsedighters.com^
 ||reparaciondeneverasenbogota.com.co^
 ||reparaciudad.com^
+||reparararquivo.com^
 ||reparationsproductions.blogspot.com^
 ||reparationstoresbeloeil.ca^
 ||reparatur-service.me^
 ||reparatur.it^
 ||repareer.1afa.com^
 ||reparertelephone.fr^
+||reparosp.com^
 ||repayedsweet.com^
 ||repbase.app^
 ||repbblica.it^
@@ -678673,6 +678682,7 @@
 ||replica.is^
 ||replicaassets.xyz^
 ||replicadapps.xyz^
+||replicadungeon.com^
 ||replicahause.is^
 ||replicakaufen.de^
 ||replicaledger.com^
@@ -678687,6 +678697,8 @@
 ||replicauhrenol.de^
 ||replicauhrenswiss.de^
 ||replicauhrenx.de^
+||replicawatchesae.com^
+||replicawatchesshop.co.uk^
 ||replicawatchtr.com^
 ||replika-uhr.to^
 ||repliqueburberry.fr^
@@ -678763,6 +678775,7 @@
 ||repofactory.xyz^
 ||repofilter.xyz^
 ||repoflow.xyz^
+||repogames.org^
 ||repogateway.xyz^
 ||repogatewaynet.xyz^
 ||repogoogle.com^
@@ -679169,6 +679182,7 @@
 ||repovaluxappsolution.com^
 ||repovault.xyz^
 ||repowatchtower.xyz^
+||repower.com.au^
 ||repoworkbench.xyz^
 ||repp-gschwind.us^
 ||reppa-analytics.de^
@@ -679316,6 +679330,7 @@
 ||requisiteconjure.com^
 ||requisitezap.com^
 ||reququqibixuhev.blogspot.com^
+||reqxd.cn^
 ||reqzone.com^
 ||reraisenexus.digital^
 ||rerape.com^
@@ -679432,8 +679447,10 @@
 ||reseau-rencontre.ca^
 ||reseauescorte.com^
 ||reseaugay.net^
+||reseauintime.com^
 ||reseaumarpbf.org^
 ||reseaumetal.com^
+||reseauppp.com^
 ||resectabikklity.info^
 ||resedueresedueminimum.com^
 ||reseekshollin.com^
@@ -679457,6 +679474,7 @@
 ||resepmasakanindonesiya.blogspot.com^
 ||reserv-order-6494858365056i98-active-tracking-secure-validation.com^
 ||reservab.com^
+||reservacep.com.br^
 ||reservamehoy.com^
 ||reservascheckguest-preconfirm.com^
 ||reservat10n-status.com^
@@ -679473,6 +679491,7 @@
 ||reservations-ai.com^
 ||reservationvalidation.info^
 ||reservatlon-br-status.com^
+||reservatrespicoschales.com^
 ||reserve-me.com^
 ||reserve.bjxtql.com^
 ||reserve.eu0983-room.com^
@@ -679735,6 +679754,7 @@
 ||residenceseeingstanding.com^
 ||residenceswgv.com^
 ||residencial-granpremiere.com.br^
+||residencial.pt^
 ||residencialgolapa.com.br^
 ||residencialjardimdascaldas.com^
 ||residency.kohols.com^
@@ -679853,6 +679873,7 @@
 ||resmidepobos.com^
 ||resmigaste.com^
 ||resmimatkap.xyz^
+||resmina.com.tr^
 ||resminair.in^
 ||resminair.net^
 ||resmisupurge.xyz^
@@ -680001,6 +680022,7 @@
 ||resortzonehub.com^
 ||resorvfinderstatus.com^
 ||resotrck.com^
+||resoubao.com^
 ||resoundmodel.digital^
 ||resourcbecenter.info^
 ||resource-answers.pro^
@@ -680096,6 +680118,7 @@
 ||respectseizure.com^
 ||respectstack.xyz^
 ||respektlivet.nu^
+||respirarlondrina.com.br^
 ||respiratorcontainssomeday.com^
 ||respiratorimitationdetestable.com^
 ||respiratoryholter.com^
@@ -680141,6 +680164,7 @@
 ||ress-mocs.com^
 ||ressence.com.cn^
 ||ressicepro.com^
+||ressim.net^
 ||ressource-office.com^
 ||ressources.centraleauto.com^
 ||ressources.lagazette.com^
@@ -680222,6 +680246,7 @@
 ||restaurant-kazumi.fr^
 ||restaurant-le-poker-das.com^
 ||restaurant-legend.com^
+||restaurant-ophelia.de^
 ||restaurantaji.com^
 ||restaurantbase.xyz^
 ||restaurantbaywatch.com^
@@ -680233,6 +680258,7 @@
 ||restaurantefialho.pt^
 ||restaurantegrex.com^
 ||restaurantemareemonti.com^
+||restaurantepertodemim.net.br^
 ||restauranteshalal.com^
 ||restaurantesszimmer.de^
 ||restaurantestop.pt^
@@ -680284,6 +680310,7 @@
 ||restfulbeds.com^
 ||restfultools.com^
 ||restimulauutes.info^
+||restinga.pt^
 ||restituda.blogspot.com^
 ||restlbs.map.qq.com^
 ||restledger.net^
@@ -680298,8 +680325,10 @@
 ||restonicbrandcentral.com^
 ||restonoffices.xyz^
 ||restonovius.com^
+||restonspeech.com^
 ||restopoint.eu^
 ||restoraledgerpro.com^
+||restoranborgo.com^
 ||restoration360.com^
 ||restorationagi.xyz^
 ||restorationbowelsunflower.com^
@@ -680380,6 +680409,7 @@
 ||resultalpha.xyz^
 ||resultatdepistage.fr^
 ||resultats-depistage.fr^
+||resultdg.com^
 ||resultgamefi.xyz^
 ||resultgate.xyz^
 ||resulthost.com^
@@ -680670,6 +680700,7 @@
 ||retargetly.com^
 ||retargettracker.com^
 ||retasleeds.org.uk^
+||retbretu.com^
 ||retcode.taobao.com^
 ||retdirect.digital^
 ||retecool.com^
@@ -680740,6 +680771,7 @@
 ||retinaalpha.xyz^
 ||retinabase.xyz^
 ||retinadapps.xyz^
+||retinadesgastada.com.br^
 ||retinaesprent.com^
 ||retinagamefi.xyz^
 ||retinagate.xyz^
@@ -680865,6 +680897,7 @@
 ||retrieveroute.xyz^
 ||retrieveroutes.xyz^
 ||retrieversgroup.com^
+||retrievertraining.net^
 ||retrievesbom.xyz^
 ||retrievesecret.xyz^
 ||retrieveshell.xyz^
@@ -680903,6 +680936,7 @@
 ||retrobetcasino-aus.com^
 ||retrobetcasino-online.com^
 ||retrobetcasino.fr^
+||retrobladecomic.com^
 ||retrobondage.com^
 ||retroboobs.com^
 ||retrobowl2.net^
@@ -680910,9 +680944,11 @@
 ||retrocasino.fr^
 ||retrocasino1.fr^
 ||retrochambergames.com^
+||retrochrome.net^
 ||retrocliptube.com^
 ||retrocloud.net^
 ||retrocognfml.ru^
+||retrocon.com.br^
 ||retrocrypt.com^
 ||retrodapps.xyz^
 ||retrodhhicting.info^
@@ -680962,6 +680998,7 @@
 ||retroraw.com^
 ||retrorecycler.ca^
 ||retroreddit.com^
+||retroslashers.net^
 ||retroslotshub.com^
 ||retrosmut.net^
 ||retrospectivainfantil.com.br^
@@ -681011,6 +681048,7 @@
 ||retuneprofess.com^
 ||return-mon.com^
 ||return.network^
+||return8090.com^
 ||returnalert.xyz^
 ||returnalerts.xyz^
 ||returnalpha.xyz^
@@ -681047,6 +681085,7 @@
 ||returnplatform.xyz^
 ||returnplaybook.xyz^
 ||returnpolicies.xyz^
+||returnpolicyon.com^
 ||returnproof.xyz^
 ||returnpulse.xyz^
 ||returnqueue.xyz^
@@ -681114,6 +681153,7 @@
 ||reunkarnatcija-bezrabotnogo-lordfilm.ru^
 ||reurls.xyz^
 ||reusableperiodpads.com^
+||reusegram.com^
 ||reuseshop.de^
 ||reuseu.com^
 ||reuterproshop.com^
@@ -681134,6 +681174,7 @@
 ||rev.hjr-verlag.de^
 ||rev.iq^
 ||rev.termoclima.usermd.net^
+||rev180marketing.com^
 ||rev2pub.com^
 ||revaleo.app^
 ||revalix-trader.com^
@@ -681189,6 +681230,7 @@
 ||reveillonjurere.com.br^
 ||reveilove.com^
 ||revelai.app^
+||revelandoosbrasis.com.br^
 ||revelationdes-mensonges.fr^
 ||revelationhub.xyz^
 ||revelationneighbourly.com^
@@ -681601,6 +681643,7 @@
 ||reviewgrid.xyz^
 ||reviewharness.xyz^
 ||reviewheatmap.xyz^
+||reviewhub.info^
 ||reviewindex.xyz^
 ||reviewindexer.xyz^
 ||reviewinvest.xyz^
@@ -681752,6 +681795,7 @@
 ||revistadonjuan.com^
 ||revistaencontro.digital^
 ||revistafale.com.br^
+||revistaferramental.com.br^
 ||revistagostosanovinha.blogspot.com^
 ||revistaimperio.com.br^
 ||revistaknot.com^
@@ -681759,12 +681803,16 @@
 ||revistankd.com.br^
 ||revistaoigapersonajes.blogspot.com^
 ||revistaoutline.blogspot.com^
+||revistaoutubro.com.br^
 ||revistaparteaguas.com^
 ||revistas.tec.ac.cr^
 ||revistasapiencia.com.br^
+||revistasepe.art.br^
 ||revistasequadrinhos.com^
 ||revistashowdafe.com.br^
+||revistaspot.pt^
 ||revistasvip.com^
+||revistaurbanova.com.br^
 ||revistavarejosa.com.br^
 ||revistavidaesaude.com.br^
 ||revistavoukismodels.blogspot.com^
@@ -682427,6 +682475,7 @@
 ||revolvingwealth.pro^
 ||revomarkt.com^
 ||revontechnologies.com^
+||revope.com^
 ||revopl.com^
 ||revoprogramxzsed.com^
 ||revoprotonf.live^
@@ -682645,6 +682694,7 @@
 ||rewards.app^
 ||rewards.dtelecom.org^
 ||rewards.gocarrot.com^
+||rewards.net.cn^
 ||rewards1.com^
 ||rewards777casino.com^
 ||rewardsaffiliates.com^
@@ -682730,6 +682780,7 @@
 ||rewinddubbones.com^
 ||rewing.xyz^
 ||rewirechina.com^
+||rewistreeservices.com^
 ||rewords.pl^
 ||reworked.gay^
 ||rewowin.com^
@@ -682739,6 +682790,7 @@
 ||rewriterchatgpt.com^
 ||rewritewitch.com^
 ||rewsaqder.com^
+||rewu1.net.cn^
 ||rewudeu.com^
 ||rewuxiazai123.com^
 ||rewuyizhan.com^
@@ -682759,6 +682811,7 @@
 ||rexandroxy.blogspot.com^
 ||rexanne-hindmanvku.blogspot.com^
 ||rexargue.com^
+||rexarski.com^
 ||rexawin.com^
 ||rexbet-casino.fr^
 ||rexbetcasino.pro^
@@ -682793,13 +682846,17 @@
 ||reyarschlochksstuw.blogspot.com^
 ||reycomix.com^
 ||reyconlogistics.com^
+||reycross.cn^
 ||reyden-x.com^
 ||reyeshehadtwobri.com^
+||reyhandergisi.com^
 ||reyhanebeheshti.xyz^
 ||reyhanlibayen.com^
 ||reyinghe.com^
 ||reykjavikonstage.com^
+||reymann-kommunikation.de^
 ||reymaticx.com^
+||reyminguzellik.com^
 ||reynaemperatriz.blogspot.com^
 ||reynashouse.com^
 ||reyniae.de^
@@ -682811,6 +682868,7 @@
 ||reynosa040.pro^
 ||reypelis.tv^
 ||reyremodel.com^
+||reysair.com^
 ||reysfxhipoggji.com^
 ||reysqut.com^
 ||reysup.com^
@@ -682819,10 +682877,13 @@
 ||reyutoe.com^
 ||reyuu.com.cn^
 ||reyuu.net.cn^
+||reyxq.com^
+||rez848.com^
 ||rezabook.rozblog.com^
 ||rezale.ru^
 ||rezalit.art^
 ||rezamelz.eu^
+||rezarcomosanjos.net^
 ||rezasofts.com^
 ||rezax123.blogspot.com^
 ||rezegray.com^
@@ -682865,6 +682926,7 @@
 ||rf-francesante.info^
 ||rf-line.com.cn^
 ||rf-telegram.com.cn^
+||rf-vagosopen.com^
 ||rf.atopjasz.com^
 ||rf.cnlongshou.com^
 ||rf.drolltenino.com^
@@ -682875,6 +682937,7 @@
 ||rf23ecvf4.com^
 ||rf4.forestberrypi.com^
 ||rf425d-8080.csb.app^
+||rf6988.com^
 ||rf7wv5iip.com^
 ||rfadtek.com^
 ||rfakilduhas.com^
@@ -682899,6 +682962,7 @@
 ||rfd5t6yhthgyfdrrtdfgh.vercel.app^
 ||rfd645.com^
 ||rfdtge.com^
+||rfe151.com^
 ||rfesngcojkqfbl.com^
 ||rfffnahfiywyd.com^
 ||rfflawyers.com^
@@ -682909,6 +682973,7 @@
 ||rfgfz.com^
 ||rfgov.pl^
 ||rfhba.com^
+||rfhfitness.com^
 ||rfhwlaoh.com^
 ||rficom.net^
 ||rfidassist.com^
@@ -682938,6 +683003,8 @@
 ||rfmndnp.lqmgal.cn^
 ||rfmovie.com^
 ||rfmovies.com^
+||rfmrdn.com^
+||rfn408.com^
 ||rfnprotection.uk^
 ||rfoinc.com^
 ||rfoncizw.com^
@@ -682966,10 +683033,14 @@
 ||rfvacservices.com^
 ||rfvgcross.com^
 ||rfvr.enn.kr^
+||rfwang.com^
 ||rfwklaw.com^
 ||rfwooe.at^
+||rfwqp.cn^
+||rfxwl.com^
 ||rfylhg.com^
 ||rfz.snareplum.ru^
+||rfz018.com^
 ||rfzpflx.info^
 ||rfzsw.com^
 ||rg-be.ru^
@@ -682996,8 +683067,11 @@
 ||rgbarry.com.cn^
 ||rgbbs.com^
 ||rgbct.com^
+||rgbgs.com^
 ||rgblack.itch.io^
+||rgblive.com^
 ||rgblkge.com^
+||rgc293.com^
 ||rgcams.com^
 ||rgcf.uk.com^
 ||rgchain.com.cn^
@@ -683008,6 +683082,7 @@
 ||rgecwi.com.cn^
 ||rgeouiqb.schleer.hu^
 ||rgestate.ru^
+||rgf.it^
 ||rgfbvk.com^
 ||rgfimmbdfkiuoa.com^
 ||rgfmspl.cn^
@@ -683018,15 +683093,21 @@
 ||rghga.yt^
 ||rghtrfhjythdjk.blogspot.com^
 ||rghvyucdd.com^
+||rgi309.com^
 ||rgilf.thespeedyway.com^
 ||rgiyeb.company^
 ||rgjiepai.com^
 ||rgkgpxnxim.com^
 ||rgkirkcpa.com^
+||rglive.tw^
 ||rglt.net^
+||rglxh.com^
+||rglyblc.com^
+||rgmalands.com^
 ||rgmechanics-games.com^
 ||rgmechanics.org^
 ||rgmzagzj.com^
+||rgnasha.com^
 ||rgnykj.com^
 ||rgo.org.ru^
 ||rgo365login.xyz^
@@ -683040,13 +683121,16 @@
 ||rgossett.com^
 ||rgoupama.fr^
 ||rgoxcknehm.com^
+||rgp-forum.ru^
 ||rgph.gov.gn^
 ||rgplays.com^
 ||rgpxop.cn^
+||rgq836.com^
 ||rgqkl.com.cn^
 ||rgqvp8sxtp.data.adobedc.net^
 ||rgrd.xyz^
 ||rgrji.com^
+||rgrservicestore.com^
 ||rgrsetgrsdtfadgregaef.blogspot.com^
 ||rgrvmhtm.com^
 ||rgs-rostock.de^
@@ -683058,9 +683142,13 @@
 ||rgswxxrpbhvqb.com^
 ||rgszmxvbqqrmia.com^
 ||rgt.cz^
+||rgt061.com^
 ||rgtech-solutions.com^
+||rgu109.com^
+||rguluomin.com.cn^
 ||rgv956amateures.blogspot.com^
 ||rgva725lyrd.teams-login.xyz^
+||rgvc.cn^
 ||rgvcziqevrgkwp.com^
 ||rgvjwqxmpalb.com^
 ||rgvqcsxqge.com^
@@ -683121,6 +683209,7 @@
 ||rheinmetall-app.org^
 ||rheinmetallcareer.com^
 ||rheinstarlogistics.com^
+||rheinstein.com.cn^
 ||rheinvexor.live^
 ||rheinwing.de^
 ||rhemishdcroomia.live^
@@ -683134,6 +683223,7 @@
 ||rhetoricsolder.com^
 ||rhetorictrust.xyz^
 ||rhetorischemittel.de^
+||rheumandrehab.com^
 ||rheumaschuhe.de^
 ||rheumatologie-wien.at^
 ||rheumsatrenne.com^
@@ -683141,8 +683231,12 @@
 ||rhfmtibtyidra.com^
 ||rhfree.fr^
 ||rhgpdgjof.com^
+||rhgvxfd.com^
 ||rhhepressibilities.info^
 ||rhhmaq.com^
+||rhhuu.com^
+||rhianfox.com^
+||rhiannadavisphotography.com^
 ||rhiannonbray.com^
 ||rhiannonryderofficial.com^
 ||rhiatrokjgco.com^
@@ -683190,11 +683284,14 @@
 ||rhiotdsmin.com^
 ||rhiowzaht.com^
 ||rhitam.com^
+||rhiwip.com.cn^
 ||rhizocyytonia.info^
 ||rhizotasegue.com^
 ||rhjforex.com^
+||rhjj-china.com^
 ||rhjmlgrv.com^
 ||rhkgkhqn.com^
+||rhkgmmw5.com.cn^
 ||rhkjchina.com^
 ||rhldd.blogspot.com^
 ||rhlpw.com.cn^
@@ -683205,6 +683302,7 @@
 ||rhmny.com^
 ||rhmt.net^
 ||rhmt1jjyo.com^
+||rho688.com^
 ||rhoadshomebuyers.com^
 ||rhocijzockmd.com^
 ||rhode.co.at^
@@ -683222,8 +683320,10 @@
 ||rhombus74.com^
 ||rhombusads.com^
 ||rhondaleecarver-author.blogspot.com^
+||rhondaparrish.com^
 ||rhondapickering.com^
 ||rhondatvsamblings.blogspot.com^
+||rhone-wines.com.cn^
 ||rhone.lajpa.fr^
 ||rhonesalpes.fr^
 ||rhonevene-ai-fr.com^
@@ -683239,15 +683339,20 @@
 ||rhpellc.com^
 ||rhploidy.com^
 ||rhproton.com^
+||rhpsnews.com^
+||rhpt168.com^
 ||rhpt198.com^
 ||rhpytfij.com^
 ||rhqkl.com.cn^
 ||rhqpeextpmvqmr.com^
+||rhrpnews.com^
 ||rhrppklpmx.com^
+||rhrpt.com^
 ||rhrrd.com^
 ||rhrrf.cn^
 ||rhrwzngtmubvk.com^
 ||rhryry6rty2r6ty2u6y2uyrty6rt2y5t3yr63.blogspot.com^
+||rhs427.com^
 ||rhsbl.rymsho.ru^
 ||rhsh.com.cn^
 ||rhsigorta.com^
@@ -683270,10 +683375,12 @@
 ||rhvdsplm.com^
 ||rhweh234156.pages.dev^
 ||rhwpabvmjrtefn.com^
+||rhx305.com^
 ||rhxd168.com^
 ||rhxdsplm.com^
 ||rhxjc.com^
 ||rhxz-wending.com.cn^
+||rhydt.com^
 ||rhymemodel.xyz^
 ||rhymesubmitted.blogspot.com^
 ||rhymeswithsnitch.com^
@@ -683283,6 +683390,7 @@
 ||rhymsly.com^
 ||rhynchodaeumty.info^
 ||rhynw2kdug.com^
+||rhys868.com^
 ||rhyscarterstudios.blogspot.com^
 ||rhythm-cafe.com^
 ||rhythm.gay^
@@ -683311,9 +683419,11 @@
 ||ri.iddhiemm.com^
 ||ri.lipperstoze.com^
 ||ri120.xyz^
+||ri4.net^
 ||ri400.xyz^
 ||ri401.xyz^
 ||ri91.com^
+||riabiz.com^
 ||riadenieinvestez-sk.com^
 ||riadvqgypr.com^
 ||riafdi.com^
@@ -683330,7 +683440,9 @@
 ||riaoz.xyz^
 ||riapritelourdes.org^
 ||riarestrepo.blogspot.com^
+||riarevista.com.br^
 ||riarialuvluv2023.com^
+||riaruzone.com^
 ||riastats.com^
 ||riatotologin.xyz^
 ||riau.fr^
@@ -683339,6 +683451,7 @@
 ||ribagu.com^
 ||ribalka24.ru^
 ||ribaochina.com^
+||ribariljudskihdusa.com^
 ||ribarra.info^
 ||ribaschina.com^
 ||ribbbon7data.info^
@@ -683353,6 +683466,8 @@
 ||ribeauvillecasino.com^
 ||ribechina.com^
 ||ribefncdsilmxzrew.com^
+||riben0.com.cn^
+||ribencun.com^
 ||ribenwumaapian.com^
 ||ribexixesubabio.info^
 ||ribgreenhousecompose.com^
@@ -683369,6 +683484,7 @@
 ||ribsingougloul.com^
 ||ribsocks-fetish.com^
 ||ribsunsebsupsoo.com^
+||ribtejo.pt^
 ||ributed.com^
 ||ribwortjulep.com^
 ||ric.riedel-immobilien.de^
@@ -683384,9 +683500,11 @@
 ||ricardo.nl^
 ||ricardoborgeshipnoterapia.com.br^
 ||ricardocasas.com.mx^
+||ricardojordao.com.br^
 ||ricardoscasino-au.org^
 ||ricarvort.com^
 ||ricasrucksack.com^
+||ricazip.com^
 ||ricbet.com^
 ||ricca-valoravia.live^
 ||riccavaloravia-it.live^
@@ -683400,6 +683518,7 @@
 ||riccoli-u-ajls-lordfilm.ru^
 ||riccolu-u-ajls-lordfilm.ru^
 ||rice-furniture.com^
+||rice123456.com^
 ||ricead.com^
 ||riceandrecords.com^
 ||riceawu.blogspot.com^
@@ -683449,9 +683568,12 @@
 ||richard-gay.com^
 ||richard-group.com^
 ||richard-here.com^
+||richard-whitmore.info^
 ||richardallenillustrator.com^
+||richardbene.fullfotos.com.ar^
 ||richardboyprograma.blogspot.com^
 ||richardcalhoun.com^
+||richardcamara.com.br^
 ||richardcasino-australian.com^
 ||richardcasino-australian.net^
 ||richardcasino-australien.net^
@@ -683473,6 +683595,7 @@
 ||richardgaynor.com^
 ||richardgetsspanked.blogspot.com^
 ||richardgillassociates.com^
+||richardgodwin.net^
 ||richardinebrittania.net^
 ||richardineterrence.net^
 ||richardledger.com^
@@ -683480,6 +683603,7 @@
 ||richardmannevents.com^
 ||richardmannsworld.blogspot.com^
 ||richardmannsworld.com^
+||richardmarkham.com^
 ||richardmarkjones.com^
 ||richardmarkread.com^
 ||richardmb.org^
@@ -683517,6 +683641,7 @@
 ||richcasino-au.net^
 ||richcasino.com^
 ||richcasino100chip.com^
+||richcasino365.com^
 ||richcasino7.com^
 ||richcasino8.com^
 ||richcasinoau.org^
@@ -683536,8 +683661,10 @@
 ||richconsulting.xyz^
 ||richcreations.com^
 ||richcreators.xyz^
+||richdaisland.com^
 ||richdate.com^
 ||richdatingservice.com^
+||richdec.com^
 ||richdesigner.xyz^
 ||richdesigns.xyz^
 ||richdrivers.xyz^
@@ -683553,6 +683680,7 @@
 ||richengineer.xyz^
 ||richer-serial-lordfilm.ru^
 ||richerendplace.company^
+||richerlife.cn^
 ||richerlifebenefits.com^
 ||richeryawp.com^
 ||riches-boostwincasino.link^
@@ -683568,11 +683696,13 @@
 ||richezixs-app.com^
 ||richfaithfulness.info^
 ||richfarming.xyz^
+||richfield.com.au^
 ||richfriends.xyz^
 ||richfrost.orichsnow.ru^
 ||richfunlife.com^
 ||richfuturestocks.com^
 ||richgai.xyz^
+||richgame66.com^
 ||richgamers.xyz^
 ||richgate.net^
 ||richgateway.xyz^
@@ -683586,16 +683716,20 @@
 ||richgun.com^
 ||richh.cn^
 ||richheart.completelifetime.com^
+||richhioon.eu^
 ||richhomezllc.com^
 ||richhornymen.com^
 ||richhornywomen.com^
 ||richhousing.xyz^
 ||richidea.digital^
 ||richiedoinfo.cloud^
+||richiehavens.com^
 ||richinclothing.com^
 ||richinfo.co^
 ||richinfo.digital^
 ||richislands.xyz^
+||richjili-ph.com^
+||richjili.link^
 ||richlender.xyz^
 ||richlifeads.ru^
 ||richlink.blogsys.jp^
@@ -683628,6 +683762,7 @@
 ||richopto.com^
 ||richorice.com^
 ||richoven.pro^
+||richozdiy.com^
 ||richpeopletrades.com^
 ||richpops.com^
 ||richpopup.com^
@@ -683665,6 +683800,7 @@
 ||richstring.com^
 ||richsubs.com^
 ||richtalkies.com^
+||richtech.com.au^
 ||richter-uhren.de^
 ||richterfamilytree.com^
 ||richterorthopadie.com^
@@ -683684,6 +683820,7 @@
 ||richtransportation.pro^
 ||richtrove.com^
 ||richttirrit.com^
+||richu2.com.cn^
 ||richverify.xyz^
 ||richviewer.xyz^
 ||richville-casino-website.com^
@@ -683706,10 +683843,13 @@
 ||rick-and-mortyu-lordfilm.ru^
 ||rick-i-mortii-lordfilm.ru^
 ||rick-u-mortii-lordfilm.ru^
+||rickadshade.info^
 ||rickburr.com^
 ||rickdan.com.br^
 ||rickdonation.live^
+||rickdoogie.com^
 ||rickenback.org^
+||rickertart.com^
 ||rickeydev.digital^
 ||rickeyle.com^
 ||rickijavrr.in^
@@ -683724,6 +683864,7 @@
 ||rickrlivhjkbc.com^
 ||rickrolling.com^
 ||ricksavage.com^
+||rickshawale.com^
 ||rickshawalpha.xyz^
 ||rickshawdata.xyz^
 ||rickshawfeed.xyz^
@@ -683733,6 +683874,7 @@
 ||ricksineathrealty.com^
 ||ricksonlineworld.org^
 ||ricksowens.pl^
+||rickspace.vc^
 ||ricktornjeans.blogspot.com^
 ||ricktube.blogspot.com^
 ||rickwank.blogspot.com^
@@ -683759,6 +683901,7 @@
 ||ricleh.com^
 ||ricmeyers.com^
 ||rico-caramba.itch.io^
+||rico33-br.com^
 ||ricobrain.xyz^
 ||ricocaseagainst.rebirth.st^
 ||ricodapps.xyz^
@@ -683779,9 +683922,11 @@
 ||rics.tt.omtrdc.net^
 ||rictel.pe^
 ||ricthaaz.com^
+||rictube.com^
 ||ricwade.com^
 ||ricwin.gay^
 ||ricxxtkkpnadaj.com^
+||rid516.com^
 ||ridanam.blogspot.com^
 ||ridbehaviour.com^
 ||riddancemanufacturerextraction.com^
@@ -683844,6 +683989,7 @@
 ||ridethecape.co.za^
 ||ridetherailsoflife.blogspot.com^
 ||rideversity.com^
+||rideyourwaynow.com^
 ||ridge-data-point.glowridge.ru^
 ||ridge.crystalroad.ru^
 ||ridge.darkfl0w.ru^
@@ -683875,6 +684021,7 @@
 ||ridgelinebondvale.live^
 ||ridgelinedater.com^
 ||ridgelinelandscapeservices.com^
+||ridgelineownersclub.com^
 ||ridgemydoge.xyz^
 ||ridgeonmint.xyz^
 ||ridgepilotavalanche.com^
@@ -683891,6 +684038,7 @@
 ||ridgewherevertical.com^
 ||ridgewoodguildfilmfest.com^
 ||ridgeyelpastronomy.com^
+||ridgwayins.com^
 ||ridhimasain.com^
 ||ridhiroy.in^
 ||ridho-adrian.blogspot.com^
@@ -683917,6 +684065,7 @@
 ||ridojzxnpsnd.com^
 ||ridomovies.tv^
 ||ridrobot.xyz^
+||ridsta.com^
 ||ridt.site.je^
 ||ridtoken.xyz^
 ||ridtube.me^
@@ -683928,6 +684077,7 @@
 ||riedismall.xyz^
 ||riedta.com^
 ||rieec.org.cn^
+||rieeng.com^
 ||riegercosmeticsurgery.com^
 ||riegoslm.com^
 ||riehener-jahrbuch.ch^
@@ -683969,7 +684119,9 @@
 ||rifaselzambo19.com^
 ||rifaviajes.net^
 ||rifegenerator.com^
+||riferlove.cn^
 ||riffaxelerator.com^
+||riffraff.com.au^
 ||rifftube.net^
 ||rifiusa.com^
 ||rifkl.com^
@@ -683987,11 +684139,13 @@
 ||rig-ledger.com^
 ||riga-aparts.com^
 ||riga-escorts.eu^
+||rigabiennial.com^
 ||rigaescort.com^
 ||rigaescortgirls.lv^
 ||rigala.net^
 ||rigayu.com^
 ||rigcheck.net^
+||rigconcept.com.br^
 ||rigel1poker.com^
 ||rigelcabda.com^
 ||rigelink.com^
@@ -684008,6 +684162,7 @@
 ||right-press.com^
 ||right-sokmil.com^
 ||right-spot.pro^
+||right.com.cn^
 ||right69.blogspot.com^
 ||rightathome.com^
 ||rightbdsm.com^
@@ -684030,6 +684185,7 @@
 ||rightfullyincomparablefortnight.com^
 ||rightgamefi.xyz^
 ||rightgamer.com^
+||rightheme.ir^
 ||rightintheballs.blogspot.com^
 ||rightjobrightnow.com^
 ||rightkeysol.com^
@@ -684072,6 +684228,7 @@
 ||rightsodds.xyz^
 ||rightspayhub.xyz^
 ||rightspaykit.xyz^
+||rightspeak.net^
 ||rightspolicy.xyz^
 ||rightsproof.xyz^
 ||rightsproofhub.xyz^
@@ -684092,6 +684249,7 @@
 ||rightsvendor.xyz^
 ||rightswager.xyz^
 ||rightswatch.xyz^
+||righttheretraffic.com^
 ||rightwayrightresult.com^
 ||rightymatch.com^
 ||rightyrely.com^
@@ -684128,6 +684286,7 @@
 ||rigspolitiet.com^
 ||rigsumore.itch.io^
 ||rigt.org^
+||riguo4.net.cn^
 ||rihabhrol.com^
 ||rihabpc.com^
 ||rihana.co.in^
@@ -684135,17 +684294,23 @@
 ||rihannamalik.com^
 ||rihanvideo.com^
 ||rihanvideo.net^
+||rihanyou.com^
 ||rihao3.net.cn^
+||rihem.net^
 ||rihgimsatawp.in^
 ||rihilozavoradvisorynet.digital^
 ||rihivoo.pro^
 ||rihoas.fr^
+||rihomesmag.com^
 ||rihuwoi.com^
 ||riibl.com^
+||riigimaaoksjon.ee^
 ||riiiightt.com^
 ||riikj.com^
+||rijalmagazine.com^
 ||rijd0n.wavec0re.ru^
 ||rijk-fondburg-nl.com^
+||rijkderkabouters.nl^
 ||rijks-ledger.nl^
 ||rijksledger-ai.com^
 ||rijksledger-ai.org^
@@ -684186,6 +684351,7 @@
 ||rijpevrouwenafspraakjes.nl^
 ||rijpevrouwenchat.nl^
 ||rijpevrouwencontact.be^
+||rijpevrouwencontact.eu^
 ||rijpevrouwencontacten.nl^
 ||rijpevrouwendate.nl^
 ||rijpevrouwendating.be^
@@ -684209,6 +684375,7 @@
 ||rijschool-geduld.nl^
 ||rijsjyvid.com^
 ||riju9.net.cn^
+||rijupao.com^
 ||rik-and-morti-lordfilm.ru^
 ||rik-and-morti-lordfilms.ru^
 ||rik-and-mortu-lordfilm.ru^
@@ -684227,7 +684394,6 @@
 ||rikardprela.com^
 ||rikashart.com^
 ||rikaz.tech^
-||rikazecn.com^
 ||rikdpfjng.com^
 ||riki2riki.com^
 ||rikichina.com^
@@ -684247,7 +684413,9 @@
 ||riktigorgasm.se^
 ||riku-youtube-marke.com^
 ||riku.gay^
+||rikua.com^
 ||rikucore-ja.live^
+||rikumimita.com^
 ||rikunex-ja.live^
 ||rikunex.live^
 ||rikuweqanyzyked.blogspot.com^
@@ -684257,16 +684425,21 @@
 ||rikvip8386.info^
 ||rikvipchinhhang.com^
 ||rikvpappdlg.info^
+||rikyhamstery.com^
 ||rila.io^
 ||rilaros.net^
 ||rilart.com^
 ||rilcvlgkddvoqra.com^
+||rildas.cz^
 ||rile1.net.cn^
 ||rileclothingtweak.com^
+||rilek1corner.com^
 ||rilenews.com^
 ||rilexweng.xyz^
 ||riley-davies.blogspot.com^
+||rileyalexander.com.au^
 ||rileyartwork.com^
+||rileybancroft.com^
 ||rileycoleman.net^
 ||rileycomix.blogspot.com^
 ||rileyfacialabuse.com^
@@ -684283,6 +684456,7 @@
 ||rileyreidtube.net^
 ||rileysheaven.com^
 ||rileysteele.com^
+||rileysurgery.com^
 ||rilin1.net.cn^
 ||rilke-live.de^
 ||rill.b1tcascade.ru^
@@ -684296,12 +684470,14 @@
 ||riloge-hazeje.info^
 ||rilomailer.org^
 ||rilonjoxa.com^
+||rilv.com^
 ||rim-jobs.com^
 ||rim.kr^
 ||rim4k.com^
 ||rimaje.nl^
 ||rimao6.com.cn^
 ||rimasdelivery.net^
+||rimasebatidas.pt^
 ||rimbaslotgames.com^
 ||rimbdrxpstzu.com^
 ||rimbledon.com^
@@ -684346,12 +684522,15 @@
 ||rimowaoutlet.at^
 ||rimplamiseve.com^
 ||rimpub.com^
+||rimrocktech.com^
 ||rimsaureshi.com^
 ||rimsgay.com^
 ||rimteens.com^
+||rimtleafeg.de^
 ||rimtubes.com^
 ||rimugaya.com^
 ||rimvoyeur.ru^
+||rimwsj.com^
 ||rinabet.xyz^
 ||rinabet407.com^
 ||rinadreams.blogspot.com^
@@ -684372,6 +684551,7 @@
 ||rincondeencuentros.es^
 ||rincondejoss.com^
 ||rinconefe.blogspot.com^
+||rinconriders.com^
 ||rinconsluting.cloud^
 ||rindatelier.com^
 ||rinduslotgege.com^
@@ -684411,6 +684591,7 @@
 ||ringospincasino.ca^
 ||ringospins-casino-be.com^
 ||ringospins-casino-es.com^
+||ringostrack.com^
 ||ringplanet.com^
 ||ringplanet.net^
 ||ringplant.com^
@@ -684437,6 +684618,7 @@
 ||riniyesfantasy.blogspot.com^
 ||rinjiero.com^
 ||rinjim.com^
+||rinker.com.au^
 ||rinki.live^
 ||rinki.pro^
 ||rinki.xyz^
@@ -684474,10 +684656,12 @@
 ||rinutov.com^
 ||rinutw.com^
 ||rinypower.com^
+||rinyuki.com^
 ||rio-beaches-nude.blogspot.com^
 ||rio-bravos-lordfilm.ru^
 ||rio-bravou-lordfilm.ru^
 ||rio-lordfilm3.ru^
+||rio-turismo.com^
 ||rio9s1zdpd.com^
 ||rioace-casino.lt^
 ||rioacecasino.lt^
@@ -684515,19 +684699,27 @@
 ||riobrain.xyz^
 ||riobutt.com^
 ||rioctg.blogspot.com^
+||riocultural.com.br^
 ||riod.darkm1nt.ru^
 ||riodegay.blogspot.com^
+||riodesdeoinicio.arq.br^
 ||rioencontro.com.br^
 ||riofg.com^
+||riofgc.com^
+||riogame.sk^
 ||riogcla.com^
+||rioguiaoficial.com.br^
 ||riohhh.com^
+||rioinaweek.com^
 ||riokapital.com^
 ||riokapital.eu^
+||riolax.com.br^
 ||rioledger.info^
 ||riolu-node.link^
 ||riolu00.link^
 ||riomakolians.com^
 ||riomature.com^
+||riomc.cloud^
 ||riomeridianhotels.com^
 ||riomilf-com.pages.dev^
 ||riomilf.com^
@@ -684552,6 +684744,7 @@
 ||riotgirls.com^
 ||riotinrepose.com^
 ||riotmodels.com^
+||riotorto.it^
 ||riotousgrit.com^
 ||riotravestis.com.br^
 ||riotsdata.xyz^
@@ -684559,6 +684752,7 @@
 ||riotsmodel.xyz^
 ||riotsswap.xyz^
 ||riou-lordfilm.ru^
+||riowebfest.net^
 ||riozenfoam.com^
 ||rip-curl.co.at^
 ||rip-girl.com^
@@ -684599,6 +684793,7 @@
 ||ripiai.com^
 ||ripidentity.xyz^
 ||ripland.net^
+||ripleypuntosgo.cl^
 ||riplockrgay.pages.dev^
 ||ripob.com^
 ||ripon174574.blogspot.com^
@@ -684645,6 +684840,7 @@
 ||ripple.is^
 ||ripple.ripplecask.ru^
 ||ripple.stream^
+||rippleeffect.com.au^
 ||rippleeffectai.com^
 ||ripplejoin.com^
 ||rippleledger.org^
@@ -684666,15 +684862,18 @@
 ||riptgxsype.com^
 ||ripthatbitch.com^
 ||riptidesoccer.org^
+||riptira.es^
 ||riptributes.com^
 ||riptub.blogspot.com^
 ||ripverify.xyz^
+||riq843.com^
 ||riqhisfus.com^
 ||riqpuotr.com^
 ||riquanshiedu.com^
 ||riqueejordancastro.groups.id^
 ||riquelmevall.com.py^
 ||riqueza-vaultro-system.com^
+||riquezavirtual.net^
 ||riqueziumfinspire.com^
 ||riqun2.com.cn^
 ||rir.cz^
@@ -684683,24 +684882,33 @@
 ||rirad.org^
 ||riranimalsanctuary.com^
 ||riredsfc.com^
+||riri.my^
 ||riribuy.de^
+||riricao123.com^
+||ririkangneng.com^
 ||ririmansanaspamigay.pages.dev^
 ||riripamigay-9m8.pages.dev^
 ||riripamigay.pages.dev^
+||ririshuang.com^
 ||rirki.com^
 ||riroluaibi.com^
 ||rirongtrading.com.cn^
+||rirsh.com^
 ||rirteelraibsou.net^
 ||ris-usa.com^
 ||ris.res-x.com^
+||ris885.com^
 ||risale.ru^
+||risalekulliyati.com^
 ||risaleradyo.com^
 ||risamurakamilovers.blogspot.com^
 ||risasinmas.com^
 ||risax-writes.blogspot.com^
+||risbike.com^
 ||risbuyshop.com^
 ||riscaldone.pro^
 ||riscenducus.com^
+||riscmgmt.com^
 ||riscusanat.net^
 ||rise-i.jpn.com^
 ||rise-law-office.com^
@@ -684719,6 +684927,8 @@
 ||riseaheadnow.com^
 ||riseaheadx.com^
 ||riseaspiration.com^
+||riseaustin.org^
+||risebetgirisi.com^
 ||risebroadban.com^
 ||risecodes.com^
 ||riseexplore.com^
@@ -684738,6 +684948,8 @@
 ||risengrinddesign.com^
 ||risenrobot.xyz^
 ||riseofbets.com^
+||riseoferos.com^
+||riseoftaj.com^
 ||riseofthehiddenchampion.com^
 ||riseofthetide.xyz^
 ||riseonid.com^
@@ -684757,6 +684969,7 @@
 ||risesdefi.xyz^
 ||risesports.net^
 ||risesrobot.xyz^
+||risetiyu.com^
 ||risette-translations.blogspot.com^
 ||riseup-t-code.com^
 ||riseupengine.digital^
@@ -684769,8 +684982,12 @@
 ||riseviewz.com^
 ||risevision2025.ru^
 ||risfainste.digital^
+||rishengzhongwang.cn^
+||rishifter.com^
 ||rishikeshescort.in^
 ||rishivadher.com^
+||rishiyuna.com^
+||rishonsoft.com^
 ||rishtapakistan.com^
 ||rishtedar.com^
 ||rishusarao.com^
@@ -684778,6 +684995,7 @@
 ||risiera.blogspot.com^
 ||risimg.com.cn^
 ||rising-s.co.jp^
+||rising-steel.com^
 ||rising-tide-group.com^
 ||rising.com.tr^
 ||risingalpha.xyz^
@@ -684789,6 +685007,7 @@
 ||risinggateway.xyz^
 ||risingglass.eu^
 ||risinggsun.info^
+||risinglms.net^
 ||risingofknight.com^
 ||risingpoker.com^
 ||risingpokerstar.com^
@@ -684799,6 +685018,7 @@
 ||risingstack.xyz^
 ||risingstar-stories.blogspot.com^
 ||risingsunstech.com^
+||risingsunxn.com^
 ||risingtm.com^
 ||risingtrack.xyz^
 ||risingtrader.com^
@@ -685362,6 +685582,7 @@
 ||risnerroofinghouston.com^
 ||risnerroofingjacksonville.com^
 ||risnerroofingterrell.com^
+||risoldi.tech^
 ||risona.thegfhfgh.com^
 ||risontransportes.com.br^
 ||risora.de^
@@ -685379,6 +685600,7 @@
 ||risquevideo.com^
 ||risquewriting.blogspot.com^
 ||rissarae.com^
+||risshukogyo.com^
 ||rissionshop.de^
 ||rissole.co.uk^
 ||rissubtverso1977.blogspot.com^
@@ -685393,12 +685615,15 @@
 ||ristorantepascia.it^
 ||ristorantesaracenolaigueglia.it^
 ||risu.io^
+||risumote.com^
 ||risusdent.ru^
 ||risuvn.itch.io^
+||risvegli.it^
 ||riswanasherin.com^
 ||rita0.com^
 ||rita2.net.cn^
 ||ritabarcelona.es^
+||ritacardozo.com.br^
 ||ritachopra.com^
 ||ritadanielsfanclub.blogspot.com^
 ||ritaescortsdelhi.com^
@@ -685420,6 +685645,7 @@
 ||ritestrust.xyz^
 ||ritgaya.com^
 ||ritikakapoor.in^
+||ritikakothari.com^
 ||ritikapandey.in^
 ||ritiq-uk.com^
 ||rititi.com^
@@ -685430,6 +685656,7 @@
 ||ritmodesol.com^
 ||ritmoenmar.com^
 ||ritmosigueya.com^
+||ritornoalleorigini.com.br^
 ||ritrag.com^
 ||ritrobot.xyz^
 ||ritsaugisso.net^
@@ -685440,6 +685667,7 @@
 ||ritterrollos-girls.blogspot.com^
 ||rittersjatki.com^
 ||rittoken.xyz^
+||rittzone.com^
 ||ritualarchive.com^
 ||ritualcamp.com^
 ||ritualex.com^
@@ -685483,6 +685711,7 @@
 ||ritudubey.com^
 ||ritukaur.in^
 ||rituparnadas.com^
+||ritupatil.in^
 ||rituwalia.in^
 ||ritva.eclecticdigital.in^
 ||ritwallet.xyz^
@@ -685523,6 +685752,7 @@
 ||rivalryagentic.xyz^
 ||rivalsdata.xyz^
 ||rivalwarriors.com^
+||rivam.cn^
 ||rivamead.co.zw^
 ||rivanirahmadani.com^
 ||rivano.de^
@@ -685587,6 +685817,7 @@
 ||rivercabinet.eu^
 ||rivercityledgers.com^
 ||rivercityledgersco.com^
+||rivercityrealestate.info^
 ||riverclass.xyz^
 ||riverclinic.xyz^
 ||rivercontent.xyz^
@@ -685643,6 +685874,9 @@
 ||riveroakmarket.eu^
 ||riverobot.xyz^
 ||riverocktech.com^
+||riverofintimacy.com^
+||riveroflifeschools.com^
+||riverofsouls.nl^
 ||riverpaper.eu^
 ||riverpaperhouse.eu^
 ||riverpath178u.info^
@@ -685659,6 +685893,7 @@
 ||rivers-it.com^
 ||riversales.xyz^
 ||riverscapewebstudios.com^
+||riverscuomo.com^
 ||riverside.zone^
 ||riversideacademy.site.cdn.cloudflare.net^
 ||riversidebuzz.com^
@@ -685696,6 +685931,7 @@
 ||rivestream.netlify.app^
 ||rivestream.ru^
 ||rivestream.xyz^
+||rivet-jp.com^
 ||rivet.works^
 ||rivetandpixel.com^
 ||riveting-stream.com^
@@ -685752,6 +685988,7 @@
 ||rivullvwg.com^
 ||rivxaunxhivsttg.live^
 ||rivyerashop.com^
+||rivyogroup.com^
 ||riwaslibrary.com^
 ||riwaxigizinisol.blogspot.com^
 ||riwfokivb.com^
@@ -685763,6 +686000,7 @@
 ||rixibe.xyz^
 ||rixie-kauf.com^
 ||rixina.pro^
+||rixingsteel.com^
 ||rixisyi.com^
 ||rixofa.com^
 ||rixuco-nofofi.info^
@@ -685770,6 +686008,7 @@
 ||rixutorsaplkx.pro^
 ||riya-panjaban.in^
 ||riya8.net.cn^
+||riyaaggarwal.com^
 ||riyaaggarwal.in^
 ||riyabansal.com^
 ||riyabhat.in^
@@ -685783,6 +686022,7 @@
 ||riyagarg.com^
 ||riyaghaziabadescorts.com^
 ||riyagoaescorts.co.in^
+||riyajain.in^
 ||riyakapoor.co.in^
 ||riyakolkataescorts.com^
 ||riyamalik.com^
@@ -685792,6 +686032,7 @@
 ||riyamypawekir.com^
 ||riyana.co.in^
 ||riyanfashion.com^
+||riyangfusion.com^
 ||riyanshbhatele.com^
 ||riyanshifinance.com^
 ||riyapandey.com^
@@ -685801,15 +686042,18 @@
 ||riyarchoti.blogspot.com^
 ||riyareddy.com^
 ||riyaseth.in^
+||riyasingh.in^
 ||riyavipescorts.in^
 ||riyaziatumumi.xyz^
 ||riyazinikokar.xyz^
 ||riyazishahkilid.xyz^
+||riycx.com^
 ||riye0.net.cn^
 ||riyidz.com^
 ||riylwuelxu.com^
 ||riyqoe.com^
 ||riyts.org^
+||riyuke.com^
 ||riyusa.com^
 ||riywtf.com.cn^
 ||riyymworqw.data.adobedc.net^
@@ -685819,6 +686063,7 @@
 ||rizao0.com.cn^
 ||rizao7.com.cn^
 ||rizeabiyekiralama.com^
+||rizebezleri.com^
 ||rizecfc.com^
 ||rizedemasaj.xyz^
 ||rizedeyim.com^
@@ -685829,18 +686074,27 @@
 ||rizegen.com^
 ||rizeliguney.com^
 ||rizelshop.com^
+||rizemanset.com^
+||rizenakliyatfiyatlari.com.tr^
+||rizenakliyatfiyatlari.org.tr^
+||rizenakliye.com.tr^
 ||rizenit.com^
 ||rizeozeldisdoktoru.com^
 ||rizeozeldisklinigi.com^
+||rizerehberi.com^
+||rizesehirlerarasinakliyat.com.tr^
 ||rizesilah.com^
 ||rizesoloescort.xyz^
+||rizesutlaci.com^
 ||rizevip.com^
 ||rizeway.com^
+||rizeyilmaznakliyat.com.tr^
 ||rizfreepasses.blogspot.com^
 ||rizgirls.xyz^
 ||rizhaochina.com^
 ||rizhaoholding.com^
 ||rizhikova.com^
+||rizi8.com^
 ||rizierilibri.it^
 ||rizk-casino-bet-no.com^
 ||rizk-casino-bet-nz.com^
@@ -685897,33 +686151,44 @@
 ||rjbgirjncxojru.com^
 ||rjbkdiysev.data.adobedc.net^
 ||rjbvlgsb.com^
+||rjc494.com^
 ||rjca.ai^
 ||rjcastro.com^
 ||rjccabinets.com.au^
 ||rjcent.com.cn^
 ||rjcpethj.com^
 ||rjdyf.com.cn^
+||rjedu.org.cn^
 ||rjescort.co.in^
 ||rjevans110-crypto.com^
 ||rjfdu.com^
+||rjfjt.com^
 ||rjg633.com^
 ||rjgriffith.com^
 ||rjhegxfaykbngjs.com^
 ||rji1.com^
 ||rjif.cn^
+||rjimha.cn^
 ||rjinfracity.com^
 ||rjj3.com^
+||rjjjh.com^
 ||rjjkvbxmrqrjqka.com^
 ||rjjzzs.com^
 ||rjkj888.com^
 ||rjksm.com^
 ||rjktechmobile.com^
 ||rjlbuhirag.com^
+||rjlmusic.com^
 ||rjlusqndupefgd.com^
+||rjm828.com^
+||rjmei.com^
 ||rjmetrics.com^
+||rjmhouse.com^
 ||rjmj3vz.xyz^
+||rjmrr.cn^
 ||rjneiy.com.cn^
 ||rjnet.com.cn^
+||rjp028.com^
 ||rjpmp.com^
 ||rjpnpnyawicakyl.com^
 ||rjqrgqrdeykimk.com^
@@ -685941,6 +686206,7 @@
 ||rjtedu.com^
 ||rjtransportsolutionsllc.com^
 ||rjtsoftware.com^
+||rjtva.com^
 ||rjtwzayfyy.com^
 ||rjubkmn.cn^
 ||rjujjeuiqbt.com^
@@ -686016,6 +686282,7 @@
 ||rjxdnveynurx4atdiurvpmecpbjecpcntpqn5f6tq2nlaj67nmkq.arweave.net^
 ||rjxsxtcvj.com^
 ||rjyplxhvlvd.com^
+||rjzdc.cn^
 ||rk-groupllc.com^
 ||rk.com^
 ||rk.hairbilby.com^
@@ -686031,11 +686298,14 @@
 ||rkase.com^
 ||rkaw-wending.com.cn^
 ||rkbaienfurt.de^
+||rkbxvuuxm.com^
 ||rkc.info^
 ||rkcams.com^
+||rkccx.com^
 ||rkcfmfm97.com^
 ||rkclykdfy.com^
 ||rkcpfqtklenvfe.com^
+||rkcrd.com^
 ||rkcynvsqdvqfkbi.com^
 ||rkdms.com^
 ||rkebbi.com^
@@ -686043,8 +686313,11 @@
 ||rkelc.com^
 ||rken104.com^
 ||rkescorts.com^
+||rkf.it^
 ||rkfireandsafety-yahoo.com^
+||rkfms.com^
 ||rkfull.com^
+||rkfwgl.com^
 ||rkght.com^
 ||rkgiwavak.blogspot.com^
 ||rkgupta.com^
@@ -686061,6 +686334,7 @@
 ||rkkvq.com^
 ||rkl.draugas.lt^
 ||rkldutwrj.com^
+||rklu.org.cn^
 ||rkluxee.com^
 ||rkmdf.com^
 ||rkmilf.com^
@@ -686080,15 +686354,21 @@
 ||rkpjy.georgerichards.ca^
 ||rkpolos.com^
 ||rkptiwhbkcutpwc.com^
+||rkqq.com.cn^
+||rkrjn.com^
+||rkrky.com^
 ||rkrw-jindinghui.com.cn^
+||rks784.com^
 ||rksehgal.in^
 ||rksi.org^
 ||rksjewellery.com^
 ||rkskcnc.com^
+||rkstransfer.com^
 ||rksvpn.com^
 ||rkswinger.com^
 ||rkt.us^
 ||rktch.com^
+||rktechwebsitedesign.com^
 ||rkteen.com^
 ||rktranny.com^
 ||rktu.com^
@@ -686100,19 +686380,26 @@
 ||rkvn.com.cn^
 ||rkw-gmbh.de^
 ||rkwxjgbkkfzgrz.com^
+||rkwy.com.cn^
+||rkxny.com^
+||rkybra.com^
 ||rkylw.com^
 ||rkzby.cn^
 ||rl-team.net^
+||rl-zykt.com^
 ||rl.a4on.tv^
 ||rl.abayclaik.com^
 ||rl.go2yd.com^
 ||rl1vypwyd2.com^
 ||rl2wwiqv.windapp.digital^
+||rl5.cn^
 ||rl6b3zvtsk.com^
 ||rl8yj74pr.com^
 ||rlaop.com^
+||rlarzw.com^
 ||rlavvoeo.com^
 ||rlaw-office.com^
+||rlb573.com^
 ||rlbwg.com^
 ||rlc-cams.com^
 ||rlc.tv^
@@ -686137,6 +686424,7 @@
 ||rlets.com^
 ||rlevlkcvuy.com^
 ||rlfck120.com^
+||rlfg.com.cn^
 ||rlfinepress.com^
 ||rlftd.staples.com^
 ||rlggasdrisaw.net^
@@ -686150,13 +686438,16 @@
 ||rlim.com^
 ||rlirxmfndbxeevc.net^
 ||rlj.cz^
+||rljj.net.cn^
 ||rljjt.cn^
 ||rljnwvldhe.com^
 ||rljta.com^
 ||rlju.com.cn^
+||rljxgs.com^
 ||rljzx.com.cn^
 ||rlk.cz^
 ||rlkx.cn^
+||rll417.com^
 ||rllbl.com.cn^
 ||rlljf.com^
 ||rllkr.com^
@@ -686173,6 +686464,7 @@
 ||rlqprivatehangetittencm.blogspot.com^
 ||rlqtwlxm.com^
 ||rlr.cz^
+||rlrdg.com^
 ||rlri.cn^
 ||rlrnnvhe.com^
 ||rlrt.ru^
@@ -686182,10 +686474,16 @@
 ||rlsbb.ru^
 ||rlsbb.to^
 ||rlsdb.com^
+||rlsdiw.com.cn^
+||rlse.hu^
+||rlsjjs.com^
+||rlsmczw.cn^
 ||rltjqqrufde.com^
 ||rltnetworks.com^
 ||rltwz2cmo.com^
+||rlu547.com^
 ||rluhkhtl.com^
+||rlv858.com^
 ||rlvanguardia.com^
 ||rlwhk.com^
 ||rlwjj.org^
@@ -686198,6 +686496,7 @@
 ||rlyzc.com^
 ||rlz722.com^
 ||rlzyts.com^
+||rlzywzg.com^
 ||rm-p-ingest-svc.akross.com.br^
 ||rm.birdeangioid.com^
 ||rm.crianthowdahs.com^
@@ -686212,6 +686511,7 @@
 ||rm2029.com^
 ||rm32.darkm0on.ru^
 ||rm358.com^
+||rm3f.net.cn^
 ||rm4.ru^
 ||rm40k.com^
 ||rm66.com^
@@ -686234,21 +686534,32 @@
 ||rmbrosirrnrrchy.blogspot.com^
 ||rmbt.network^
 ||rmbutterfly.com^
+||rmccpay.com^
 ||rmcider.net^
 ||rmcje.remedymeds.com^
 ||rmcpat.com^
+||rmcpau.com^
+||rmcppay.com^
 ||rmcrms5-theperfectwife.blogspot.com^
 ||rmcsports.fr^
+||rmczjs303.com^
+||rmczjs312.com^
+||rmd.at^
 ||rmdns26.co.uk^
 ||rmedia.boston.com^
 ||rmelvin.org^
 ||rmercier-coinbase.com^
+||rmeredith.com^
 ||rmf.hit.gemius.pl^
 ||rmf.sc.omtrdc.net^
 ||rmfbl.com^
 ||rmfgjqpeo.com^
 ||rmfoqeh.enn.kr^
+||rmfzjj.org^
+||rmg674.com^
 ||rmgdapfnccsharpprd.azurewebsites.net^
+||rmgouvealeiloes.com.br^
+||rmh768.com^
 ||rmhfrtnd.com^
 ||rmhiwtest-hermes-25--opasqit4.dev.autobricksai.run^
 ||rmhumi.com^
@@ -686261,8 +686572,11 @@
 ||rmividzwdzapr.com^
 ||rmj.cz^
 ||rmjdrmjd.com^
+||rmjdw.net^
 ||rmjournals.com^
+||rmjv.cn^
 ||rmjxrcqjqvp.com^
+||rmk798.com^
 ||rmkcw.com^
 ||rmkfmm.cn^
 ||rmkkl.luckylfee.com^
@@ -686270,7 +686584,9 @@
 ||rmlejoahcpwkwga.com^
 ||rmlivecams.com^
 ||rmlocation.fr^
+||rmlyzx.com^
 ||rmlzplx.com^
+||rmn55.cn^
 ||rmndme.com^
 ||rmnfdyclqhe.com^
 ||rmnt.net^
@@ -686279,14 +686595,17 @@
 ||rmonitor.qq.com^
 ||rmoolrrw.com^
 ||rmoronta.blogspot.com^
+||rmour-image.com^
 ||rmovi.net^
 ||rmp.viber.com^
+||rmpad.com^
 ||rmpcy.com^
 ||rmq-oade-logging.yo-digital.com^
 ||rmqe-wending.com.cn^
 ||rmqkl.com.cn^
 ||rmrbjk.com.cn^
 ||rmre-dingsheng.com.cn^
+||rmriopreto.com^
 ||rmrtrqar.com^
 ||rms-drcn.platform.dbankcloud.cn^
 ||rmsboya.net^
@@ -686295,9 +686614,11 @@
 ||rmsktnoqvhzrq.com^
 ||rmsolutions.ch^
 ||rmsschool.com^
+||rmt830.com^
 ||rmtag.com^
 ||rmtclinics.com^
 ||rmtt7.com^
+||rmtzg.com^
 ||rmualumniuk.com^
 ||rmuancaxpzuj.com^
 ||rmuhmdor.com^
@@ -686321,15 +686642,20 @@
 ||rn.azilutcompreg.com^
 ||rn.zr.zqebgwzkhs94.idy360.com^
 ||rn2.jp^
+||rn68275pg.com^
 ||rn91.blogspot.com^
 ||rnaautomation.xyz^
+||rnadbvl.com^
 ||rnarkdills52-my-cheetah-website.site.builderallsite.com^
 ||rnatbet976.com^
 ||rnationalom.com^
 ||rnb-office.ru^
 ||rnb4bxd0.xyz^
 ||rnbastreams.com^
+||rnbgfwu.com^
 ||rnblkv.sweatdates.com^
+||rnc-francophonie.fr^
+||rncdj.com^
 ||rnchain.com.cn^
 ||rnd-cbgpas01.huawei.com^
 ||rndamailing.com^
@@ -686353,6 +686679,7 @@
 ||rndtechnosoft.com^
 ||rne-inc.com^
 ||rne.cz^
+||rne886.com^
 ||rneldvfi.com^
 ||rnengage.com^
 ||rneritking5013.com^
@@ -686360,14 +686687,19 @@
 ||rnetech.com^
 ||rnfchina.com^
 ||rnflesbischseksverhaalnr.blogspot.com^
+||rnfptj.com^
 ||rnfr.mspwftt.com^
 ||rnfs2.repa-dienst.de^
 ||rnfytdve.batteribyen.dk^
 ||rng-snp-003.com^
+||rng.com.au^
 ||rngen.fr^
 ||rngonline.org^
 ||rnha.org^
+||rnhkf.cn^
 ||rnhnvbfalbif.com^
+||rnhsh.com^
+||rni351.com^
 ||rnicrosoft-auth.com^
 ||rnicrosoft-support.human-resources.services^
 ||rnicrosoft.com^
@@ -686376,15 +686708,18 @@
 ||rnikvuneo.com^
 ||rniojjgaudxsu.com^
 ||rnjokkkx.com^
+||rnjtires.com^
 ||rnkmdo.imirki9.com^
 ||rnlabs.com^
 ||rnldustal.com^
 ||rnlmel.blogspot.com^
 ||rnls.cn^
+||rnlsp.com^
 ||rnlvuuecnyft.com^
 ||rnmd.net^
 ||rnmentoftheusys.org^
 ||rnmrla.treasurewaiting4u.com^
+||rnnstjm.cn^
 ||rnodine.com^
 ||rnoebh.com.cn^
 ||rnofuxgaz.com^
@@ -686400,12 +686735,14 @@
 ||rnpo-global.com^
 ||rnportal.com^
 ||rnqkdvlbmsggwln.com^
+||rnqkl.com.cn^
 ||rnrjpr8gc.com^
 ||rnrvvwjhmvlt.xyz^
 ||rnrxtwbebbe.com^
 ||rns-oath-accountservice.mezzoschoolofmusic.in^
 ||rns174.com^
 ||rns2mv.com^
+||rns569.com^
 ||rntedu.com^
 ||rnterlach.blogspot.com^
 ||rntitelgr.com^
@@ -686448,6 +686785,7 @@
 ||ro.xhamster.vg^
 ||ro055.com^
 ||ro10.landunk.com^
+||ro7alqamar.com^
 ||ro89.co^
 ||ro89.com^
 ||ro9.landunk.com^
@@ -686458,6 +686796,7 @@
 ||road-housy-lordfilm.ru^
 ||road.eccellenzeitaliane.com^
 ||road.leadr.co^
+||road2tunnel.com^
 ||roadcareplus.com^
 ||roadcatlogistics.com^
 ||roadcontagion.com^
@@ -686476,6 +686815,7 @@
 ||roadkill.gay^
 ||roadkultur.de^
 ||roadlakeescape.xyz^
+||roadlookup.com^
 ||roadmapappendfiles.com^
 ||roadmapgasp.com^
 ||roadmoment.com^
@@ -686491,6 +686831,7 @@
 ||roadsideassistancedubai.com^
 ||roadsinfo.com^
 ||roadster24.com^
+||roadtech.com.au^
 ||roadtestresluts.nyrysscheduler.com^
 ||roadtogentlehills.com^
 ||roadtomodernmeadow.com^
@@ -686502,9 +686843,11 @@
 ||roadtrip133u.info^
 ||roadtripsuk.com^
 ||roaduplift.com^
+||roaduu.com^
 ||roadwalks.com^
 ||roadwarrior.app^
 ||roadwaspfang.com^
+||roaep.ro^
 ||roafugoawamauje.net^
 ||roaglauphosh.net^
 ||roagrofoogrobo.com^
@@ -686518,6 +686861,7 @@
 ||roaminginluxe.com^
 ||roaminnomads.com^
 ||roamistopeph.net^
+||roamswim.com^
 ||roamthrivecaviar.com^
 ||roamvirtual.xyz^
 ||roanalacerda.com.br^
@@ -686529,6 +686873,7 @@
 ||roar.com^
 ||roarbrain.xyz^
 ||roardapps.xyz^
+||roarfilm.com.au^
 ||roargallondevelopment.com^
 ||roaringheart.com^
 ||roaringlion.com^
@@ -686543,6 +686888,7 @@
 ||roasted-anything.pro^
 ||roasted-job.pro^
 ||roasted-standard.pro^
+||roasted.com.au^
 ||roastedtastyfood.com^
 ||roastoup.com^
 ||roastrigidbitesize.com^
@@ -686551,12 +686897,15 @@
 ||roav.cn^
 ||roavatar.com^
 ||roaya-elfolaz.com^
+||roayaastro.org^
 ||rob-chat.blogspot.com^
 ||rob-hill.com^
 ||robarfilm.com^
 ||robarlett.com^
 ||robazi.xyz^
+||robba12.com^
 ||robbalvey.com^
+||robbar.in^
 ||robbaron.org.cn^
 ||robberrelative.com^
 ||robberyfilcheurope.com^
@@ -686564,6 +686913,7 @@
 ||robbiblubber.org^
 ||robbie-lawrence.com^
 ||robbieoz.com^
+||robbiethomas.net^
 ||robbiewilliamsmusic.ru^
 ||robbiques-chividers.com^
 ||robblox.com.es^
@@ -686580,6 +686930,7 @@
 ||robcolton.itch.io^
 ||robcomnetworksinc.net^
 ||robcurriephotography.com^
+||robe8.com^
 ||robecorail.com^
 ||robefor.com^
 ||robeheadlong.com^
@@ -686590,11 +686941,16 @@
 ||robenslin.com^
 ||robera.com^
 ||robert-faurisson.com^
+||robert-goetzfried.com^
+||robert-holt-solicitor-st-ives.net^
 ||robert-howe.com^
 ||robert-pattunsonn-lordfilm.ru^
 ||robert-zemeckus-lordfilms.ru^
 ||robert.golem.de^
+||robertabelllaw.com^
+||robertadragna.com^
 ||robertafarnese.com^
+||robertagoldfarb.com.br^
 ||robertarobinsullivan.com^
 ||robertarodrigues.es^
 ||robertboynes.com^
@@ -686608,6 +686964,7 @@
 ||robertgriffinharelythethird.chinapoem.org^
 ||roberthalfintl.tt.omtrdc.net^
 ||roberthamilton.info^
+||roberthenke.com^
 ||roberthomelive.com^
 ||roberthood.net^
 ||robertie.com^
@@ -686615,6 +686972,7 @@
 ||robertjayne.com^
 ||robertjbrem.net^
 ||robertjbrem.org^
+||robertjmeltzer.com^
 ||robertkandell.com^
 ||robertlienert.com^
 ||robertlouf.com^
@@ -686625,8 +686983,12 @@
 ||roberto4538.blogspot.com^
 ||robertoavey.com^
 ||robertobarrosjunior.com^
+||robertocafe.ir^
+||robertociambetti.info^
+||robertodiasduarte.com.br^
 ||robertodiazumw.com^
 ||robertpljuscec.com^
+||robertpost.no^
 ||robertrowe.com^
 ||robertrozek.com^
 ||roberts-comics.com^
@@ -686634,14 +686996,19 @@
 ||robertsai.xyz^
 ||robertsgay.com^
 ||robertsmfgco.com^
+||robertsonlodges.com^
 ||robertstyle.com^
+||robertthibault.com^
 ||robertthomson.info^
 ||robertvenditti.com^
 ||robertwsullivaniv.com^
 ||robesadvertisement.com^
 ||robflea.com^
 ||robhuebel.com^
+||robhyndman.com^
+||robidlight.com^
 ||robidy.live^
+||robilluminati.com^
 ||robimobi.com^
 ||robin-bbcslut.com^
 ||robin-flow.com^
@@ -686652,6 +687019,7 @@
 ||robin-reid-cumshot-in-the-tight-pussy-of-my-18yo-gf.pages.dev^
 ||robin-reid-foot-fetish-passion-with-pamela-sanchez.pages.dev^
 ||robin-reid-submissive-slut-tranny-isis-magallanes.pages.dev^
+||robin.megaten.net^
 ||robinamaror.com^
 ||robinamedicalcentre.com.au^
 ||robinbets.net^
@@ -686665,6 +687033,7 @@
 ||robinetcohub.digital^
 ||robinettmurphy.com^
 ||robinf.com^
+||robinfarnsworth.com^
 ||robinhcashcat.com^
 ||robinhcoin.com^
 ||robinhood-563824.com^
@@ -686722,11 +687091,13 @@
 ||robinledger.com^
 ||robinlefay.com^
 ||robinmooreband.com^
+||robinmurarka.com^
 ||robinpoolman.blogspot.com^
 ||robinradio.nl^
 ||robinraincoat.com^
 ||robinrbakerdc.com^
 ||robinrocks.xyz^
+||robins.one^
 ||robinsonfamilyfarmms.com^
 ||robinsonpaz.com^
 ||robinsonterminal.us^
@@ -686859,6 +687230,7 @@
 ||robloxy.com.es^
 ||robmdev.com^
 ||robmillerinjurylawyer.com^
+||robn.au^
 ||robo-200-alorasystem.com^
 ||robo-cat-casino.fr^
 ||robo-catcasino.fi^
@@ -686881,6 +687253,7 @@
 ||roboauditor.xyz^
 ||roboauthority.xyz^
 ||roboavatars.xyz^
+||robobabez.com^
 ||robobait.xyz^
 ||robobalance.xyz^
 ||robobasket.xyz^
@@ -687007,6 +687380,7 @@
 ||roborval.gay^
 ||robosaid.xyz^
 ||robosaint.xyz^
+||roboschool.com.cn^
 ||roboscribe.xyz^
 ||robosecond.xyz^
 ||roboselect.xyz^
@@ -687021,6 +687395,7 @@
 ||robostaking.xyz^
 ||roboswitch.xyz^
 ||robosystems.xyz^
+||robot-365.com^
 ||robot-armies.com^
 ||robot-bao.com^
 ||robot-bargains.xyz^
@@ -687506,6 +687881,7 @@
 ||robotfens.xyz^
 ||robotfer.xyz^
 ||robotfere.xyz^
+||robotfestival.it^
 ||robotfew.xyz^
 ||robotfewer.xyz^
 ||robotfifth.xyz^
@@ -687623,6 +687999,7 @@
 ||robotjack.blogspot.com^
 ||robotjacob.xyz^
 ||robotjan.xyz^
+||robotjanet.org^
 ||robotjason.xyz^
 ||robotjaw.xyz^
 ||robotjew.xyz^
@@ -688028,10 +688405,12 @@
 ||robsondutra.cloud^
 ||robspabah.com^
 ||robsphoto.com^
+||robtalada.com^
 ||robtem.com^
 ||robugye.com^
 ||robust-build.com^
 ||robustdir.live^
+||robustools.com^
 ||robustpsychology.com^
 ||robustwerkzeug.com^
 ||robux.cafe^
@@ -688070,6 +688449,7 @@
 ||robynjames.co.uk^
 ||robyonlinecasino.fr^
 ||robyscasino.com^
+||roc2c.com^
 ||rocaboy.com^
 ||rocamgirl.com^
 ||rocams.com^
@@ -688090,6 +688470,7 @@
 ||roccoakademi.com^
 ||roccodistribution.com^
 ||roccofortehotels.tt.omtrdc.net^
+||roccofotografos.com^
 ||roccois.gay^
 ||roccosiffredi.com^
 ||roccosiffredi.es^
@@ -688103,16 +688484,17 @@
 ||roccosifredi.com^
 ||roccotube.com^
 ||roccotube.net^
+||roce.it^
 ||rocemani.com^
 ||rocetplaycasino.com^
 ||rocfoss.com^
 ||rochat.ai^
 ||roche-valcelle-ai.live^
 ||rochebonne.com^
-||rocheleauart.com^
 ||rochellesmassage.co.uk^
 ||rochestercontemporary.org^
 ||rochestergroove.com^
+||rochesterhomepage.com^
 ||rochesterpeasant.com^
 ||rochesterpersonaltrainer.com^
 ||rochestertrend.com^
@@ -688156,6 +688538,8 @@
 ||rockerbox.com^
 ||rockerboyz.com^
 ||rockersbaalize.com^
+||rockersonline.net^
+||rockersonline.org^
 ||rockerysulkily.com^
 ||rocket-analytics.com^
 ||rocket-bit-pro.net^
@@ -688203,6 +688587,7 @@
 ||rocketfrogbeer.com^
 ||rocketfuel.com^
 ||rocketgame.net^
+||rocketimob.com.br^
 ||rocketinsurers.xyz^
 ||rocketissue.xyz^
 ||rocketjiasu.net^
@@ -688219,6 +688604,8 @@
 ||rocketmonitor.com^
 ||rocketother.xyz^
 ||rocketowner.xyz^
+||rocketplay-australia.com^
+||rocketplay-ca.com^
 ||rocketplay-casino-app.net^
 ||rocketplay-casino-website.com^
 ||rocketplay-reviewscasino.com^
@@ -688246,6 +688633,7 @@
 ||rockets-casinos.com^
 ||rocketsauna.xyz^
 ||rocketsgamefi.xyz^
+||rocketship.com.au^
 ||rocketslots.co.uk^
 ||rocketsocialcasino.live^
 ||rocketstage.xyz^
@@ -688270,6 +688658,7 @@
 ||rockhardgaycocks.com^
 ||rockhardhosting.com^
 ||rockhardpenis.com^
+||rockhardwrestling.com^
 ||rockherpussy.com^
 ||rockholidays.co.uk^
 ||rockhoster.net^
@@ -688285,9 +688674,12 @@
 ||rockingwranchinc.com^
 ||rockinholidays.com^
 ||rockinlyn.one^
+||rockinrio.com^
 ||rockinroxanne.net^
+||rockinsolos.com^
 ||rockiroads.blogspot.com^
 ||rockiroads.com^
+||rockislandmedia.com^
 ||rockislandtoday.com^
 ||rockitreports.com^
 ||rockiu-lordfilm.ru^
@@ -688302,10 +688694,12 @@
 ||rockledgeraiders.com^
 ||rockledgeraidershs.com^
 ||rockledgerdvail.com^
+||rocklinrealestate.net^
 ||rocklm.com^
 ||rockmain.xyz^
 ||rockmayak.ru^
 ||rockmess21.blogspot.com^
+||rockmetal.com.br^
 ||rockmods.net^
 ||rockmostbet.com^
 ||rockncook.ru^
@@ -688318,6 +688712,7 @@
 ||rockought.net^
 ||rockpebbles.com^
 ||rockpigeonty.pro^
+||rockplay.com.br^
 ||rockportbootsireland.com^
 ||rockportjapan.com^
 ||rockportnz.com^
@@ -688359,6 +688754,7 @@
 ||rockstorgames.com^
 ||rockstrust.xyz^
 ||rocktatili.org^
+||rockthebedroom.com^
 ||rocktie.com^
 ||rocktown17.blogspot.com^
 ||rocktownhall.com^
@@ -688383,8 +688779,10 @@
 ||rockymountainmen.net^
 ||rockymountainprimitives.com^
 ||rockymusic.org^
+||rockypointxxo.com^
 ||rockypopdirtysodas.com^
 ||rockyridgemeats.com^
+||rockyridgeranchspokane.com^
 ||rockyspin-casino-hu.com^
 ||rockyspin-casino.fr^
 ||rockyspin.net^
@@ -688411,6 +688809,7 @@
 ||rocscasino.com^
 ||rocsks.com^
 ||roctec-europe.com^
+||rocvestgroup.com^
 ||rod-ag.blogspot.com^
 ||rod-wheels.de^
 ||rod25-casino.com^
@@ -688423,20 +688822,25 @@
 ||rodarajaslot5000.com^
 ||rodarisoft.com^
 ||rodaslotslot.com^
+||rodbsp.cn^
 ||rodchang.com^
 ||rodcloud.com^
 ||roddaily.com^
 ||roddaily.org^
 ||roddapp.xyz^
+||roddelpraat.app^
 ||roddtenible.com^
 ||roddy808.com^
 ||rodecrypto.xyz^
 ||rodeforehead.com^
 ||rodegids.nl^
+||rodei.me^
 ||rodeinfamous.com^
+||rodejo.eu^
 ||rodeland.de^
 ||rodelaonlinebd.com^
 ||rodeledger.com^
+||rodemani.com^
 ||rodent.covisitor.app^
 ||rodent.kevindendievel.com^
 ||rodent.livelinor.dk^
@@ -688453,6 +688857,7 @@
 ||rodeoslotscasinos.com^
 ||rodeoslotscasinos.net^
 ||rodeoslotsofficial.com^
+||rodeosuprema.com^
 ||roderickkatri1963.blogspot.com^
 ||rodesquad.com^
 ||rodetis.com^
@@ -688478,8 +688883,14 @@
 ||rodneymoorestore.com^
 ||rodneysroomir.blogspot.com^
 ||rodnihood.com^
+||rodolfolab.com.br^
+||rodormer.com^
+||rodoviaanhanguera.com.br^
+||rodoviapadremanuelnobrega.com.br^
+||rodoviaregisbittencourt.com.br^
 ||rodoviasdigitalpedagiobrasil.com^
 ||rodoviasdobrasil.digital^
+||rodoviawashingtonluis.com.br^
 ||rodox.com^
 ||rodpowellvail.com^
 ||rodprompt.xyz^
@@ -688487,9 +688898,13 @@
 ||rodriggez.com^
 ||rodrigo7malmsten.blogspot.com^
 ||rodrigobarroxx.com^
+||rodrigobrant.com.br^
 ||rodrigodeoliveira.com^
+||rodrigohernandes.com.br^
 ||rodrigolascivo.com^
+||rodrigoselback.com.br^
 ||rodrigues-mauritius.com^
+||rodriguez-navarro.com^
 ||rodrobot.xyz^
 ||rodsdapp.xyz^
 ||rodsgay.com^
@@ -688518,6 +688933,7 @@
 ||roesmeraldas.com^
 ||roeveskyagclwh.com^
 ||roevisions.com^
+||roewepj.com^
 ||roexperts.in^
 ||roeye.com^
 ||roeyecdn.com^
@@ -688544,6 +688960,7 @@
 ||rogerbsbfox.blogspot.com^
 ||rogercarpenter.blogspot.com^
 ||rogerceleb.com^
+||rogerchan.com.cn^
 ||rogerdata.xyz^
 ||rogermag.com^
 ||rogermaris.gay^
@@ -688566,6 +688983,7 @@
 ||rogfundoriax.net^
 ||rogherut.com^
 ||rogindevice.blogspot.com^
+||rogminotaur.com^
 ||rognarek-lordfilm3.ru^
 ||rognedasamoylov3433.blogspot.com^
 ||rognedauqadys.blogspot.com^
@@ -688583,9 +689001,11 @@
 ||roguegamefi.xyz^
 ||rogueleader.org^
 ||roguelikeradio.com^
+||rogueloveescapades.com^
 ||roguemilf.com^
 ||roguepotters.com^
 ||roguerunner.one^
+||roguetimefuture.com^
 ||roguetrader.io^
 ||rogulie.com^
 ||roh.f1relayer.ru^
@@ -688593,7 +689013,9 @@
 ||rohaniilajmarkaz.com^
 ||rohanj.dev^
 ||rohanjackmarley.com^
+||rohanpreetsingh.in^
 ||rohatravel.com^
+||rohcha.com^
 ||rohdechaussures.fr^
 ||rohdeschuhewerksverkauf.com^
 ||rohedsaw.com^
@@ -688606,8 +689028,10 @@
 ||rohitbhai.com^
 ||rohitgayakwad.com^
 ||rohitkrarora.blogspot.com^
+||rohitroy.com^
 ||rohitsamaj.com^
 ||rohn-shop.com^
+||roho.ee^
 ||rohoelzuender.de^
 ||rohrbachhof.de^
 ||rohrreinigung-rothschild.de^
@@ -688672,6 +689096,7 @@
 ||rojadiretta.me^
 ||rojak99.xyz^
 ||rojakculture.com^
+||rojerchina.com^
 ||rojerti.com^
 ||rojlaether.com^
 ||rojodux.com^
@@ -688694,6 +689119,8 @@
 ||roklerw.com^
 ||rokneldoha.com^
 ||rokno.com^
+||rokociviabay.com^
+||rokofest.com^
 ||rokokbetlaju.live^
 ||rokokbetsitus.org^
 ||rokokbetslot.xyz^
@@ -688715,6 +689142,7 @@
 ||roku-ads-stg-cd-sfj0kmdwpjncw8yj.edge.tenants.us.auth0.com^
 ||roku-beacons.xumo.com^
 ||roku-hostel.com^
+||roku.com^
 ||roku.jnishop.com^
 ||rokubet-casino.app^
 ||rokubet-casino.net^
@@ -688729,6 +689157,8 @@
 ||rokuseikantei.com^
 ||rokymedia.com^
 ||rol434.com^
+||roladex.com.au^
+||rolalaloves.com^
 ||rolamisakiav.blogspot.com^
 ||rolamsglans.com^
 ||rolandgarros2026vip.com^
@@ -688930,6 +689360,7 @@
 ||roll-tooth.com^
 ||roll4all.com^
 ||roll4me.com^
+||rollaccurately.com^
 ||rollad.ru^
 ||rolladenmeister.at^
 ||rolladenreparatur.at^
@@ -689034,6 +689465,7 @@
 ||rollingslotsonline.de^
 ||rollingstack.xyz^
 ||rollingstone.de.ssl.sc.omtrdc.net^
+||rollingstonestv.com^
 ||rollingtrack.xyz^
 ||rollinice.com^
 ||rollino-casino.uk^
@@ -689094,6 +689526,7 @@
 ||rollupshub.xyz^
 ||rolluptokenize.xyz^
 ||rollupzk.xyz^
+||rollux.com^
 ||rollx.xyz^
 ||rollxo-au-casino.com^
 ||rollxo-casino-au.org^
@@ -689161,11 +689594,14 @@
 ||roman-casino-website.com^
 ||roman-casinos.app^
 ||roman-casinos.fr^
+||roman-doni.ir^
+||roman-doost.ir^
 ||roman-one.xyz^
 ||roman-private-office.com^
 ||roman-souvenirs.com^
 ||roman365.com^
 ||romanalpha.xyz^
+||romanbook.ir^
 ||romancasino-en-ligne.fr^
 ||romancasino-enligne.fr^
 ||romancasino-fr.fr^
@@ -689189,8 +689625,10 @@
 ||romancealpha.xyz^
 ||romanceandbondage.blogspot.com^
 ||romancebase.xyz^
+||romancebetweenthesheets.com^
 ||romancechef.xyz^
 ||romancecompass.com^
+||romancecristao.com^
 ||romancedale.com^
 ||romancedale.net^
 ||romancedaters.com^
@@ -689246,6 +689684,7 @@
 ||romantic-girls.in^
 ||romantic-lyrics.com^
 ||romantic-mistress.blogspot.com^
+||romantic.singles^
 ||romantic183.blogspot.com^
 ||romantica.nl^
 ||romanticaffalr.net^
@@ -689264,6 +689703,7 @@
 ||romanticlesbian.com^
 ||romanticlife.co.in^
 ||romanticmomentsbyt.com^
+||romanticpoems.ru^
 ||romanticppally.info^
 ||romanticshop.de^
 ||romanticstrasse.it^
@@ -689284,6 +689724,7 @@
 ||romanvideoarchive.com^
 ||romanza.ran-maru.net^
 ||romanzasifnos.com^
+||romaryw.com.br^
 ||romaszex.com^
 ||romavi.de^
 ||romaxcomfortshoes.com^
@@ -689319,6 +689760,7 @@
 ||romeowithromeo.blogspot.com^
 ||romepoptahul.com^
 ||romer.live^
+||romerocarvalho.tv^
 ||romerolandscape.com^
 ||romesanfaustino.com^
 ||romesi-lordfilm.ru^
@@ -689328,6 +689770,7 @@
 ||romewe.com^
 ||romewex.com^
 ||romey-lordfilm.ru^
+||romfast.com^
 ||romford-escorts.com^
 ||romgoc.net^
 ||romhacking.net^
@@ -689383,8 +689826,10 @@
 ||romulation.net^
 ||romulusniuan.com^
 ||romus-casino.fr^
+||romus.net.cn^
 ||romuscasino.fr^
 ||romusoft.com^
+||romuva.info^
 ||romventixapp.com^
 ||romvs.com^
 ||romvtsmpevy.com^
@@ -689400,6 +689845,8 @@
 ||ron-everythinghentai.blogspot.com^
 ||ron-harris.blogspot.com^
 ||ron.si^
+||ron5.com^
+||ronabetguncel.com^
 ||ronabuelorum.com^
 ||ronado.de^
 ||ronagoupil.ca^
@@ -689408,6 +689855,7 @@
 ||ronaldcopilot.xyz^
 ||ronaldetm.com^
 ||ronaldmohammed.com^
+||ronaldo-club.to^
 ||ronaldo7.me^
 ||ronaldojeans.com^
 ||ronaldpola.com^
@@ -689417,6 +689865,7 @@
 ||ronasudexapp.com^
 ||ronasudexappsolution.com^
 ||ronatvan.com^
+||ronaxhydraulic.com^
 ||ronbakerfurniture.com^
 ||ronbercume.com^
 ||ronbigayut.com^
@@ -689424,6 +689873,7 @@
 ||roncasino.tech^
 ||ronclad-dynamics.com^
 ||roncrib365.live^
+||ronda-ch.com^
 ||rondachang.xyz^
 ||rondarandi.hu^
 ||ronde-vormen.nl^
@@ -689434,6 +689884,7 @@
 ||rondeurscoquines.com^
 ||rondeurwoman.blogspot.com^
 ||rondoavenueinc.org^
+||rondothemovie.com^
 ||roneassur.fr^
 ||ronekai.com^
 ||ronelex.com^
@@ -689446,22 +689897,30 @@
 ||ronfjvonmo.com^
 ||rong360.com^
 ||rong365.com.cn^
+||rong95990.com^
 ||ronganjidian.com^
 ||rongbb.com^
 ||rongcfg.com^
+||rongdashi.com^
 ||rongdazj.com^
 ||ronge.co.za^
 ||rongevansdds.com^
+||ronggaogy.cn^
 ||ronghovn.com^
 ||ronghuibp.com^
+||rongjia.net.cn^
 ||rongjixinxi.com^
+||rongkai8.com^
 ||rongli.com^
+||ronglingyu.com^
 ||rongnav.com^
 ||rongpan.net^
+||rongpata.com^
 ||rongqi.org.cn^
 ||rongqiedu.com^
 ||rongros.uk.com^
 ||rongsheng688.com^
+||rongshu.net^
 ||rongtianjianzhu.com^
 ||rongtianzs.com^
 ||ronguxunketecn.com^
@@ -689469,12 +689928,14 @@
 ||rongwp.com^
 ||rongxinshuyuan.com^
 ||rongyaoshang.com^
+||rongzhouguoye.cn^
 ||rongzi178.com^
 ||ronharris.org^
 ||ronhusband.blogspot.com^
 ||ronielle.blogspot.com^
 ||roniionglupck.pro^
 ||ronikasingh.com^
+||ronikastore.com^
 ||ronimlamstr.com^
 ||ronin-casino.com^
 ||roninbridge.xyz^
@@ -689508,6 +689969,7 @@
 ||ronracepub.com^
 ||ronrtklhbxy.com^
 ||ronsey.com^
+||ronshausen-volley.de^
 ||ronsmithagency.net^
 ||ronstanstore.com^
 ||ronswanderings.blogspot.com^
@@ -689832,7 +690294,6 @@
 ||roopert83.tv^
 ||rooptawu.net^
 ||rooraistaulauy.net^
-||rooroohome.com^
 ||rooseveltmail.com^
 ||rooski.net^
 ||roospincasino-au.net^
@@ -689851,6 +690312,7 @@
 ||roostino1.com^
 ||roostinocasinorewards.com^
 ||roostledger.com^
+||roostuff.net^
 ||root-shop.at^
 ||root-warez.com^
 ||root.clubdjvideos.com^
@@ -689903,6 +690365,7 @@
 ||rootcharger.xyz^
 ||rootchecker.xyz^
 ||rootcleaner.xyz^
+||rootcrownarts.com^
 ||rootdapps.xyz^
 ||rootdawg25.blogspot.com^
 ||rootdesigns.xyz^
@@ -690091,6 +690554,7 @@
 ||ropeblog.blogspot.com^
 ||ropebondage.com^
 ||ropebondageinstructions.com^
+||ropebottoming.com^
 ||ropebrain.xyz^
 ||ropeconnections.com^
 ||roped.com^
@@ -690126,6 +690590,7 @@
 ||rophimz.fm^
 ||rophimz.net^
 ||ropibike.com^
+||ropingevents.com^
 ||roplantdealer.com^
 ||roportajmanset.com^
 ||ropsumemu.com^
@@ -690134,6 +690599,7 @@
 ||roq.ad^
 ||roqeke.xyz^
 ||roqg-jingdinghui.com.cn^
+||roqintel.com^
 ||roraimastudios.com^
 ||roraproduction.com^
 ||roratio.com^
@@ -690143,6 +690609,7 @@
 ||rorer.ru^
 ||rorialonely.com^
 ||rorile.com^
+||rorimontali.com^
 ||rorirorich.com^
 ||rorirorirori.com^
 ||roritchou.net^
@@ -690153,9 +690620,11 @@
 ||rorkery.com^
 ||rorkhq.com^
 ||rorpwekrnwqzx.com^
+||rorschach.net^
 ||rorwdbuazjbxta.com^
 ||ros-tele.com^
 ||ros-tur.com^
+||ros339.com^
 ||ros4.dosugrost.com^
 ||rosa-rossa.com^
 ||rosa-rossa.it^
@@ -690175,10 +690644,12 @@
 ||rosalsolutions.com^
 ||rosalynwinterfacialabuse.com^
 ||rosamassaggi.com^
+||rosamirabooks.com^
 ||rosangelarochaadvocacia.com.br^
 ||rosanna-laciociara.blogspot.com^
 ||rosannabazaronline.com^
 ||rosapg222.com^
+||rosar.com.br^
 ||rosarioleatherclub.blogspot.com^
 ||rosarios.cloud^
 ||rosarioshow.com^
@@ -690198,6 +690669,7 @@
 ||roscenzura.ru^
 ||rosche-bedachungen.de^
 ||roscoeproperties.com^
+||roscomsport.com^
 ||roscripter.com^
 ||rosdav.com^
 ||rose-lip.com^
@@ -690228,9 +690700,13 @@
 ||rosecasino.org.uk^
 ||rosecastle.com.au^
 ||rosecitylawyer.com^
+||rosecog.com^
 ||rosecoin.art^
 ||rosecreekvillage.com^
 ||rosedeertl.com^
+||rosedurham.com^
+||rosefiber.cn^
+||rosefield.com.au^
 ||rosefind.com^
 ||rosegardencicekcilik.com^
 ||rosehit.com^
@@ -690239,6 +690715,7 @@
 ||rosekaif.com^
 ||roselinlin.com^
 ||roselip-fetish.com^
+||roselisousa.com.br^
 ||rosella-extrem.com^
 ||rosella.info^
 ||roselle-adult-bookstore.pages.dev^
@@ -690247,7 +690724,9 @@
 ||rosemarydoll.com^
 ||rosemarygurl.blogspot.com^
 ||rosemaryhomelive.com^
+||rosemarynatural.com^
 ||rosemaryprof.mellbizz.com^
+||rosemarywalker.com^
 ||rosenbaum-berlin.de^
 ||rosenberryrooms.com^
 ||rosenfeldgoldschmied.com^
@@ -690268,6 +690747,7 @@
 ||roserbru.com^
 ||roseredfacialabuse.com^
 ||roses-fights.com^
+||roses2rainbows.com^
 ||rosesealiy.com^
 ||rosesensual.blogspot.com^
 ||rosesok.com^
@@ -690288,6 +690768,7 @@
 ||rosha-wih.com^
 ||roshani-raina.com^
 ||roshaniwalia.com^
+||roshaprint.ir^
 ||roshchyn.com^
 ||roshdka.com^
 ||roshguru.blogspot.com^
@@ -690308,6 +690789,7 @@
 ||rosiesfanclub.blogspot.com^
 ||rosiespamperedpuppies.com^
 ||rosina-wachtmeister.de^
+||rosiqueira.com^
 ||rosiqueplasticsurgery.com^
 ||rosjj.com^
 ||rosjksbvhlzdh.cn^
@@ -690483,8 +690965,10 @@
 ||rostov-ilr.info^
 ||rostov-img.info^
 ||rostov-ires.info^
+||rostov-itw.info^
 ||rostov-laminat.ru^
 ||rostov-uga.com^
+||rostov-wi.info^
 ||rostovchanok.pro^
 ||rostovfsm.com^
 ||rostovllust.com^
@@ -690536,6 +691020,7 @@
 ||rotary-cyprus.org^
 ||rotary2335.se^
 ||rotary2355.se^
+||rotaryclubofserampore.info^
 ||rotaryclubtorrelavega.com^
 ||rotarydistrict7030.org^
 ||rotate1t.com^
@@ -690604,6 +691089,7 @@
 ||rotationmedical.com^
 ||rotationmessage.net^
 ||rotator.tradetracker.net^
+||rotavirusemacao.com^
 ||rotbaqjfv.com^
 ||rotblox.com^
 ||rotbrain.xyz^
@@ -690641,6 +691127,7 @@
 ||rotlicht-livecam.de^
 ||rotlicht-livecams.de^
 ||rotlicht-meile.com^
+||rotlicht-mv.com^
 ||rotlicht-mvp.de^
 ||rotlicht-viertel.de^
 ||rotlicht.at^
@@ -690662,6 +691149,7 @@
 ||rotmail.net^
 ||roto-china.com^
 ||rotomalug.org^
+||rotomangler.com^
 ||rotomation.com.cn^
 ||rotondelibya.com^
 ||rotorgamefi.xyz^
@@ -690704,6 +691192,7 @@
 ||rotunda.ncsl.org^
 ||rotvpn.com^
 ||rotyka.com^
+||rotzbengel.de^
 ||rou.video^
 ||rou55.com^
 ||rouav.com^
@@ -690721,6 +691210,8 @@
 ||rouge-casino-website.com^
 ||rouge-casino.fi^
 ||rougeberryfashion.com^
+||rougeboulevard.com^
+||rougeboulevard.net^
 ||rougecasino.fr^
 ||rougefictionnoose.com^
 ||rougegorge-paris.fr^
@@ -690880,9 +691371,11 @@
 ||roundyearfun.org^
 ||roungeauth.digital^
 ||rounsh.com^
+||rounv.com^
 ||rouonixon.com^
 ||roupama.fr^
 ||roupaparabrincar.com^
+||roupiao.com.cn^
 ||roupuyuan.com^
 ||rouquines.blogspot.com^
 ||rourou.co^
@@ -690891,6 +691384,7 @@
 ||rousedobjectsfunds.com^
 ||rousedonkibure.us^
 ||rousedrunaway.com^
+||roushudy.com^
 ||roussesalope.free.fr^
 ||rousunfloraer.com^
 ||rout.pl^
@@ -691269,6 +691763,7 @@
 ||rouwa.com.cn^
 ||rouwhapt.com^
 ||rouwol.com^
+||rouyimeis.com^
 ||rouyu3.xyz^
 ||rouyu5.xyz^
 ||rouzauglaizo.net^
@@ -691336,7 +691831,9 @@
 ||rovopay.xyz^
 ||rovotpower.com^
 ||rovux.co^
+||rovyrock.com^
 ||rovz7ekw3r.com^
+||row787.com^
 ||rowafoy2.pro^
 ||rowanledger.app^
 ||rowanledger.com^
@@ -691412,6 +691909,7 @@
 ||roxy.net^
 ||roxyaffiliates.com^
 ||roxyaustria.com^
+||roxycam.com^
 ||roxydeargentina.blogspot.com^
 ||roxydrew.com^
 ||roxydubai.com^
@@ -691467,6 +691965,7 @@
 ||royal-village.pro^
 ||royal-x-casinogame.pk^
 ||royal123slot.com^
+||royal17.live^
 ||royal1888.xyz^
 ||royal188slot.xyz^
 ||royal24ai.xyz^
@@ -691514,6 +692013,7 @@
 ||royalbets1.com^
 ||royalbets2.com^
 ||royalbetscasino.com^
+||royalbetty.com^
 ||royalbigmaster.com^
 ||royalbiotech.xyz^
 ||royalblackfetish.blogspot.com^
@@ -691530,6 +692030,7 @@
 ||royalbuying.xyz^
 ||royalbyte.xyz^
 ||royalcactus.com^
+||royalcallgirl.com^
 ||royalcams.com^
 ||royalcams.net^
 ||royalcams.one^
@@ -691638,6 +692139,7 @@
 ||royalflush168.com^
 ||royalflush66.blogspot.com^
 ||royalflux.xyz^
+||royalfm.rw^
 ||royalfree24.blogspot.com^
 ||royalfreecams.com^
 ||royalfriend.xyz^
@@ -691742,6 +692244,7 @@
 ||royalordinal.xyz^
 ||royalorganizasyon.com^
 ||royaloutlet.xyz^
+||royalpalmsignature.com.br^
 ||royalpaper.xyz^
 ||royalparadise.xyz^
 ||royalparallel.xyz^
@@ -691772,6 +692275,7 @@
 ||royalproptech.xyz^
 ||royalproton.xyz^
 ||royalpunk.xyz^
+||royalq-bot.com^
 ||royalqss.com^
 ||royalqualify.xyz^
 ||royalquant.live^
@@ -691858,6 +692362,7 @@
 ||royalspeaker.xyz^
 ||royalspeech.xyz^
 ||royalsphere.xyz^
+||royalsprospects.com^
 ||royalstand.xyz^
 ||royalstorages.xyz^
 ||royalstream.xyz^
@@ -692012,6 +692517,7 @@
 ||royalzkevm.xyz^
 ||royandbuddy.com^
 ||royapp.com^
+||roybag.com^
 ||roybensswag.fr^
 ||roycecreditandfinancial.com^
 ||royceinternationalescorts.com^
@@ -692045,6 +692551,7 @@
 ||rozennlibertine.blogspot.com^
 ||rozetka-api.exponea.com^
 ||rozetka.cloud^
+||rozetkin.gay^
 ||rozetmarketi.com^
 ||rozewin.com^
 ||rozghar.com^
@@ -692057,6 +692564,7 @@
 ||rozliczeniaspotify.com^
 ||rozlynbangaloreescorts.com^
 ||rozmiary.com^
+||roznamajazba.com^
 ||roznamapakistan.com.pk^
 ||rozno.ru^
 ||rozomii.info^
@@ -692079,6 +692587,7 @@
 ||rp.viridinpergola.com^
 ||rp05pfgt.7lf.net^
 ||rp0768.com.cn^
+||rp1.cn^
 ||rp1212.com^
 ||rp2.mockplus.com^
 ||rp3.mockplus.com^
@@ -692115,6 +692624,7 @@
 ||rpcbank.xyz^
 ||rpcbets.xyz^
 ||rpccash.xyz^
+||rpccn.com^
 ||rpcgenetics.com^
 ||rpchern.ru^
 ||rpchub.net^
@@ -692210,11 +692720,13 @@
 ||rpt.cedexis.com^
 ||rpt.kidsfootlocker.com^
 ||rptgroups.com^
+||rptoolkit.com^
 ||rptrntmb2.xyz^
 ||rpts.org^
 ||rptsoft.com^
 ||rpttechnologies.org^
 ||rpv.uk.com^
+||rpvhost.net^
 ||rpvhxowckitodm.net^
 ||rpvisionsx.xyz^
 ||rpvvkpkdet.com^
@@ -692247,6 +692759,8 @@
 ||rqhnhxvjbulwywh.com^
 ||rqifjkkjjvqq.com^
 ||rqjcsnihsje.com^
+||rqjgbx.com^
+||rqk664.com^
 ||rqke-yunding.com.cn^
 ||rqlewogqtfc.com^
 ||rqley.com^
@@ -692276,6 +692790,7 @@
 ||rqwdssuysk.com^
 ||rqwel.com^
 ||rqwvvtsvnu.com^
+||rqxh.net^
 ||rqxhommnyrgy.com^
 ||rqyjgg.com^
 ||rqyoanqkcvs.com^
@@ -692290,6 +692805,7 @@
 ||rr-panel-3.ru^
 ||rr-panel-4.ru^
 ||rr.service.verkkokauppa.com^
+||rr182.com^
 ||rr184.com^
 ||rr198.com^
 ||rr230.com^
@@ -692339,11 +692855,14 @@
 ||rrbbgt.com^
 ||rrbjvd.com^
 ||rrbqsnxvpm.xyz^
+||rrbusinessgroup.com^
 ||rrc4aftaiz.data.adobedc.net^
 ||rrcagenciainformativa.com^
 ||rrcc.ru^
+||rrcp10.com^
 ||rrcrft.xyz^
 ||rrdgs.com^
+||rrdyw.net^
 ||rre.cz^
 ||rrecktek.com^
 ||rred.com.cn^
@@ -692362,7 +692881,9 @@
 ||rrg.uk.com^
 ||rrh.cz^
 ||rrh100.com.cn^
+||rrh244.com^
 ||rrhhia.com^
+||rrhz.cn^
 ||rrifogyvo.com^
 ||rrinstagram.com^
 ||rrj.cz^
@@ -692390,6 +692911,7 @@
 ||rroupu4.xyz^
 ||rroxrojufbmoe.com^
 ||rrpaafci9i.com^
+||rrphotosoft.com^
 ||rrpu.com.cn^
 ||rrqm.com^
 ||rrrong.com.cn^
@@ -692470,6 +692992,7 @@
 ||rsalcch.com^
 ||rsaltsjt.com^
 ||rsaonlinenow.com.au^
+||rsarai.xyz^
 ||rsautorepair.com^
 ||rsav.org^
 ||rsavc.travelpro.com^
@@ -692501,6 +693024,7 @@
 ||rsdtx.com^
 ||rsdvhgkp.com^
 ||rsdzrcrpfx.com^
+||rsebl.org.bt^
 ||rsefhbbndr.com^
 ||rsehmydtsrttrsasd.blogspot.com^
 ||rsekspertizadana.com^
@@ -692562,6 +693086,7 @@
 ||rspeixotoarquitetura.com.br^
 ||rspermatacibubur.org^
 ||rspermatakeluarga.net^
+||rspm.ru^
 ||rspn.org^
 ||rsppartners.com^
 ||rsptrack.com^
@@ -692639,6 +693164,7 @@
 ||rt-pixel.com^
 ||rt-protonvpn.com^
 ||rt-rt-34-fg-34-td.blogspot.com^
+||rt-scm.com^
 ||rt-wire.com^
 ||rt.bunte.de^
 ||rt.buzzni.com^
@@ -693005,6 +693531,7 @@
 ||rtkrtb.com^
 ||rtl0.blogspot.com^
 ||rtlbetlcgd.com^
+||rtlchat.com^
 ||rtldisneyfernsehengm.tt.omtrdc.net^
 ||rtlf.de^
 ||rtlivecams.com^
@@ -693030,6 +693557,7 @@
 ||rtmretry.kugou.com^
 ||rtmscl.com^
 ||rtmtf.org^
+||rtmy365.com^
 ||rtn.co.id^
 ||rtnews.pro^
 ||rtnhz.com^
@@ -693150,6 +693678,7 @@
 ||rttcasinos.com^
 ||rtteapportion.info^
 ||rttgc.com^
+||rttp.us^
 ||rttrcoins.com^
 ||rttrk.com^
 ||rttwitter.com^
@@ -693279,6 +693808,8 @@
 ||ruangjav.com^
 ||ruanjian-whatsapp.com.cn^
 ||ruanjiancms.com^
+||ruanjiansd.com^
+||ruanjiaoyang.com^
 ||ruanmeidh.xyz^
 ||ruanmeimiao.com^
 ||ruansky.com^
@@ -693351,6 +693882,7 @@
 ||rubbyboots.blogspot.com^
 ||rubeicdnsklmni.com^
 ||rubelarchoti.blogspot.com^
+||rubencollegeofeducation.org^
 ||rubendorado.com^
 ||rubenesq.blogspot.com^
 ||rubenesquebrunette.blogspot.com^
@@ -693587,6 +694119,7 @@
 ||rucha3.net.cn^
 ||ruchanie.eu^
 ||ruchbiblijny.pl^
+||ruchengzx.com^
 ||ruchgieidawnik.live^
 ||ruchgieldawnikai.live^
 ||ruchinadesign.com^
@@ -693867,6 +694400,8 @@
 ||rukanw.com^
 ||rukasuzuki.com^
 ||rukensjh.com^
+||rukhnoteikoku.com^
+||rukkso.com^
 ||ruklinok.info^
 ||rukn-al-madar-orders-delivery.com^
 ||ruknifbrio.in^
@@ -694955,6 +695490,7 @@
 ||runningtherapyaustralia.com^
 ||runningtrack.xyz^
 ||runningtrust.xyz^
+||runningwebsites.net^
 ||runningwithazbestt.itch.io^
 ||runningwithollie.com^
 ||runninkjfvlmb.com^
@@ -700206,7 +700742,6 @@
 ||samplepipermoan.com^
 ||sampleproof.xyz^
 ||samplerace.info^
-||samples.voice.cti.roku.com^
 ||samplesagi.xyz^
 ||samplesamba.com^
 ||samplesandbox.xyz^
@@ -805889,10 +806424,6 @@
 ||tracerunstack.xyz^
 ||traceruntime.xyz^
 ||traceruntimes.xyz^
-||traces-us-east-1.dev.sr.roku.com^
-||traces-us-west-2.dev.sr.roku.com^
-||traces.dev.sr.roku.com^
-||traces.sr.roku.com^
 ||traces.youdo.com^
 ||tracesampling.xyz^
 ||tracesanction.xyz^
@@ -832805,8 +833336,6 @@
 ||usercentrics-analytics.rossmann.net^
 ||userclaim.xyz^
 ||usercleaner.xyz^
-||userdata.dev.sr.roku.com^
-||userdata.sr.roku.com^
 ||userdive.com^
 ||userdomain.xyz^
 ||userdriver.xyz^
@@ -871876,8 +872405,6 @@
 ||wwwhotsmart.blogspot.com^
 ||wwwhqjy.com^
 ||wwwhsbc.fr^
-||wwwimg.roku.com^
-||wwwimg.staging.roku.com^
 ||wwwimpot.fr^
 ||wwwimpots.fr^
 ||wwwimpotsgouv.fr^
