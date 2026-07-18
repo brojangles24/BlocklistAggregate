@@ -32,15 +32,15 @@ ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
-ENABLE_MAIN_REBIND = True
-ENABLE_MAIN_SAFESEARCH = True
-ENABLE_MAIN_NSFW_REGEX = True
-ENABLE_MAIN_SPAM_TLDS = True
+ENABLE_MAIN_REBIND = False
+ENABLE_MAIN_SAFESEARCH = False
+ENABLE_MAIN_NSFW_REGEX = False
+ENABLE_MAIN_SPAM_TLDS = False
 
-ENABLE_MOBILE_REBIND = True
-ENABLE_MOBILE_SAFESEARCH = True
-ENABLE_MOBILE_NSFW_REGEX = True
-ENABLE_MOBILE_SPAM_TLDS = True
+ENABLE_MOBILE_REBIND = False
+ENABLE_MOBILE_SAFESEARCH = False
+ENABLE_MOBILE_NSFW_REGEX = False
+ENABLE_MOBILE_SPAM_TLDS = False
 
 ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
@@ -61,7 +61,7 @@ MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
     #"https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
     "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
