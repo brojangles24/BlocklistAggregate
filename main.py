@@ -20,32 +20,32 @@ DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
 ENABLE_MAIN_RELEVANCE = True
-ENABLE_MAIN_TLD = True
+ENABLE_MAIN_TLD = False
 ENABLE_MAIN_KW = True
 
 ENABLE_MOBILE_RELEVANCE = True
-ENABLE_MOBILE_TLD = True
+ENABLE_MOBILE_TLD = False
 ENABLE_MOBILE_KW = True
 
 ENABLE_ULTIMATE_RELEVANCE = False
-ENABLE_ULTIMATE_TLD = True
+ENABLE_ULTIMATE_TLD = False
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
 ENABLE_MAIN_REBIND = False
 ENABLE_MAIN_SAFESEARCH = True
 ENABLE_MAIN_NSFW_REGEX = True
-ENABLE_MAIN_SPAM_TLDS = True
+ENABLE_MAIN_SPAM_TLDS = False
 
 ENABLE_MOBILE_REBIND = False
 ENABLE_MOBILE_SAFESEARCH = True
 ENABLE_MOBILE_NSFW_REGEX = True
-ENABLE_MOBILE_SPAM_TLDS = True
+ENABLE_MOBILE_SPAM_TLDS = False
 
 ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
 ENABLE_ULTIMATE_NSFW_REGEX = True
-ENABLE_ULTIMATE_SPAM_TLDS = True
+ENABLE_ULTIMATE_SPAM_TLDS = False
 
 # --- REGEX COMPILATION ---
 NSFW_PATTERN = r"(blowjob|threesome|gangbang|deepthroat|bukkake|tits|fuck|onlyfans|porn|xxx|sex)"
@@ -61,7 +61,7 @@ MAIN_SOURCES = [
     # --- 1. Content Filtering & Core Safety Baseline ---
     #"https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
     #"https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
@@ -70,6 +70,7 @@ MAIN_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
     #"https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", #HaGeZi Pro
 
     # --- 2. Enforcement & Behavioral Blocks ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
@@ -85,14 +86,15 @@ MAIN_SOURCES = [
 ULTIMATE_SOURCES = [
     # --- HaGeZi Umbrella Engines ---
     "https://filters.adtidy.org/dns/filter_54.txt", #HaGeZi's DynDNS Blocklist
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", #HaGeZi Pro
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
-    "https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
-    "https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
+    #"https://filters.adtidy.org/dns/filter_50.txt", #uBlock₀ filters – Badware risks
+    #"https://filters.adtidy.org/dns/filter_55.txt", #HaGeZi's Badware Hoster Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://filters.adtidy.org/dns/filter_44.txt", #HaGeZi's Threat Intelligence Feeds
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", #TIF Full
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", #TIF Medium
-    "https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
+    #"https://filters.adtidy.org/dns/filter_51.txt", #HaGeZi's Pro++ Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt",
     "https://filters.adtidy.org/dns/filter_46.txt", #HaGeZi's Anti-Piracy Blocklist
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
@@ -102,8 +104,8 @@ ULTIMATE_SOURCES = [
    
     # --- Core Content Tiers ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
+    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
 
     # --- Specialty Clean Metadata ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
