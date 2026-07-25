@@ -103,9 +103,9 @@ ULTIMATE_SOURCES = [
     #"https://filters.adtidy.org/dns/filter_34.txt", #HaGeZi's Normal Blocklist
    
     # --- Core Content Tiers ---
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
 
     # --- Specialty Clean Metadata ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
