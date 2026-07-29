@@ -1,5 +1,5 @@
 ! Jorgensen OMNI List | Version: 2026.07.05.OMNI_PRO_TRIE
-! Generated: 2026-07-28 06:54:35 PM MST
+! Generated: 2026-07-28 09:05:15 PM MST
 ! Stats: Kept 648253 | Badware-Pruned 0 | General-Pruned 5585 | Whitelisted 3 | Irrelevant 0 | Duplicates 88850 | TLD 0 | Regex-Offloaded 50973
 !
 ! --- Keyword Blocks ---
@@ -17,14 +17,14 @@
 !
 ! --- Source Contributions (Pre-Pruning) ---
 ! https://filters.adtidy.org/dns/filter_54.txt -> 1514 (0.23%)
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt -> 222977 (34.40%)
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt -> 315584 (48.68%)
-! https://filters.adtidy.org/dns/filter_46.txt -> 36082 (5.57%)
-! https://filters.adtidy.org/dns/filter_52.txt -> 17372 (2.68%)
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 873 (0.13%)
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 59224 (9.14%)
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt -> 384162 (59.26%)
+! https://filters.adtidy.org/dns/filter_52.txt -> 17509 (2.70%)
+! https://filters.adtidy.org/dns/filter_46.txt -> 36323 (5.60%)
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt -> 889 (0.14%)
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt -> 59407 (9.16%)
 ! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt -> 205 (0.03%)
-! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 7 (0.00%)
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt -> 40 (0.01%)
+! https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt -> 153789 (23.72%)
 !
 
 ||0--0.info^
@@ -648583,6 +648583,11 @@
 |yandex.tj^$dnsrewrite=NOERROR;A;213.180.193.56
 |yandex.tm^$dnsrewrite=NOERROR;A;213.180.193.56
 |yandex.uz^$dnsrewrite=NOERROR;A;213.180.193.56
+|m.youtube.com^$dnsrewrite=NOERROR;CNAME;restrictmoderate.youtube.com
+|www.youtube-nocookie.com^$dnsrewrite=NOERROR;CNAME;restrictmoderate.youtube.com
+|www.youtube.com^$dnsrewrite=NOERROR;CNAME;restrictmoderate.youtube.com
+|youtube.googleapis.com^$dnsrewrite=NOERROR;CNAME;restrictmoderate.youtube.com
+|youtubei.googleapis.com^$dnsrewrite=NOERROR;CNAME;restrictmoderate.youtube.com
 
 ! --- NSFW REGEX ---
 /(blowjob|threesome|gangbang|deepthroat|bukkake|tits|fuck|onlyfans|porn|xxx|sex)/
