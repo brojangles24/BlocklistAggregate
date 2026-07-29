@@ -62,15 +62,15 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^\/\^]+)\^')
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
     # --- Adult & NSFW Content ---
-    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
 
     # --- Enforcement & Behavioral ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
 
     # --- Malware & Security (Inactive) ---
@@ -95,7 +95,7 @@ ULTIMATE_SOURCES = [
     # --- Core Security & Threat Intelligence ---
     "https://filters.adtidy.org/dns/filter_54.txt", # HaGeZi DynDNS Blocklist
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", # TIF Medium
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
     #"https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
