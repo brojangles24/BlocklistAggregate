@@ -101,7 +101,8 @@ ULTIMATE_SOURCES = [
     "https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
     "https://filters.adtidy.org/dns/filter_44.txt", # HaGeZi Threat Intelligence Feeds
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
-
+    "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
+    
     # --- Bypass & Network Enforcement ---
     "https://filters.adtidy.org/dns/filter_52.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
     "https://filters.adtidy.org/dns/filter_46.txt", # HaGeZi Anti-Piracy
