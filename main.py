@@ -20,11 +20,11 @@ DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
 ENABLE_MAIN_RELEVANCE = True
-ENABLE_MAIN_TLD = False
+ENABLE_MAIN_TLD = True
 ENABLE_MAIN_KW = True
 
 ENABLE_MOBILE_RELEVANCE = True
-ENABLE_MOBILE_TLD = False
+ENABLE_MOBILE_TLD = True
 ENABLE_MOBILE_KW = True
 
 ENABLE_ULTIMATE_RELEVANCE = False
@@ -45,7 +45,7 @@ ENABLE_MOBILE_SPAM_TLDS = False
 ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
 ENABLE_ULTIMATE_NSFW_REGEX = True
-ENABLE_ULTIMATE_SPAM_TLDS = False
+ENABLE_ULTIMATE_SPAM_TLDS = True
 
 # --- REGEX COMPILATION ---
 NSFW_PATTERN = r"(blowjob|threesome|gangbang|deepthroat|bukkake|tits|fuck|onlyfans|porn|xxx|sex)"
@@ -94,12 +94,12 @@ MAIN_SOURCES = [
 ULTIMATE_SOURCES = [
     # --- Core Security & Threat Intelligence ---
     #"https://filters.adtidy.org/dns/filter_54.txt", # HaGeZi DynDNS Blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", # TIF Medium
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", # TIF Medium
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
     "https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
     "https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
-    "https://filters.adtidy.org/dns/filter_44.txt", # HaGeZi Threat Intelligence Feeds
+    #"https://filters.adtidy.org/dns/filter_44.txt", # HaGeZi Threat Intelligence Feeds
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
     "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
     
@@ -115,13 +115,13 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
-    "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
+    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
 
     # --- Comprehensive Protection Tiers ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
     #"https://filters.adtidy.org/dns/filter_34.txt", # HaGeZi Normal
-    "https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++
+    #"https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++
 ]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
