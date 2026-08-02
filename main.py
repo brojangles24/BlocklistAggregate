@@ -32,12 +32,12 @@ ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
-ENABLE_MAIN_REBIND = False
+ENABLE_MAIN_REBIND = True
 ENABLE_MAIN_SAFESEARCH = True
 ENABLE_MAIN_NSFW_REGEX = True
 ENABLE_MAIN_SPAM_TLDS = True
 
-ENABLE_MOBILE_REBIND = False
+ENABLE_MOBILE_REBIND = True
 ENABLE_MOBILE_SAFESEARCH = True
 ENABLE_MOBILE_NSFW_REGEX = True
 ENABLE_MOBILE_SPAM_TLDS = True
@@ -62,7 +62,7 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^\/\^]+)\^')
 # ---------------------------------------------------------------------------
 MAIN_SOURCES = [
     # --- Adult & NSFW Content ---
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
@@ -80,12 +80,14 @@ MAIN_SOURCES = [
     #"https://filters.adtidy.org/dns/filter_44.txt", # HaGeZi Threat Intelligence Feeds
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
+    "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
 
     # --- General Protection Tiers (Inactive) ---
     #"https://filters.adtidy.org/dns/filter_34.txt", # HaGeZi Normal
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
     #"https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
 ]
 
 
@@ -98,7 +100,7 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", # TIF Medium
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
-    #https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
+    #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
     "https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
     #"https://filters.adtidy.org/dns/filter_44.txt", # HaGeZi Threat Intelligence Feeds
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
@@ -335,14 +337,14 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
             if has_suffix_match(host, w_list):
                 stats["whitelisted"] += 1
                 continue
-           
+            
             if not disable_tld:
                 matched_tld = get_matching_tld(host, s_set, d_map)
                 if matched_tld:
                     stats["tld"] += 1
                     tld_counts[matched_tld] = tld_counts.get(matched_tld, 0) + 1
                     continue
-           
+            
             if not disable_kw:
                 m = NSFW_REGEX.search(host)
                 if m:
@@ -350,7 +352,7 @@ def build_dataset(urls: list[str], s_set: set[str], d_map: dict[str, set[str]], 
                     stats["kw"] += 1
                     kw_counts[matched_kw] = kw_counts.get(matched_kw, 0) + 1
                     continue
-                   
+                    
             if not disable_relevance and not has_suffix_match(host, a_list):
                 stats["irrelevant"] += 1
                 continue
@@ -397,7 +399,7 @@ def parse_tld_patterns(lines: list[str]) -> tuple[set[str], dict[str, set[str]]]
 def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], src_stats: dict[str, int], kw_counts: dict[str, int], tld_counts: dict[str, int], literal_list: list[str], label: str, rebind_text: str, ss_rules: list[str], spam_text: str | None, include_rebind: bool, include_safesearch: bool, include_regex: bool, include_spam: bool) -> None:
     now = datetime.now(AZ_TZ).strftime("%Y-%m-%d %I:%M:%S %p MST")
     total_kept = len(dataset)
-   
+    
     with open(filename, "w", encoding="utf-8") as f:
         f.write(f"! Jorgensen {label} List | Version: {VERSION}\n")
         f.write(f"! Generated: {now}\n")
@@ -407,7 +409,7 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
             f.write("!\n! --- Keyword Blocks ---\n")
             for kw, count in sorted(kw_counts.items(), key=lambda x: x[1], reverse=True):
                 f.write(f"! {kw}: {count}\n")
-               
+                
         if tld_counts:
             f.write("!\n! --- Top 10 TLD Blocks ---\n")
             for tld, count in sorted(tld_counts.items(), key=lambda x: x[1], reverse=True)[:10]:
@@ -421,7 +423,6 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
             f.write(f"! {entry} -> {count} ({pct:.2f}%)\n")
         f.write("!\n\n")
         
-        # Write core dataset
         f.writelines(f"||{dom}^\n" for dom in sorted(dataset))
         
         if include_rebind:
@@ -430,17 +431,17 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
                 f.write(rebind_text.strip() + "\n")
             else:
                 f.write("! [No Rebind Data Fetched or Empty Response]\n")
-               
+                
         if include_safesearch:
             f.write("\n! --- DYNAMIC SAFESEARCH ---\n")
             if ss_rules:
                 f.writelines(f"{rule}\n" for rule in ss_rules)
             else:
                 f.write("! [No SafeSearch Rules Fetched or Empty Response]\n")
-               
+                
         if include_regex:
             f.write(f"\n! --- NSFW REGEX ---\n/{NSFW_PATTERN}/\n")
-           
+            
         if include_spam:
             f.write("\n! --- SPAM TLDs ---\n")
             if spam_text:
@@ -506,13 +507,54 @@ async def run_pipeline() -> None:
                 except OSError as e:
                     print(f"[-] Debug write fault for {url}: {e}")
                     
+        print("[*] Compiling global blocklist for Spam TLD cross-reference...")
+        all_blocked_domains = set().union(*source_data.values())
+                    
         spam_patterns_set, denyallow_map, spam_text = set(), {}, None
         if spam_task:
             try:
                 spam_res = await spam_task
                 spam_res.raise_for_status()
-                spam_patterns_set, denyallow_map = parse_tld_patterns(spam_res.text.splitlines())
-                spam_text = spam_res.text
+                
+                filtered_spam_lines = []
+                for line in spam_res.text.splitlines():
+                    if not line.strip() or line.startswith(('!', '#', '[')):
+                        filtered_spam_lines.append(line)
+                        continue
+                        
+                    if NSFW_REGEX.search(line):
+                        continue
+                        
+                    if line.startswith("@@"):
+                        clean_exc = line[2:].strip()
+                        domain = extract_host(clean_exc)
+                        if domain and has_suffix_match(domain, all_blocked_domains):
+                            continue
+                            
+                    if "$denyallow=" in line or ",denyallow=" in line:
+                        rule_part, sep, modifiers = line.partition("$")
+                        if sep:
+                            mod_list = modifiers.split(",")
+                            new_mod_list = []
+                            for mod in mod_list:
+                                if mod.startswith("denyallow="):
+                                    allowed_hosts = mod[len("denyallow="):].split("|")
+                                    valid_hosts = [h for h in allowed_hosts if not has_suffix_match(h, all_blocked_domains)]
+                                    if valid_hosts:
+                                        new_mod_list.append("denyallow=" + "|".join(valid_hosts))
+                                else:
+                                    new_mod_list.append(mod)
+                            
+                            if new_mod_list:
+                                line = f"{rule_part}${','.join(new_mod_list)}"
+                            else:
+                                line = rule_part
+                                
+                    filtered_spam_lines.append(line)
+                
+                spam_text = "\n".join(filtered_spam_lines)
+                spam_patterns_set, denyallow_map = parse_tld_patterns(filtered_spam_lines)
+                
             except Exception as e:
                 print(f"[-] Failed to map custom Spam TLD footprints: {e}")
                 
@@ -551,7 +593,7 @@ async def run_pipeline() -> None:
         for url, count in mobile_src_stats.items():
             pct = (count / len(mobile_set) * 100) if len(mobile_set) > 0 else 0
             print(f" -> {urlparse(url).netloc}/{urlparse(url).path.split('/')[-1]}: {count} ({pct:.2f}%)")
-       
+        
         print("\n[*] Generating Omni List...")
         ultimate_set, ultimate_stats, ultimate_src_stats, ult_kw, ult_tld = build_dataset(
             active_ultimate, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data,
