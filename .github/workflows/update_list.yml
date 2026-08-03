@@ -33,7 +33,7 @@ jobs:
           git config --global user.email "action@github.com"
           
           # Add both the main list and the mobile list
-          git add blocklist.txt mobile-blocklist.txt omni-blocklist.txt
+          git add blocklist.txt mobile-blocklist.txt omni-blocklist.txt lite-blocklist.txt
           
           # Only commit if there are actual changes
           if ! git diff --staged --quiet; then
