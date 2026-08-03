@@ -19,6 +19,10 @@ VERSION = "2026.07.05.OMNI_PRO_TRIE"
 DEBUG_SAMPLES = os.getenv("DEBUG_SAMPLES", "0") == "1"
 
 # FILTER TOGGLES
+ENABLE_LITE_RELEVANCE = True
+ENABLE_LITE_TLD = False
+ENABLE_LITE_KW = False
+
 ENABLE_MAIN_RELEVANCE = False
 ENABLE_MAIN_TLD = True
 ENABLE_MAIN_KW = True
@@ -32,6 +36,11 @@ ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
+ENABLE_LITE_REBIND = True
+ENABLE_LITE_SAFESEARCH = True
+ENABLE_LITE_NSFW_REGEX = False
+ENABLE_LITE_SPAM_TLDS = False
+
 ENABLE_MAIN_REBIND = True
 ENABLE_MAIN_SAFESEARCH = True
 ENABLE_MAIN_NSFW_REGEX = True
@@ -57,6 +66,30 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^\/\^]+)\^')
 # ---------------------------------------------------------------------------
 # MAIN LIST SELECTION
 # ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+# LITE SOURCES
+# ---------------------------------------------------------------------------
+LITE_SOURCES = [
+    # --- Adult & NSFW Content ---
+    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
+
+    # --- Enforcement & Behavioral ---
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    #"https://filters.adtidy.org/dns/filter_52.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+
+    # --- Malware & Security ---
+    #"https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
+
+    # --- General Protection Tiers ---
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/normal.txt", # HaGeZi Normal
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", #TIF Mini
+    "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
+]
+
 # ---------------------------------------------------------------------------
 # MAIN SOURCES (Core Ruleset)
 # ---------------------------------------------------------------------------
@@ -72,21 +105,19 @@ MAIN_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    "https://filters.adtidy.org/dns/filter_52.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
     "https://codeberg.org/lumiworx/HPT-AI-Blocklist/raw/branch/main/HPT-Full-AI-List",
 
     # --- Malware & Security (Inactive) ---
     #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
-    "https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
-    #"https://filters.adtidy.org/dns/filter_44.txt", # HaGeZi Threat Intelligence Feeds
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", #TIF Mini
     "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
 
     # --- General Protection Tiers (Inactive) ---
-    #"https://filters.adtidy.org/dns/filter_34.txt", # HaGeZi Normal
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", # HaGeZi Normal
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
     #"https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
 ]
@@ -97,21 +128,17 @@ MAIN_SOURCES = [
 # ---------------------------------------------------------------------------
 ULTIMATE_SOURCES = [
     # --- Core Security & Threat Intelligence ---
-    #"https://filters.adtidy.org/dns/filter_54.txt", # HaGeZi DynDNS Blocklist
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt", # HaGeZi DynDNS Blocklist
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", # TIF Medium
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt",
+    
     #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
-    "https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
-    #"https://filters.adtidy.org/dns/filter_44.txt", # HaGeZi Threat Intelligence Feeds
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
     "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
     
     # --- Bypass & Network Enforcement ---
-    "https://filters.adtidy.org/dns/filter_52.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
-    "https://filters.adtidy.org/dns/filter_46.txt", # HaGeZi Anti-Piracy
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt", # HaGeZi Anti-Piracy
     "https://codeberg.org/lumiworx/HPT-AI-Blocklist/raw/branch/main/HPT-Full-AI-List",
 
     # --- Content, Social & Search Control ---
@@ -124,9 +151,11 @@ ULTIMATE_SOURCES = [
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
 
     # --- Comprehensive Protection Tiers ---
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
-    #"https://filters.adtidy.org/dns/filter_34.txt", # HaGeZi Normal
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", # HaGeZi Normal
     #"https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++
+    
+    
 ]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
@@ -456,23 +485,25 @@ def write_output_file(filename: str, dataset: list[str], stats: dict[str, int], 
 # ---------------------------------------------------------------------------
 async def run_pipeline() -> None:
     args_parser = argparse.ArgumentParser()
+    args_parser.add_argument("-l", "--lite", default="lite-blocklist.txt")
     args_parser.add_argument("-o", "--output", default="blocklist.txt")
     args_parser.add_argument("-m", "--mobile", default="mobile-blocklist.txt")
     args_parser.add_argument("-u", "--ultimate", default="omni-blocklist.txt")
     args_parser.add_argument("-w", "--whitelist", default="whitelist.txt")
     args = args_parser.parse_args()
     
+    active_lite = [s for s in LITE_SOURCES if s and not s.strip().startswith(("#", "//"))]
     active_main = [s for s in MAIN_SOURCES if s and not s.strip().startswith(("#", "//"))]
     active_mobile = [s for s in MOBILE_SOURCES if s and not s.strip().startswith(("#", "//"))]
     active_ultimate = [s for s in ULTIMATE_SOURCES if s and not s.strip().startswith(("#", "//"))]
-    all_unique_urls = list(dict.fromkeys(active_main + active_mobile + active_ultimate))
+    all_unique_urls = list(dict.fromkeys(active_lite + active_main + active_mobile + active_ultimate))
     
     limits = httpx.Limits(max_keepalive_connections=20, max_connections=40)
     async with httpx.AsyncClient(limits=limits, follow_redirects=True) as client:
         print("[*] Allocating asynchronous pipelines...")
         master_allowlist = set()
         top_tasks = []
-        if ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE or ENABLE_ULTIMATE_RELEVANCE:
+        if ENABLE_LITE_RELEVANCE or ENABLE_MAIN_RELEVANCE or ENABLE_MOBILE_RELEVANCE or ENABLE_ULTIMATE_RELEVANCE:
             top_tasks = [asyncio.create_task(fetch_top_list(url, col, skip, comp, client)) for url, col, skip, comp in TOP_LISTS]
             
         rebind_task = asyncio.create_task(client.get(REBIND_URL, timeout=30.0)) if REBIND_URL else None
@@ -577,6 +608,15 @@ async def run_pipeline() -> None:
                 ss_rules.extend([l for l in r.text.splitlines() if l.strip() and not l.startswith(('!', '#'))])
             except Exception as e:
                 print(f"[-] SafeSearch sync validation failed for {url}: {e}")
+
+        print("\n[*] Generating Lite List...")
+        lite_set, lite_stats, lite_src_stats, lite_kw, lite_tld = build_dataset(
+            active_lite, spam_patterns_set, denyallow_map, master_allowlist, manual_whitelist, source_data,
+            disable_relevance=not ENABLE_LITE_RELEVANCE, disable_tld=not ENABLE_LITE_TLD, disable_kw=not ENABLE_LITE_KW
+        )
+        for url, count in lite_src_stats.items():
+            pct = (count / len(lite_set) * 100) if len(lite_set) > 0 else 0
+            print(f" -> {urlparse(url).netloc}/{urlparse(url).path.split('/')[-1]}: {count} ({pct:.2f}%)")
                 
         print("\n[*] Generating Main List...")
         main_set, main_stats, main_src_stats, main_kw, main_tld = build_dataset(
@@ -607,7 +647,11 @@ async def run_pipeline() -> None:
             
         del source_data
         gc.collect()
-        
+
+        write_output_file(
+            args.lite, lite_set, lite_stats, lite_src_stats, lite_kw, lite_tld, LITE_SOURCES, "LITE", rebind_text, ss_rules, spam_text,
+            ENABLE_LITE_REBIND, ENABLE_LITE_SAFESEARCH, ENABLE_LITE_NSFW_REGEX, ENABLE_LITE_SPAM_TLDS
+        )
         write_output_file(
             args.output, main_set, main_stats, main_src_stats, main_kw, main_tld, MAIN_SOURCES, "MAIN", rebind_text, ss_rules, spam_text,
             ENABLE_MAIN_REBIND, ENABLE_MAIN_SAFESEARCH, ENABLE_MAIN_NSFW_REGEX, ENABLE_MAIN_SPAM_TLDS
@@ -620,7 +664,7 @@ async def run_pipeline() -> None:
             args.ultimate, ultimate_set, ultimate_stats, ultimate_src_stats, ult_kw, ult_tld, ULTIMATE_SOURCES, "OMNI", rebind_text, ss_rules, spam_text,
             ENABLE_ULTIMATE_REBIND, ENABLE_ULTIMATE_SAFESEARCH, ENABLE_ULTIMATE_NSFW_REGEX, ENABLE_ULTIMATE_SPAM_TLDS
         )
-        print(f"\n[+] Complete. Main: {len(main_set)} | Mobile: {len(mobile_set)} | Omni: {len(ultimate_set)}")
+        print(f"\n[+] Complete. Lite: {len(lite_set)} | Main: {len(main_set)} | Mobile: {len(mobile_set)} | Omni: {len(ultimate_set)}")
 
 def main() -> None:
     asyncio.run(run_pipeline())
