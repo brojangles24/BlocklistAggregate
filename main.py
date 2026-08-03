@@ -44,17 +44,17 @@ ENABLE_LITE_SPAM_TLDS = False
 ENABLE_MAIN_REBIND = True
 ENABLE_MAIN_SAFESEARCH = True
 ENABLE_MAIN_NSFW_REGEX = True
-ENABLE_MAIN_SPAM_TLDS = True
+ENABLE_MAIN_SPAM_TLDS = False
 
 ENABLE_MOBILE_REBIND = True
 ENABLE_MOBILE_SAFESEARCH = True
 ENABLE_MOBILE_NSFW_REGEX = True
-ENABLE_MOBILE_SPAM_TLDS = True
+ENABLE_MOBILE_SPAM_TLDS = False
 
 ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
 ENABLE_ULTIMATE_NSFW_REGEX = True
-ENABLE_ULTIMATE_SPAM_TLDS = True
+ENABLE_ULTIMATE_SPAM_TLDS = False
 
 # --- REGEX COMPILATION ---
 NSFW_PATTERN = r"(blowjob|threesome|gangbang|deepthroat|bukkake|tits|fuck|onlyfans|porn|xxx|sex)"
@@ -135,7 +135,7 @@ ULTIMATE_SOURCES = [
     #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
-    "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
+    #"https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
     
     # --- Bypass & Network Enforcement ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
@@ -148,6 +148,7 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt", #HaGeZi Gambling Mini
