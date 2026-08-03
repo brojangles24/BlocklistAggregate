@@ -23,7 +23,7 @@ ENABLE_LITE_RELEVANCE = True
 ENABLE_LITE_TLD = False
 ENABLE_LITE_KW = False
 
-ENABLE_MAIN_RELEVANCE = False
+ENABLE_MAIN_RELEVANCE = True
 ENABLE_MAIN_TLD = True
 ENABLE_MAIN_KW = True
 
@@ -31,7 +31,7 @@ ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = True
 ENABLE_MOBILE_KW = True
 
-ENABLE_ULTIMATE_RELEVANCE = False
+ENABLE_ULTIMATE_RELEVANCE = True
 ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
@@ -113,7 +113,7 @@ MAIN_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", #TIF Mini
-    "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
+    #"https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
 
     # --- General Protection Tiers (Inactive) ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", # HaGeZi Normal
