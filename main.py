@@ -23,7 +23,7 @@ ENABLE_LITE_RELEVANCE = True
 ENABLE_LITE_TLD = False
 ENABLE_LITE_KW = False
 
-ENABLE_MAIN_RELEVANCE = True
+ENABLE_MAIN_RELEVANCE = False
 ENABLE_MAIN_TLD = True
 ENABLE_MAIN_KW = True
 
@@ -31,7 +31,7 @@ ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = True
 ENABLE_MOBILE_KW = True
 
-ENABLE_ULTIMATE_RELEVANCE = True
+ENABLE_ULTIMATE_RELEVANCE = False
 ENABLE_ULTIMATE_TLD = True
 ENABLE_ULTIMATE_KW = True
 
@@ -120,7 +120,7 @@ MAIN_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
     #"https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt", #HaGeZi Gambling Mini
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt", #HaGeZi Gambling Mini
 ]
 
 
@@ -150,7 +150,7 @@ ULTIMATE_SOURCES = [
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt", #HaGeZi Gambling Mini
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt", #HaGeZi Gambling Mini
 
     # --- Comprehensive Protection Tiers ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
