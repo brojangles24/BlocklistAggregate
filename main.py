@@ -120,6 +120,7 @@ MAIN_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
     #"https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt", #HaGeZi Gambling Mini
 ]
 
 
@@ -129,7 +130,7 @@ MAIN_SOURCES = [
 ULTIMATE_SOURCES = [
     # --- Core Security & Threat Intelligence ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt", # HaGeZi DynDNS Blocklist
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/wildcard/tif.medium-onlydomains.txt", # TIF Medium
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt", # TIF Medium
     
     #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
@@ -149,6 +150,7 @@ ULTIMATE_SOURCES = [
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt", #HaGeZi Gambling Mini
 
     # --- Comprehensive Protection Tiers ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
