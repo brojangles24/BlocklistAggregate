@@ -109,10 +109,11 @@ MAIN_SOURCES = [
     "https://codeberg.org/lumiworx/HPT-AI-Blocklist/raw/branch/main/HPT-Full-AI-List",
 
     # --- Malware & Security (Inactive) ---
-    "https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
+    #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", #TIF Mini
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt", # TIF Medium
     "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
 
     # --- General Protection Tiers (Inactive) ---
@@ -132,8 +133,8 @@ ULTIMATE_SOURCES = [
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt", # HaGeZi DynDNS Blocklist
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt", # TIF Medium
     
-    "https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
+    #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
+    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
     "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
     
