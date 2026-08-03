@@ -85,7 +85,7 @@ LITE_SOURCES = [
     #"https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
 
     # --- General Protection Tiers ---
-    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/normal.txt", # HaGeZi Normal
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", # HaGeZi Normal
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", #TIF Mini
     "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
 ]
