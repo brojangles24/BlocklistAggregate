@@ -31,27 +31,27 @@ ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = False
 ENABLE_MOBILE_KW = True
 
-ENABLE_ULTIMATE_RELEVANCE = False
+ENABLE_ULTIMATE_RELEVANCE = True
 ENABLE_ULTIMATE_TLD = False
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
-ENABLE_LITE_REBIND = True
+ENABLE_LITE_REBIND = False
 ENABLE_LITE_SAFESEARCH = True
 ENABLE_LITE_NSFW_REGEX = False
 ENABLE_LITE_SPAM_TLDS = False
 
-ENABLE_MAIN_REBIND = True
+ENABLE_MAIN_REBIND = False
 ENABLE_MAIN_SAFESEARCH = True
 ENABLE_MAIN_NSFW_REGEX = True
 ENABLE_MAIN_SPAM_TLDS = False
 
-ENABLE_MOBILE_REBIND = True
+ENABLE_MOBILE_REBIND = False
 ENABLE_MOBILE_SAFESEARCH = True
 ENABLE_MOBILE_NSFW_REGEX = True
 ENABLE_MOBILE_SPAM_TLDS = False
 
-ENABLE_ULTIMATE_REBIND = True
+ENABLE_ULTIMATE_REBIND = False
 ENABLE_ULTIMATE_SAFESEARCH = True
 ENABLE_ULTIMATE_NSFW_REGEX = True
 ENABLE_ULTIMATE_SPAM_TLDS = False
@@ -136,17 +136,17 @@ ULTIMATE_SOURCES = [
     #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
-    #"https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
+    "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
     
     # --- Bypass & Network Enforcement ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt", # HaGeZi Anti-Piracy
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt", # HaGeZi Anti-Piracy
     #"https://codeberg.org/lumiworx/HPT-AI-Blocklist/raw/branch/main/HPT-Full-AI-List",
 
     # --- Content, Social & Search Control ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
