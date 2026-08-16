@@ -23,7 +23,7 @@ ENABLE_LITE_RELEVANCE = True
 ENABLE_LITE_TLD = False
 ENABLE_LITE_KW = False
 
-ENABLE_MAIN_RELEVANCE = True
+ENABLE_MAIN_RELEVANCE = False
 ENABLE_MAIN_TLD = False
 ENABLE_MAIN_KW = True
 
@@ -31,27 +31,27 @@ ENABLE_MOBILE_RELEVANCE = True
 ENABLE_MOBILE_TLD = False
 ENABLE_MOBILE_KW = True
 
-ENABLE_ULTIMATE_RELEVANCE = True
+ENABLE_ULTIMATE_RELEVANCE = False
 ENABLE_ULTIMATE_TLD = False
 ENABLE_ULTIMATE_KW = True
 
 # APPEND TOGGLES
-ENABLE_LITE_REBIND = False
+ENABLE_LITE_REBIND = True
 ENABLE_LITE_SAFESEARCH = True
 ENABLE_LITE_NSFW_REGEX = False
 ENABLE_LITE_SPAM_TLDS = False
 
-ENABLE_MAIN_REBIND = False
+ENABLE_MAIN_REBIND = True
 ENABLE_MAIN_SAFESEARCH = True
 ENABLE_MAIN_NSFW_REGEX = True
 ENABLE_MAIN_SPAM_TLDS = False
 
-ENABLE_MOBILE_REBIND = False
+ENABLE_MOBILE_REBIND = True
 ENABLE_MOBILE_SAFESEARCH = True
 ENABLE_MOBILE_NSFW_REGEX = True
 ENABLE_MOBILE_SPAM_TLDS = False
 
-ENABLE_ULTIMATE_REBIND = False
+ENABLE_ULTIMATE_REBIND = True
 ENABLE_ULTIMATE_SAFESEARCH = True
 ENABLE_ULTIMATE_NSFW_REGEX = True
 ENABLE_ULTIMATE_SPAM_TLDS = False
@@ -73,10 +73,10 @@ ADBLOCK_BASIC_RE = re.compile(r'^([^\/\^]+)\^')
 LITE_SOURCES = [
     # --- Adult & NSFW Content ---
     #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
 
     # --- Enforcement & Behavioral ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
     #"https://filters.adtidy.org/dns/filter_52.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
@@ -85,9 +85,9 @@ LITE_SOURCES = [
     #"https://filters.adtidy.org/dns/filter_55.txt", # HaGeZi Badware Hoster
 
     # --- General Protection Tiers ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", # HaGeZi Normal
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", #TIF Mini
-    #"https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", # HaGeZi Normal
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", #TIF Mini
+    "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
 ]
 
 # ---------------------------------------------------------------------------
@@ -96,31 +96,31 @@ LITE_SOURCES = [
 MAIN_SOURCES = [
     # --- Adult & NSFW Content ---
     "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
-    "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
+    #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
-    "https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
+    #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
 
     # --- Enforcement & Behavioral ---
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
-    #"https://codeberg.org/lumiworx/HPT-AI-Blocklist/raw/branch/main/HPT-Full-AI-List",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
+    "https://codeberg.org/lumiworx/HPT-AI-Blocklist/raw/branch/main/HPT-Full-AI-List",
 
     # --- Malware & Security (Inactive) ---
     #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.txt", # TIF Full
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.mini.txt", #TIF Mini
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt", # TIF Medium
-    #"https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt", # TIF Medium
+    "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
 
     # --- General Protection Tiers (Inactive) ---
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", # HaGeZi Normal
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
     #"https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt", #HaGeZi Gambling Mini
 ]
 
@@ -130,8 +130,8 @@ MAIN_SOURCES = [
 # ---------------------------------------------------------------------------
 ULTIMATE_SOURCES = [
     # --- Core Security & Threat Intelligence ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt", # HaGeZi DynDNS Blocklist
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt", # TIF Medium
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/dyndns.txt", # HaGeZi DynDNS Blocklist
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/tif.medium.txt", # TIF Medium
     
     #"https://filters.adtidy.org/dns/filter_50.txt", # uBlock₀ Badware
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/hoster.txt", # HaGeZi Badware Hoster
@@ -139,7 +139,7 @@ ULTIMATE_SOURCES = [
     "https://raw.githubusercontent.com/DNSBunker/CTI/refs/heads/main/adblock.txt", #Cyber THreat Intel
     
     # --- Bypass & Network Enforcement ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/doh-vpn-proxy-bypass.txt", # Encrypted DNS/VPN/TOR/Proxy Bypass
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/anti.piracy.txt", # HaGeZi Anti-Piracy
     #"https://codeberg.org/lumiworx/HPT-AI-Blocklist/raw/branch/main/HPT-Full-AI-List",
 
@@ -147,18 +147,16 @@ ULTIMATE_SOURCES = [
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/social.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nsfw.txt",
     "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/nosafesearch.txt",
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
-    #"https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/fake.txt",
+    "https://raw.githubusercontent.com/sjhgvr/oisd/refs/heads/main/abp_nsfw.txt",
     #"https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn-only/hosts",
     #"https://raw.githubusercontent.com/blocklistproject/Lists/master/porn.txt",
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/gambling.mini.txt", #HaGeZi Gambling Mini
 
     # --- Comprehensive Protection Tiers ---
-    #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
+    "https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/pro.txt", # HaGeZi Pro
     #"https://cdn.jsdelivr.net/gh/hagezi/dns-blocklists@latest/adblock/multi.txt", # HaGeZi Normal
     #"https://filters.adtidy.org/dns/filter_51.txt", # HaGeZi Pro++
-    
-    
 ]
 
 MOBILE_SOURCES = list(MAIN_SOURCES)
